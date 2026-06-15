@@ -217,17 +217,25 @@ html {
 
 <!-- BF VIDEO SHOWCASE -->
 <section class="bf-video-showcase">
-  <div class="bf-vs-bg" aria-hidden="true"></div>
   <div class="padding-global">
     <div class="container-large">
       <div class="padding-section-large">
-        <div class="bf-vs-header">
-          <span class="bf-vs-eyebrow">From Bill</span>
-          <h2 class="bf-vs-headline">Hear From Bill,<br/>Directly</h2>
+        <div class="margin-bottom margin-xlarge">
+          <div class="text-align-center">
+            <div class="max-width-large align-center">
+              <div class="margin-bottom margin-small">
+                <div class="bf-vs-eyebrow">Roundtable Discussions</div>
+              </div>
+              <div class="margin-bottom margin-small">
+                <h2 class="heading-style-h2 students-heading">Inside Bill's Best Trades</h2>
+              </div>
+              <p class="text-size-regular bf-vs-subhead">Three roundtable conversations breaking down the strategies, decisions, and instincts behind some of Bill Fanter's most talked-about trades.</p>
+            </div>
+          </div>
         </div>
         <div class="bf-vs-grid">
           <article class="bf-vs-card featured" data-vid="Te0c1iem3vI">
-            <button class="bf-vs-thumb" type="button" aria-label="Play most recent video from Bill">
+            <button class="bf-vs-thumb" type="button" aria-label="Play the most recent roundtable about Bill Fanter">
               <img src="https://img.youtube.com/vi/Te0c1iem3vI/maxresdefault.jpg" loading="lazy" alt=""/>
               <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
             </button>
@@ -236,7 +244,7 @@ html {
             </div>
           </article>
           <article class="bf-vs-card side" data-vid="xZ5RiPLQl8E">
-            <button class="bf-vs-thumb" type="button" aria-label="Play earlier video from Bill">
+            <button class="bf-vs-thumb" type="button" aria-label="Play the earlier roundtable about Bill Fanter">
               <img src="https://img.youtube.com/vi/xZ5RiPLQl8E/maxresdefault.jpg" loading="lazy" alt=""/>
               <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
             </button>
@@ -245,7 +253,7 @@ html {
             </div>
           </article>
           <article class="bf-vs-card side" data-vid="5SgfaRbprQs">
-            <button class="bf-vs-thumb" type="button" aria-label="Play the first video from Bill">
+            <button class="bf-vs-thumb" type="button" aria-label="Play the first roundtable about Bill Fanter">
               <img src="https://img.youtube.com/vi/5SgfaRbprQs/maxresdefault.jpg" loading="lazy" alt=""/>
               <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
             </button>
@@ -259,29 +267,30 @@ html {
   </div>
 </section>
 <style>
-.bf-video-showcase{position:relative;background:#0a0b10;color:#fff;overflow:hidden}
-.bf-video-showcase .bf-vs-bg{position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 0%,rgba(77,101,255,.18),transparent 70%),radial-gradient(40% 40% at 20% 100%,rgba(77,101,255,.10),transparent 70%);pointer-events:none}
-.bf-video-showcase .padding-global,.bf-video-showcase .container-large{position:relative;z-index:1}
-.bf-vs-header{text-align:center;max-width:720px;margin:0 auto 3rem}
-.bf-vs-eyebrow{display:inline-block;font-family:Montserrat,sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#4d65ff;margin-bottom:1rem}
-.bf-vs-headline{font-family:Oswald,sans-serif;font-weight:400;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1.05;color:#fff;margin:0}
+.bf-video-showcase{background:#f4f4f4}
+/* Webflow has .text-align-center{text-align:left} at @media (max-width:479px) which
+   overrides centering on small mobile. Bump specificity to restore center. */
+.bf-video-showcase .text-align-center{text-align:center}
+.bf-video-showcase .heading-style-h2{text-align:center}
+.bf-vs-eyebrow{display:inline-block;font-family:Montserrat,sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#4d65ff}
+.bf-vs-subhead{color:#6e6e6e;max-width:600px;margin-left:auto;margin-right:auto;text-align:center}
 .bf-vs-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:1.25rem;align-items:stretch}
-.bf-vs-card{position:relative;border-radius:14px;overflow:hidden;background:#14161e;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
-.bf-vs-card:hover{transform:translateY(-2px);border-color:rgba(77,101,255,.4);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.bf-vs-card{position:relative;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #6e6e6e;display:flex;flex-direction:column;transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease}
+.bf-vs-card:hover{transform:translateY(-2px);border-color:#000;box-shadow:0 12px 24px rgba(0,0,0,.08)}
 .bf-vs-card.featured{grid-row:1 / span 2}
 .bf-vs-thumb{position:relative;display:block;width:100%;border:0;padding:0;margin:0;background:#000;cursor:pointer;overflow:hidden;flex:1;font:inherit;color:inherit}
 .bf-vs-card.side .bf-vs-thumb{aspect-ratio:16 / 9}
 .bf-vs-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
-.bf-vs-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.55) 100%);pointer-events:none}
+.bf-vs-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.35) 100%);pointer-events:none}
 .bf-vs-thumb:hover img{transform:scale(1.04)}
-.bf-vs-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.96);color:#0a0b10;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(77,101,255,.35);transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .2s;z-index:1}
+.bf-vs-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.35);transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .2s;z-index:1}
 .bf-vs-card.side .bf-vs-play{width:56px;height:56px}
-.bf-vs-play svg{width:30px;height:30px;margin-left:3px}
+.bf-vs-play svg{width:30px;height:30px;margin-left:3px;fill:currentColor}
 .bf-vs-card.side .bf-vs-play svg{width:22px;height:22px}
-.bf-vs-thumb:hover .bf-vs-play{transform:translate(-50%,-50%) scale(1.1);background:#fff}
-.bf-vs-meta{padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.bf-vs-thumb:hover .bf-vs-play{transform:translate(-50%,-50%) scale(1.1);background:#4d65ff}
+.bf-vs-meta{padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;background:#fff}
 .bf-vs-card.side .bf-vs-meta{padding:.9rem 1.25rem}
-.bf-vs-tag{display:inline-block;font-family:Montserrat,sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#4d65ff;background:rgba(77,101,255,.12);border:1px solid rgba(77,101,255,.28);padding:.4rem .85rem;border-radius:999px;flex-shrink:0}
+.bf-vs-tag{display:inline-block;font-family:Montserrat,sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#4d65ff;background:rgba(77,101,255,.08);border:1px solid rgba(77,101,255,.28);padding:.4rem .85rem;border-radius:999px;flex-shrink:0}
 .bf-vs-card.featured .bf-vs-tag{background:#4d65ff;color:#fff;border-color:#4d65ff}
 .bf-vs-thumb.is-playing{cursor:default}
 .bf-vs-thumb.is-playing img,.bf-vs-thumb.is-playing::after,.bf-vs-thumb.is-playing .bf-vs-play{display:none}
@@ -290,7 +299,6 @@ html {
   .bf-vs-grid{grid-template-columns:1fr}
   .bf-vs-card.featured{grid-row:auto}
   .bf-vs-card .bf-vs-thumb{aspect-ratio:16 / 9}
-  .bf-vs-header{margin-bottom:2rem}
 }
 @media screen and (max-width:479px){
   .bf-vs-play{width:60px;height:60px}
