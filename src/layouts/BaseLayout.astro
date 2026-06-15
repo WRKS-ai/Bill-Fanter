@@ -204,7 +204,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
             inlineSuccess: true,
             nameField: 'contact-form-name',
             emailField: 'contact-form-email',
-            extraFields: { message: 'contact-form-message' },
+            extraFields: { custom_1: 'contact-form-message' }, // Kajabi form 2148612290's Message field is form_submission[custom_1], not [message] (verified via the form's embed.js)
           },
         };
         function valueOf(form, fieldName) {
