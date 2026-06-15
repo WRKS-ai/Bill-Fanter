@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import bodyHtml from './_body.html?raw';
 import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
 
 const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
 ---
@@ -9,8 +10,9 @@ const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
   title={`You're In | Bill Fanter Weekly Watchlist`}
   description={`Your subscription is confirmed. Your first Weekly Watchlist arrives this Sunday.`}
   ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`watchlist-confirmed`}
+  wfPageId={`664c2004b0e73bd9b6158f9f`}
   extraHeadHtml={noindexTag + extraHeadHtml}
 >
+  <style set:html={modernizationCSS}></style>
   <Fragment set:html={bodyHtml} />
 </BaseLayout>

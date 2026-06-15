@@ -314,16 +314,19 @@ body.bf-menu-open .icon-lines svg path {
   .about_bg { display: none !important; }
 }
 
-/* --- /webinar hero ships with `padding-section-large no-top-padding` —
-       on desktop the whole hero pins to the top of the page with zero
-       gap below the nav. Restore breathing room. --- */
-.section_webinar .padding-section-large.no-top-padding {
-  padding-top: 5rem !important;
+/* --- /webinar uses `.navbar.main.fixed.nav-mem` — a `position: fixed`
+       dark nav that overlays anything beneath it. Give the hero a clear
+       12rem (8rem mobile) top buffer so the nav never crashes into the
+       headline.  Catches both the `.no-top-padding` and bare-padding
+       variants on `.section_webinar` (+ both thank-you pages). --- */
+.section_webinar .padding-section-large.no-top-padding,
+.section_webinar > .padding-global > .container-large > .padding-section-large {
+  padding-top: 12rem !important;
 }
 @media (max-width: 767px) {
-  /* mobile already has m-padding-up (10rem) — keep that path intact */
-  .section_webinar .padding-section-large.no-top-padding.m-padding-up {
-    padding-top: 4rem !important;
+  .section_webinar .padding-section-large.no-top-padding.m-padding-up,
+  .section_webinar > .padding-global > .container-large > .padding-section-large {
+    padding-top: 8rem !important;
   }
 }
 
@@ -334,6 +337,18 @@ body.bf-menu-open .icon-lines svg path {
 .heading-style-h4.bh,
 .bh {
   color: #fff !important;
+}
+
+/* /webinar headings carrying `.communityh-text.inside-left.black-h`
+   (e.g. "Before you place another trade…", "From Guesswork to a Game
+   Plan") get baked with `color: black` and also ship with inline
+   `opacity:0` + `translate3d` reveal state. Force them visible *and*
+   white wherever they sit — the parent-scoped rule wasn't matching
+   the second occurrence in `.section_masterclass-reviews-2`. */
+.heading-style-h2.communityh-text.black-h {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* --- Homepage: cards row → "Your Path to Proficient Trading" runs into

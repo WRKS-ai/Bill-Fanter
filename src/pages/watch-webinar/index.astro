@@ -2,13 +2,15 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import bodyHtml from './_body.html?raw';
 import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
 ---
 <BaseLayout
-  title={`Access Webinar`}
-  description={``}
+  title={`Watch the Webinar | Bill Fanter`}
+  description={`Watch Bill Fanter's free webinar: the 3-step system for finding, managing, and closing winning options trades.`}
   ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
   wfPageId={`685f216882d72de2762d8776`}
   extraHeadHtml={extraHeadHtml}
 >
+  <style set:html={modernizationCSS}></style>
   <Fragment set:html={bodyHtml} />
 </BaseLayout>
