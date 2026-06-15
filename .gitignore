@@ -5,18 +5,6 @@ node_modules/
 Thumbs.db
 *.log
 
-# Scraper scratch files (regenerable)
-_build/raw.css
-_build/live-home.html
-_build/local-home.html
-_build/live-cdn.txt
-_build/local-assets.txt
-_build/compare-report.json
-_build/scrape-report.json
-
-# Pre-existing funnel work — not part of billfanter.com mirror
-/lead-magnet.html
-/slo.html
-/watch.html
-/watch-webflow.html
-/testimonials/
+# Astro
+dist/
+.astro/

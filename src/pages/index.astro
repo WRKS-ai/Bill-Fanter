@@ -1,0 +1,25 @@
+---
+// Production homepage — hybrid: classic markup with a thin modernization layer
+// (new font + spacing + button styles) applied via modernization.css.
+//
+// Comparison routes:
+//   /2026  — new UI preview (post-2026 design refresh, bf-* component system)
+//   /classic — original Webflow site, frozen as a rollback checkpoint
+//
+// Both stay available for side-by-side review.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import bodyHtml from './_classic-modernized/_body.html?raw';
+import extraHeadHtml from './_classic-modernized/_head.html?raw';
+import modernizationCSS from '../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Master Stock Options Trading | Bill Fanter`}
+  description={`Join Bill Fanter's Masterclass to master stock options trading. Discover powerful strategies, deepen your market knowledge, and enhance your trading skills with 35+ years of investment expertise. Subscribe for weekly stock watchlists and join our exclusive trading community.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664a5b263659c7265be280e3`}
+  extraHeadHtml={extraHeadHtml}
+>
+  {/* Modernization layer — Geist + spacing + button polish over Webflow */}
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

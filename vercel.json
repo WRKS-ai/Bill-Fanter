@@ -1,5 +1,19 @@
 {
-    "cleanUrls": true,
-    "trailingSlash": false,
-    "outputDirectory": "public"
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "astro",
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/courses", "destination": "/", "permanent": true },
+    { "source": "/learn-on-demand", "destination": "/", "permanent": true },
+    { "source": "/options-foundation", "destination": "/", "permanent": true },
+    { "source": "/options-masterclass-module-1", "destination": "/", "permanent": true },
+    { "source": "/watchlist", "destination": "/free-watchlist", "permanent": true },
+    { "source": "/webinar2", "destination": "/webinar", "permanent": true },
+    { "source": "/options", "destination": "/", "permanent": true },
+    { "source": "/options-copy", "destination": "/", "permanent": true },
+    { "source": "/sw-lm-lp", "destination": "/free-watchlist", "permanent": true },
+    { "source": "/lm-watch", "destination": "/free-watchlist", "permanent": true },
+    { "source": "/masterclass2026", "destination": "/masterclass", "permanent": true }
+  ]
 }

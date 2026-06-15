@@ -1,1 +1,1 @@
-Sitemap: https://www.billfanter.com/sitemap.xml
+Sitemap: https://www.billfanter.com/sitemap-index.xml

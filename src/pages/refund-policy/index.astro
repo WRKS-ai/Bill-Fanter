@@ -1,0 +1,18 @@
+---
+// Production /refund-policy — classic markup with modernization layer.
+// New UI preview at /2026/refund-policy, original at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Refund Policy | Bill Fanter`}
+  description={`Bill Fanter refund policy.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`66f27b3dba83a3e796420afd`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

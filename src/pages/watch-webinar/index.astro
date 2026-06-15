@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+---
+<BaseLayout
+  title={`Access Webinar`}
+  description={``}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`685f216882d72de2762d8776`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

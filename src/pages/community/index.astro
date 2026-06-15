@@ -1,0 +1,18 @@
+---
+// Production /community — classic markup with modernization layer.
+// New UI preview at /2026/community, original at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Trading Community | Bill Fanter`}
+  description={`Join Bill Fanter's exclusive trading community: live alerts, AI signals, daily mentorship, and direct access to Bill.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`6853ea0693bc4b35fa48b4ff`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

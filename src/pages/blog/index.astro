@@ -1,0 +1,18 @@
+---
+// Production /blog — classic markup with modernization layer.
+// New UI preview at /2026/blog, original at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Learning Resources | Bill Fanter`}
+  description={`Articles, tutorials, and trade breakdowns from Bill Fanter — written to help you build real options-trading skill.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664d6658b3efb6a1eb5521e0`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+// Production /webinar — classic markup with modernization layer.
+// New UI preview at /2026/webinar, original at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Free Webinar | Bill Fanter`}
+  description={`Free webinar with Bill Fanter — the 3-step system he uses to find, manage, and close winning options trades.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664c1c1ece7e660fcaf8ed86`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

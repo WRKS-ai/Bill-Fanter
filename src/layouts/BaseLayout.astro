@@ -1,0 +1,438 @@
+---
+import headBoilerplate from './_head-boilerplate.html?raw';
+import footerBoilerplate from './_footer-boilerplate.html?raw';
+import designSystemCSS from '../styles/bf-design-system.css?raw';
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  wfPageId: string;
+  extraHeadHtml?: string;
+}
+
+const {
+  title,
+  description,
+  ogImage = '/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp',
+  wfPageId,
+  extraHeadHtml,
+} = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href.replace(/\/$/, '') || (Astro.site ?? Astro.url.origin).toString().replace(/\/$/, '');
+---
+<!DOCTYPE html>
+<html
+  data-wf-domain="www.billfanter.com"
+  data-wf-site="664a5b263659c7265be280ad"
+  data-wf-page={wfPageId}
+  lang="en"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        background: #ffffff;
+        font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+        color: #0a0a0a;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        line-height: 1.5;
+      }
+      img, svg, video { display: block; max-width: 100%; }
+      a { color: inherit; text-decoration: none; }
+      button, input, textarea, select { font: inherit; color: inherit; }
+    </style>
+    <Fragment set:html={headBoilerplate} />
+    {extraHeadHtml && <Fragment set:html={extraHeadHtml} />}
+    <style set:html={designSystemCSS}></style>
+
+    <script is:inline>
+      /* ------------------------------------------------------------------
+         Disable Webflow IX2 scroll-reveal animations at the source.
+
+         IX2 keys its animations off the `data-w-id` attribute and a JSON
+         registry. Just stripping the inline `opacity:0` + translate3d is
+         not enough — IX2 re-applies them mid-frame from its registry.
+         To stop the animation, the link itself has to be severed:
+         remove `data-w-id` from any element that ships with the reveal
+         initial state, BEFORE IX2's DOMContentLoaded handler scans.
+
+         This script runs in <head>. A MutationObserver on <html>
+         catches each element as the parser inserts it — earlier than
+         any DOMContentLoaded listener can fire — and neutralizes it
+         in place. A final sweep on DOMContentLoaded catches stragglers.
+
+         Menu hamburger lines (`.nav_menu-line-up` / `-down`) have
+         `data-w-id` but NO reveal inline style, so they're untouched
+         and IX2 still drives their rotate-into-X animation on click.
+      ------------------------------------------------------------------ */
+      (function () {
+        var OFFSET_RE = /translate3d\(0,\s*-?20px,\s*0\)/;
+        var stripped = 0;
+
+        function looksLikeReveal(el) {
+          if (!el || el.nodeType !== 1 || !el.hasAttribute) return false;
+          var raw = el.getAttribute('style');
+          if (!raw) return false;
+          return OFFSET_RE.test(raw) || /opacity:\s*0\b/.test(raw);
+        }
+
+        function neutralize(el) {
+          el.style.removeProperty('transform');
+          el.style.removeProperty('-webkit-transform');
+          el.style.removeProperty('-moz-transform');
+          el.style.removeProperty('-ms-transform');
+          el.style.removeProperty('opacity');
+          el.removeAttribute('data-w-id');
+          stripped++;
+        }
+
+        function walk(root) {
+          if (!root) return;
+          if (looksLikeReveal(root)) neutralize(root);
+          if (root.querySelectorAll) {
+            var matches = root.querySelectorAll('[style]');
+            for (var i = 0; i < matches.length; i++) {
+              if (looksLikeReveal(matches[i])) neutralize(matches[i]);
+            }
+          }
+        }
+
+        var observer = new MutationObserver(function (mutations) {
+          for (var i = 0; i < mutations.length; i++) {
+            var added = mutations[i].addedNodes;
+            for (var j = 0; j < added.length; j++) walk(added[j]);
+          }
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+
+        document.addEventListener('DOMContentLoaded', function () {
+          walk(document.body);
+          observer.disconnect();
+          if (window.console && window.console.debug) {
+            window.console.debug('[bf] IX2 reveal severed on ' + stripped + ' element(s)');
+          }
+        });
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+
+    <!-- bf-vreel modal — Vimeo iframe activated when a .bf-vreel button is clicked.
+         iframe stays at about:blank until needed so no video network requests happen on idle. -->
+    <div class="bf-vreel-modal" id="bf-vreel-modal" aria-hidden="true">
+      <button class="bf-vreel-modal__close" id="bf-vreel-modal-close" aria-label="Close video">×</button>
+      <iframe id="bf-vreel-modal-iframe" src="about:blank" title="Video player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <Fragment set:html={footerBoilerplate} />
+
+    <script is:inline>
+      /* Hamburger menu toggle — pairs with the CSS rules in
+         modernization.css. Click any nav icon wrapper to toggle the
+         `bf-menu-open` class on <body>; that flips the drawer + the
+         hamburger/cross icons. Also closes on link click and ESC. */
+      (function () {
+        function toggle() { document.body.classList.toggle('bf-menu-open'); }
+        function close()  { document.body.classList.remove('bf-menu-open'); }
+
+        document.addEventListener('click', function (e) {
+          // The menu button is one of these wrappers (different pages
+          // use slightly different markup, so match either).
+          var btn = e.target.closest('.nav_menu-icon-image-wrapper, .nav_menu-icon-wrapper');
+          if (btn) {
+            e.preventDefault();
+            toggle();
+            return;
+          }
+          // Tapping a nav link inside the drawer should close it.
+          var link = e.target.closest('.nav_menu-links a');
+          if (link && document.body.classList.contains('bf-menu-open')) {
+            close();
+          }
+        }, true);
+
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') close();
+        });
+      })();
+    </script>
+
+    <script is:inline>
+      (function () {
+        const FORMS = {
+          'wf-form-Webinar-form': {
+            kajabiFormId: '2148612292',
+            redirect: '/watch-webinar',
+            nameField: 'LM-name',
+            emailField: 'LM-email',
+          },
+          'wf-form-Watchlist-form': {
+            kajabiFormId: '2148612296',
+            redirect: '/watchlist-confirmed',
+            nameField: 'Watchlist-name',
+            emailField: 'Watchlist-email',
+          },
+          'wf-form-Newsletter-form': {
+            kajabiFormId: '2148612296',
+            redirect: '/watchlist-confirmed',
+            nameField: 'Newsletter-Name',
+            emailField: 'Newsletter-Email',
+          },
+          'wf-form-Contact-form': {
+            kajabiFormId: '2148612290',
+            inlineSuccess: true,
+            nameField: 'contact-form-name',
+            emailField: 'contact-form-email',
+            extraFields: { message: 'contact-form-message' },
+          },
+        };
+        function valueOf(form, fieldName) {
+          if (!fieldName) return '';
+          const el = form.querySelector('[name="' + fieldName + '"]');
+          return el ? el.value : '';
+        }
+        function showInlineSuccess(form) {
+          const wrapper = form.closest('.w-form') || form.parentElement;
+          if (!wrapper) return;
+          form.style.display = 'none';
+          const done = wrapper.querySelector('.w-form-done');
+          const fail = wrapper.querySelector('.w-form-fail');
+          if (done) done.style.display = 'block';
+          if (fail) fail.style.display = 'none';
+        }
+        function wire(form, cfg) {
+          form.addEventListener(
+            'submit',
+            function (e) {
+              e.preventDefault();
+              e.stopImmediatePropagation();
+              const name = valueOf(form, cfg.nameField);
+              const email = valueOf(form, cfg.emailField);
+              const btn = form.querySelector('input[type="submit"], button[type="submit"]');
+              if (btn) {
+                btn.disabled = true;
+                if (btn.tagName === 'INPUT') {
+                  btn.value = btn.dataset.wait || 'Please wait...';
+                } else {
+                  btn.textContent = 'Submitting...';
+                }
+              }
+              const fd = new FormData();
+              fd.append('utf8', '✓');
+              fd.append('form_submission[name]', name);
+              fd.append('form_submission[email]', email);
+              if (cfg.extraFields) {
+                Object.keys(cfg.extraFields).forEach(function (key) {
+                  fd.append('form_submission[' + key + ']', valueOf(form, cfg.extraFields[key]));
+                });
+              }
+              if (cfg.redirect) {
+                fd.append('form_submission[redirect_url]', 'https://www.billfanter.com' + cfg.redirect);
+              }
+              const finish = function () {
+                if (cfg.redirect) {
+                  window.location.href = cfg.redirect;
+                } else if (cfg.inlineSuccess) {
+                  showInlineSuccess(form);
+                }
+              };
+              fetch('https://members.billfanter.com/forms/' + cfg.kajabiFormId + '/form_submissions', {
+                method: 'POST',
+                body: fd,
+                mode: 'no-cors',
+              })
+                .then(finish)
+                .catch(finish);
+            },
+            true
+          );
+        }
+        function init() {
+          Object.keys(FORMS).forEach(function (id) {
+            document.querySelectorAll('#' + id).forEach(function (form) {
+              wire(form, FORMS[id]);
+            });
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+    <script>
+      const waitForDimensions = (el) =>
+        new Promise((resolve) => {
+          const check = () => {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0) resolve();
+            else requestAnimationFrame(check);
+          };
+          check();
+        });
+      const mountAllGrainients = async () => {
+        const targets = document.querySelectorAll('[data-grainient]');
+        if (!targets.length) return;
+        try {
+          const [React, ReactDOM, GrainientMod] = await Promise.all([
+            import('react'),
+            import('react-dom/client'),
+            import('../components/Grainient/Grainient.jsx'),
+          ]);
+          const Grainient = GrainientMod.default;
+          const createRoot = ReactDOM.createRoot;
+          for (const el of targets) {
+            if (el.dataset.gMounted === '1') continue;
+            el.dataset.gMounted = '1';
+            await waitForDimensions(el);
+            const props = {
+              color1: el.dataset.color1 || '#FF8308',
+              color2: el.dataset.color2 || '#EF4444',
+              color3: el.dataset.color3 || '#6B3BD5',
+              timeSpeed: 0.65,
+              warpStrength: 2.4,
+              warpFrequency: 1.1,
+              warpAmplitude: 130,
+              blendSoftness: 0.38,
+              noiseScale: 1.6,
+              grainAmount: 0.12,
+              contrast: 1.28,
+              saturation: 1.18,
+              zoom: 0.75,
+            };
+            try {
+              const root = createRoot(el);
+              root.render(React.createElement(Grainient, props));
+            } catch (e) { console.error('[bf-grainient] render error', e); }
+          }
+        } catch (e) { console.error('[bf-grainient] import error', e); }
+      };
+      if (document.readyState === 'complete') mountAllGrainients();
+      else window.addEventListener('load', mountAllGrainients);
+    </script>
+    <script is:inline>
+      /* Subtle parallax for spotlight backgrounds. Sets --bf-parallax-y on
+         each .bf-spotlight__bg based on the card's distance from viewport
+         center. Guarded by requestAnimationFrame so scroll stays smooth. */
+      (function () {
+        var bgs = document.querySelectorAll('.bf-spotlight__bg');
+        if (!bgs.length) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var ticking = false;
+        function update() {
+          var vh = window.innerHeight || document.documentElement.clientHeight;
+          bgs.forEach(function (bg) {
+            var card = bg.parentElement;
+            if (!card) return;
+            var r = card.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > vh) return;
+            // -1 → above viewport, 0 → centered, +1 → below viewport
+            var progress = ((r.top + r.height / 2) - vh / 2) / vh;
+            var y = -progress * 36; // px range; subtle
+            bg.style.setProperty('--bf-parallax-y', y.toFixed(1) + 'px');
+          });
+          ticking = false;
+        }
+        function onScroll() {
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(update);
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        update();
+      })();
+    </script>
+    <script is:inline>
+      /* bf-vreel — lazy-promote <video data-lazy-video> sources + open Vimeo modal on click.
+         Ported from WRKS-site /offer/law-firms.astro. */
+      (function () {
+        var lazyVideos = document.querySelectorAll('video[data-lazy-video]');
+        function promote(v) {
+          v.querySelectorAll('source[data-src]').forEach(function (s) {
+            s.src = s.getAttribute('data-src');
+            s.removeAttribute('data-src');
+          });
+          v.load();
+          var p = v.play();
+          if (p && p.catch) p.catch(function(){});
+        }
+        if (lazyVideos.length) {
+          if ('IntersectionObserver' in window) {
+            var lvIO = new IntersectionObserver(function (entries) {
+              entries.forEach(function (e) {
+                if (e.isIntersecting) { promote(e.target); lvIO.unobserve(e.target); }
+              });
+            }, { rootMargin: '200px 0px' });
+            lazyVideos.forEach(function (v) { lvIO.observe(v); });
+          } else {
+            lazyVideos.forEach(promote);
+          }
+        }
+        var modal = document.getElementById('bf-vreel-modal');
+        var modalIframe = document.getElementById('bf-vreel-modal-iframe');
+        var modalClose = document.getElementById('bf-vreel-modal-close');
+        function buildVimeoURL(id) {
+          var params = [
+            'autoplay=1','muted=1','controls=1','playsinline=1','dnt=1',
+            'badge=0','byline=0','title=0','speed=0',
+            'airplay=0','chromecast=0','pip=0',
+            'vimeo_logo=0','share=0','like=0','watchlater=0'
+          ].join('&');
+          /* cache-bust on every open so the iframe reloads from scratch and
+             autoplay restarts from 00:00 even on a repeat click. */
+          return 'https://player.vimeo.com/video/' + id + '?' + params + '#t=0&_=' + Date.now();
+        }
+        function open(id) {
+          if (!modal || !modalIframe || !id) return;
+          /* clear → next frame → assign. browsers need a tick to actually
+             release the previous player before we point at the same video. */
+          modalIframe.src = 'about:blank';
+          requestAnimationFrame(function () {
+            modalIframe.src = buildVimeoURL(id);
+          });
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+        }
+        function close() {
+          if (!modal || !modalIframe) return;
+          modalIframe.src = 'about:blank';
+          modal.classList.remove('is-open');
+          modal.setAttribute('aria-hidden', 'true');
+        }
+        document.querySelectorAll('.bf-vreel').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.getAttribute('data-bf-vimeo');
+            if (id) open(id);
+          });
+        });
+        if (modalClose) modalClose.addEventListener('click', close);
+        if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+      })();
+    </script>
+  </body>
+</html>

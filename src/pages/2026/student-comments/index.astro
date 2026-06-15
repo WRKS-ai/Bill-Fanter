@@ -1,0 +1,17 @@
+---
+// PREVIEW route for the post-2026 design refresh version of /student-comments.
+// Production /student-comments renders the classic-modernized hybrid; this is the
+// new-UI version kept around for side-by-side comparison.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+---
+<BaseLayout
+  title={`Student Reviews | Bill Fanter`}
+  description={`Real reviews from real students of Bill Fanter's masterclass and community.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664d688db3efb6a1eb568cf8`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

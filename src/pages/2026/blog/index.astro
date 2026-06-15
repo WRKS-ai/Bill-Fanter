@@ -1,0 +1,17 @@
+---
+// PREVIEW route for the post-2026 design refresh version of /blog.
+// Production /blog renders the classic-modernized hybrid; this is the
+// new-UI version kept around for side-by-side comparison.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+---
+<BaseLayout
+  title={`Learning Resources | Bill Fanter`}
+  description={`Articles, tutorials, and trade breakdowns from Bill Fanter — written to help you build real options-trading skill.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664c2376b51b58dffc4c7d8f`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

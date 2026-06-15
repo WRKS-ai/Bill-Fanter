@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+
+const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
+---
+<BaseLayout
+  title={`[2026 Design Sandbox] Bill Fanter`}
+  description={`Sandbox for the 2026 homepage redesign — not public.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664a5b263659c7265be280e3`}
+  extraHeadHtml={noindexTag + extraHeadHtml}
+>
+  <Fragment set:html={bodyHtml} />
+
+  <script>
+    // Robust Grainient mount: wait for layout to settle, then mount React Grainient
+    // into every [data-grainient] placeholder using dynamic imports so failures don't block.
+    const waitForDimensions = (el) =>
+      new Promise((resolve) => {
+        const check = () => {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) resolve();
+          else requestAnimationFrame(check);
+        };
+        check();
+      });
+
+    const mountAll = async () => {
+      const targets = document.querySelectorAll('[data-grainient]');
+      if (!targets.length) return;
+
+      try {
+        const [React, ReactDOM, GrainientMod] = await Promise.all([
+          import('react'),
+          import('react-dom/client'),
+          import('../../components/Grainient/Grainient.jsx'),
+        ]);
+        const Grainient = GrainientMod.default;
+        const createRoot = ReactDOM.createRoot;
+
+        for (const el of targets) {
+          if (el.dataset.gMounted === '1') continue;
+          el.dataset.gMounted = '1';
+          await waitForDimensions(el);
+
+          const props = {
+            color1: el.dataset.color1 || '#FF8308',
+            color2: el.dataset.color2 || '#EF4444',
+            color3: el.dataset.color3 || '#6B3BD5',
+            timeSpeed: 0.18,
+            warpStrength: 1,
+            warpFrequency: 4,
+            warpAmplitude: 60,
+            blendSoftness: 0.08,
+            noiseScale: 1.6,
+            grainAmount: 0.08,
+            contrast: 1.4,
+            saturation: 1.05,
+            zoom: 0.85,
+          };
+
+          try {
+            const root = createRoot(el);
+            root.render(React.createElement(Grainient, props));
+          } catch (e) {
+            console.error('[bf-grainient] render error for', el, e);
+          }
+        }
+      } catch (e) {
+        console.error('[bf-grainient] import error:', e);
+      }
+    };
+
+    if (document.readyState === 'complete') {
+      mountAll();
+    } else {
+      window.addEventListener('load', mountAll);
+    }
+  </script>
+</BaseLayout>

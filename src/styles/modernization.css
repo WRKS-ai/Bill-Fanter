@@ -1,0 +1,392 @@
+/* =====================================================================
+   MODERNIZATION LAYER
+   ---------------------------------------------------------------------
+   Thin overlay applied on top of the classic Webflow CSS bundle.
+   No markup changes — only typography, spacing, button polish, and a
+   handful of color refinements. Webflow's IX2 animations + layout
+   structure stay intact.
+   ===================================================================== */
+
+/* --- Geist font already loaded by BaseLayout head — just promote it --- */
+
+body,
+.heading-style-h1, .heading-style-h1-2, .heading-style-h1-3,
+.heading-style-h2, .heading-style-h2-2,
+.heading-style-h3, .heading-style-h4, .heading-style-h5, .heading-style-h6,
+.banner-inner-heading, .h2-com-left, .h2-choose-left, .h2-path,
+.home-review-heading, .heading-path, .ready-text,
+.button, .button-7, .w-button,
+.text-size-regular, .text-size-regular-2, .text-size-small,
+.text-size-small-2, .text-size-medium, .text-size-medium-2,
+.text-size-large, .text-size-large-2, .text-size-tiny,
+p, h1, h2, h3, h4, h5, h6, span, a, li, button, input, textarea, select {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+}
+
+/* Type ramp — strict hierarchy, lighter weight, tighter tracking */
+.heading-style-h1, .heading-style-h1-2, .heading-style-h1-3,
+.banner-inner-heading, h1 {
+  font-weight: 500 !important;
+  letter-spacing: -0.032em !important;
+  line-height: 1.06 !important;
+}
+.heading-style-h2, .heading-style-h2-2,
+.h2-com-left, .h2-choose-left, .h2-path,
+.home-review-heading, .heading-path, .ready-text, h2 {
+  font-weight: 500 !important;
+  letter-spacing: -0.025em !important;
+  line-height: 1.1 !important;
+}
+.heading-style-h3, h3 {
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+}
+.heading-style-h4, h4 {
+  font-weight: 600 !important;
+  letter-spacing: -0.012em !important;
+}
+
+/* Body text — 16px minimum floor, friendlier line-height */
+body, p,
+.text-size-regular, .text-size-regular-2,
+.text-size-small, .text-size-small-2,
+.text-size-medium, .text-size-medium-2 {
+  line-height: 1.6 !important;
+}
+.text-size-tiny, .text-size-small, .text-size-small-2 {
+  font-size: 14px !important;
+}
+.text-size-regular, .text-size-regular-2 {
+  font-size: 16px !important;
+}
+
+/* --- Buttons: modern pill shape, no Webflow chrome --- */
+.button, .button-7, .button-5,
+.w-button:not(.is-secondary):not(.is-tertiary):not(.button-discord) {
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.005em !important;
+  padding: 14px 26px !important;
+  border: 0 !important;
+  transition: transform 200ms ease, background 200ms ease, box-shadow 200ms ease !important;
+}
+.button:hover, .button-7:hover, .button-5:hover,
+.w-button:not(.is-secondary):not(.is-tertiary):not(.button-discord):hover {
+  transform: translateY(-1px);
+}
+/* Secondary / outline buttons */
+.button.is-secondary, .w-button.is-secondary,
+.button-5.is-secondary {
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  padding: 14px 24px !important;
+}
+
+/* --- Hero & section breathing room --- */
+.padding-section-large,
+.padding-section-medium {
+  padding-top: 80px !important;
+  padding-bottom: 80px !important;
+}
+@media (max-width: 800px) {
+  .padding-section-large, .padding-section-medium {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+  }
+}
+
+/* Nav refinements — softer pill, cleaner shadow */
+.navbar.main, .nav_component {
+  font-family: 'Geist', sans-serif !important;
+}
+.nav_links {
+  font-weight: 500 !important;
+}
+
+/* --- Card softening — Webflow tends to use sharp corners + heavy shadows --- */
+.card, .pricing_card, .review-card, .blog-card,
+.option-foundation, .option-mastery {
+  border-radius: 16px !important;
+}
+
+/* --- Cleaner form inputs --- */
+input[type="text"], input[type="email"], input[type="tel"],
+textarea, select, .w-input, .w-select {
+  border-radius: 12px !important;
+  font-family: 'Geist', sans-serif !important;
+  font-size: 16px !important;
+  padding: 14px 16px !important;
+  transition: border-color 200ms ease, box-shadow 200ms ease !important;
+}
+
+/* --- Footer Newsletter form: now carries Name + Email + Subscribe.
+       The original single-pill wrapper made the two inputs look like one
+       continuous field. Stack vertically so each input is its own pill,
+       and give the wrapper a transparent background. --- */
+.nl_form-wrapper {
+  flex-direction: column !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  gap: 0.5rem !important;
+  padding: 0 !important;
+}
+.nl_form-wrapper .text-field-3 {
+  background-color: #f5f5f5 !important;
+  border-radius: 999px !important;
+  width: 100% !important;
+}
+.nl_form-wrapper .button {
+  width: 100% !important;
+}
+input[type="text"]:focus, input[type="email"]:focus,
+input[type="tel"]:focus, textarea:focus, select:focus,
+.w-input:focus, .w-select:focus {
+  outline: none !important;
+}
+
+/* --- Subtle blue-accent stylistic refinements (keeps Bill's brand blue alive) --- */
+/* The classic site already uses a brand blue — this just nudges hover states. */
+a:hover { transition: color 200ms ease; }
+
+/* --- Antialiased text site-wide --- */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =====================================================================
+   HAMBURGER MENU — clean rebuild
+   ---------------------------------------------------------------------
+   The original Webflow design overlays two SVGs (.icon-lines for ≡,
+   .icon-cross for ✕) inside the menu button, and uses IX2 to fade
+   between them on click. With IX2's reveal hooks removed, both render
+   simultaneously — looks like a chrysanthemum. Plus the slide-in
+   drawer (.nav_menu.top) was also IX2-driven so it stays in whatever
+   state it loaded in.
+
+   The replacement is a pure-CSS toggle driven by a single body class
+   (`bf-menu-open`) flipped by a tiny click handler in BaseLayout.
+   No IX2 dependency, identical visual result.
+   ===================================================================== */
+
+/* Default: drawer hidden, hamburger ≡ visible, ✕ hidden.
+   Site ships with three drawer variants — `.nav_menu`, `.nav_menu.top`,
+   `.nav_menu.top-margin` — so target all three for consistency. */
+.nav_menu,
+.nav_menu.top,
+.nav_menu.top-margin {
+  display: none !important;
+}
+.icon-cross { display: none !important; }
+.icon-lines { display: flex !important; }
+
+/* Menu open: drawer slides over the viewport, ✕ icon visible, page
+   scroll locked behind. */
+body.bf-menu-open {
+  overflow: hidden;
+}
+body.bf-menu-open .nav_menu,
+body.bf-menu-open .nav_menu.top,
+body.bf-menu-open .nav_menu.top-margin {
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  background: #ffffff !important;
+  z-index: 900 !important;
+  overflow-y: auto !important;
+  animation: bf-menu-slide-in 220ms ease-out;
+}
+body.bf-menu-open .icon-cross { display: flex !important; }
+body.bf-menu-open .icon-lines { display: none !important; }
+
+@keyframes bf-menu-slide-in {
+  from { transform: translateY(-16px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Make sure the icon wrappers stay above the drawer so the ✕ stays
+   clickable while the menu is open. */
+.nav_menu-buttom,
+.nav_menu-icon-image-wrapper,
+.nav_menu-icon-wrapper {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Pages on a dark background (masterclass, community, webinar) ship
+   the menu button with `border-color-alternate`, `background-color-
+   white`, `text-color-secondary` and SVGs whose strokes/fills are
+   pre-set for the dark-page palette. The moment our drawer paints a
+   white background over the page, those styles collide and the close
+   chrome disappears. Force a single dark variant on every modifier. */
+body.bf-menu-open .nav_menu-buttom,
+body.bf-menu-open .nav_menu-buttom.border-color-alternate {
+  border-color: #000 !important;
+  color: #000 !important;
+}
+/* The "Menu" label uses `text-color-secondary` on dark-bg pages — that
+   class wins over a parent `color` rule, so target the descendant. */
+body.bf-menu-open .nav_menu-buttom .text-size-tiny,
+body.bf-menu-open .nav_menu-buttom .text-color-secondary,
+body.bf-menu-open .nav_menu-buttom .text-color-alternate {
+  color: #000 !important;
+}
+body.bf-menu-open .nav_menu-icon-image-wrapper,
+body.bf-menu-open .nav_menu-icon-image-wrapper.background-color-white,
+body.bf-menu-open .nav_menu-icon-wrapper,
+body.bf-menu-open .nav_menu-icon-wrapper.background-color-white {
+  background-color: #000 !important;
+}
+/* Icons inside the wrappers use either `fill` (homepage) or `stroke`
+   (dark-bg pages). Force both to white so the ✕ / ≡ shows against
+   the now-black wrapper. */
+body.bf-menu-open .icon-cross svg path,
+body.bf-menu-open .icon-lines svg path {
+  fill: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Drop the current-page highlight inside the drawer — Webflow paints
+   `.nav_links.w--current` blue and shrinks it (desktop: 1.5rem vs the
+   sibling 3.5rem; mobile ≤479px: 2rem). Mirror the non-current sizing
+   explicitly per breakpoint instead of `inherit`, which would cascade
+   all the way to <body> and render the link tiny. */
+.nav_menu-links .nav_links.w--current,
+.nav_menu-links .nav_links.mobile-hmburger-menu.w--current {
+  color: inherit !important;
+  font-size: 3.5rem !important;
+}
+@media (max-width: 767px) {
+  .nav_menu-links .nav_links.w--current,
+  .nav_menu-links .nav_links.mobile-hmburger-menu.w--current {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* --- Masterclass pricing grid: now 2 cards (Learn on Demand removed),
+       so collapse from 3 columns to 2 and centre as a pair. --- */
+.mpricing_grid {
+  grid-template-columns: 1fr 1fr !important;
+  max-width: 880px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+@media (max-width: 800px) {
+  .mpricing_grid {
+    grid-template-columns: 1fr !important;
+    max-width: 460px;
+  }
+}
+
+/* --- Mobile: strip the boxy borders the design adds around several
+       sections. At ≤767/479px Webflow re-enables a full 4-sided border
+       on each of these wrappers, which reads as a heavy outline around
+       the content. Let the content flow instead. --- */
+@media (max-width: 767px) {
+  .mlearn_component-2,
+  .mlearn_component-2.mlearn-border,
+  .mlearn_component,
+  .mlearn_component.mlearn-border,
+  .mstrategy_component-2,
+  .mstrategy_component-2.easiest-border,
+  .howcanhelp,
+  .howcanhelp.we-help-box,
+  .community_component,
+  .community_component.member-gettxt,
+  .community_component.community-border,
+  .youtube_component,
+  .youtube_component.youtube-border,
+  .mcta_component,
+  .mcta_component.competitve-border {
+    border: 0 !important;
+    padding-left: 0 !important;
+  }
+}
+
+/* --- Hide the cream/beige accent strip behind the "Hi, I'm Bill" section
+       on mobile. Webflow positions `.about_bg` absolutely and at ≤767px
+       it grows to cover the lower half of the section in cream, which
+       reads as a stray colored band on phones. --- */
+@media (max-width: 767px) {
+  .about_bg { display: none !important; }
+}
+
+/* --- /webinar hero ships with `padding-section-large no-top-padding` —
+       on desktop the whole hero pins to the top of the page with zero
+       gap below the nav. Restore breathing room. --- */
+.section_webinar .padding-section-large.no-top-padding {
+  padding-top: 5rem !important;
+}
+@media (max-width: 767px) {
+  /* mobile already has m-padding-up (10rem) — keep that path intact */
+  .section_webinar .padding-section-large.no-top-padding.m-padding-up {
+    padding-top: 4rem !important;
+  }
+}
+
+/* --- /webinar bullet headings (.bh) render in brand blue on a dark
+       background — readable but feels heavy and competes with the CTA
+       buttons. Promote them to white so the bullets read as content
+       and the blue stays exclusive to actions. --- */
+.heading-style-h4.bh,
+.bh {
+  color: #fff !important;
+}
+
+/* --- Homepage: cards row → "Your Path to Proficient Trading" runs into
+       a big empty band because `.path-section` only zeros padding-top at
+       ≤767px; on desktop the inner div inherits the full 5rem from
+       `.padding-section-large`. Tighten it. --- */
+.padding-section-large.path-section {
+  padding-top: 1rem !important;
+}
+
+/* --- "Your Ultimate Gateway to Mastering Options Trading" needs to:
+       (a) sit with its own breathing room above (the section ships with
+           no top padding token, so it crashes into the Discord block),
+       (b) centre on mobile (the heading + paragraph are left-aligned at
+           ≤479px via .ultimate-h2text + .mdevices_component overrides). */
+.section_masterclass-devices { padding-top: 5rem; }
+@media (max-width: 767px) {
+  .section_masterclass-devices { padding-top: 3rem; }
+  .mdevices_component { text-align: center !important; }
+  .master-h2.ultimate-h2text { text-align: center !important; }
+}
+
+/* --- "It's all inside of the Masterclass!" headline is wrapped in
+       `<div class="text-align-center">`, but `.heading-style-h3` ships
+       with `text-align: left` at top-level, which wins for the H3 block.
+       Re-inherit centre when the heading sits inside a centred wrapper. */
+.text-align-center .heading-style-h3,
+.mlearn_points .heading-style-h3 {
+  text-align: center !important;
+}
+
+/* --- Restore "6 Live Training Sessions" image. The Webflow CSS points at
+       …%26… (URL-encoded `&`) but the file on disk was renamed to `-and-`,
+       leaving a broken background. Repoint to the actual filename. --- */
+.m6sessions_image-wrapper {
+  background-image: url("/assets/664a5b263659c7265be280ad/68553a3ca2670a109fab8202_Learn-from-Real-Time-Trade-Alerts-and-AI-Signals.png") !important;
+}
+
+/* =====================================================================
+   ANIMATION POLISH — CSS half
+   The real teeth of this fix is the inline script in BaseLayout that
+   strips the IX2 scroll-reveal initial state (opacity:0 + translate
+   offsets) from inline `style` attributes before IX2 runs. This CSS
+   is the belt-and-braces fallback for elements whose IX2 mid-animation
+   inline style still happens to match the substring selector below.
+   IMPORTANT: do NOT include `[data-w-id]` here — the hamburger menu
+   icon (`.nav_menu-line-up` / `.nav_menu-line-down`) is a data-w-id
+   element that animates via transform. Forcing transition-delay: 0s
+   on every data-w-id node freezes its rotate animation.
+   ===================================================================== */
+[style*="translate3d(0, 20px"],
+[style*="translate3d(0, -20px"],
+[style*="opacity:0"],
+[style*="opacity: 0"] {
+  opacity: 1 !important;
+}

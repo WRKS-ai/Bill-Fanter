@@ -1,0 +1,16 @@
+---
+// Classic homepage — the pre-2026-refresh design, preserved as a rollback checkpoint.
+// Reachable at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+---
+<BaseLayout
+  title={`Master Stock Options Trading | Bill Fanter`}
+  description={`Join Bill Fanter's Masterclass to master stock options trading. Discover powerful strategies, deepen your market knowledge, and enhance your trading skills with 35+ years of investment expertise. Subscribe for weekly stock watchlists and join our exclusive trading community.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664a5b263659c7265be280e3`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>

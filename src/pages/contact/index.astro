@@ -1,0 +1,18 @@
+---
+// Production /contact — classic markup with modernization layer.
+// New UI preview at /2026/contact, original at /classic.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import bodyHtml from './_body.html?raw';
+import extraHeadHtml from './_head.html?raw';
+import modernizationCSS from '../../styles/modernization.css?raw';
+---
+<BaseLayout
+  title={`Contact | Bill Fanter`}
+  description={`Get in touch with Bill Fanter. Real human replies — no chatbots, no templates.`}
+  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
+  wfPageId={`664c15e452be1664d32dd28b`}
+  extraHeadHtml={extraHeadHtml}
+>
+  <style set:html={modernizationCSS}></style>
+  <Fragment set:html={bodyHtml} />
+</BaseLayout>
