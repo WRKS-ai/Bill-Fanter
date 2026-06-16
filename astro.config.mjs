@@ -18,7 +18,8 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/watchlist-confirmed') &&
         !page.includes('/2026') &&
-        !page.includes('/classic'),
+        !page.includes('/classic') &&
+        !page.includes('/sandbox'),
     }),
   ],
 

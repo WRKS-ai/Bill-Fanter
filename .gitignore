@@ -8,3 +8,6 @@ Thumbs.db
 # Astro
 dist/
 .astro/
+
+# Local agent state
+.claude/

@@ -1,6 +1,13 @@
-import { useLayoutEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
-// use your own icon import if react-icons is not available
+'use client';
+// CardNav — adapted from React Bits (https://reactbits.dev/components/card-nav).
+// Behavior tuned for Bill Fanter:
+//  • At the top of the page it fills a wide header area (left-aligned, flush).
+//  • Once you scroll it pins to a centered, rounded pill (wider than the RB default).
+//  • Hovering anywhere on the bar expands the WHOLE block downward to reveal all
+//    cards at once (the original "card nav" concept), not a per-item dropdown.
+// CSS-driven (no GSAP) so the hover expand stays smooth alongside the hero's
+// WebGL/canvas animations.
+import { useState } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
 
@@ -9,137 +16,36 @@ const CardNav = ({
   logoAlt = 'Logo',
   items,
   className = '',
-  ease = 'power3.out',
   baseColor = '#fff',
   menuColor,
   buttonBgColor,
-  buttonTextColor
+  buttonTextColor,
+  buttonLabel = 'Get Started',
+  buttonHref,
+  loginLabel,
+  loginHref
 }) => {
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const navRef = useRef(null);
-  const cardsRef = useRef([]);
-  const tlRef = useRef(null);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const navItems = (items || []).slice(0, 3);
 
-  const calculateHeight = () => {
-    const navEl = navRef.current;
-    if (!navEl) return 260;
+  // No scroll animation — the nav stays put as the top header (see CardNav.css).
 
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile) {
-      const contentEl = navEl.querySelector('.card-nav-content');
-      if (contentEl) {
-        const wasVisible = contentEl.style.visibility;
-        const wasPointerEvents = contentEl.style.pointerEvents;
-        const wasPosition = contentEl.style.position;
-        const wasHeight = contentEl.style.height;
-
-        contentEl.style.visibility = 'visible';
-        contentEl.style.pointerEvents = 'auto';
-        contentEl.style.position = 'static';
-        contentEl.style.height = 'auto';
-
-        contentEl.offsetHeight;
-
-        const topBar = 60;
-        const padding = 16;
-        const contentHeight = contentEl.scrollHeight;
-
-        contentEl.style.visibility = wasVisible;
-        contentEl.style.pointerEvents = wasPointerEvents;
-        contentEl.style.position = wasPosition;
-        contentEl.style.height = wasHeight;
-
-        return topBar + contentHeight + padding;
-      }
-    }
-    return 260;
-  };
-
-  const createTimeline = () => {
-    const navEl = navRef.current;
-    if (!navEl) return null;
-
-    gsap.set(navEl, { height: 60, overflow: 'hidden' });
-    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
-
-    const tl = gsap.timeline({ paused: true });
-
-    tl.to(navEl, {
-      height: calculateHeight,
-      duration: 0.4,
-      ease
-    });
-
-    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, '-=0.1');
-
-    return tl;
-  };
-
-  useLayoutEffect(() => {
-    const tl = createTimeline();
-    tlRef.current = tl;
-
-    return () => {
-      tl?.kill();
-      tlRef.current = null;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ease, items]);
-
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      if (!tlRef.current) return;
-
-      if (isExpanded) {
-        const newHeight = calculateHeight();
-        gsap.set(navRef.current, { height: newHeight });
-
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          newTl.progress(1);
-          tlRef.current = newTl;
-        }
-      } else {
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          tlRef.current = newTl;
-        }
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded]);
-
-  const toggleMenu = () => {
-    const tl = tlRef.current;
-    if (!tl) return;
-    if (!isExpanded) {
-      setIsHamburgerOpen(true);
-      setIsExpanded(true);
-      tl.play(0);
-    } else {
-      setIsHamburgerOpen(false);
-      tl.eventCallback('onReverseComplete', () => setIsExpanded(false));
-      tl.reverse();
-    }
-  };
-
-  const setCardRef = i => el => {
-    if (el) cardsRef.current[i] = el;
+  // Desktop expand is pure CSS (:hover) — see CardNav.css — so it can't be
+  // starved by the hero's WebGL/canvas loops. React state only drives the
+  // mobile hamburger toggle.
+  const toggleHamburger = () => {
+    setIsHamburgerOpen(o => !o);
+    setIsExpanded(o => !o);
   };
 
   return (
     <div className={`card-nav-container ${className}`}>
-      <nav ref={navRef} className={`card-nav ${isExpanded ? 'open' : ''}`} style={{ backgroundColor: baseColor }}>
+      <nav className={`card-nav ${isExpanded ? 'open' : ''}`} style={{ backgroundColor: baseColor }}>
         <div className="card-nav-top">
           <div
             className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''}`}
-            onClick={toggleMenu}
+            onClick={toggleHamburger}
             role="button"
             aria-label={isExpanded ? 'Close menu' : 'Open menu'}
             tabIndex={0}
@@ -153,22 +59,39 @@ const CardNav = ({
             <img src={logo} alt={logoAlt} className="logo" />
           </div>
 
-          <button
-            type="button"
-            className="card-nav-cta-button"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-          >
-            Get Started
-          </button>
+          {/* Visible top-level labels. Hovering the bar expands the whole block. */}
+          <div className="card-nav-menu" style={{ color: menuColor || '#000' }}>
+            {navItems.map((item, idx) => (
+              <span key={`top-${item.label}-${idx}`} className="card-nav-menu-item">
+                {item.label}
+                <span className="card-nav-menu-caret" aria-hidden="true" />
+              </span>
+            ))}
+          </div>
+
+          <div className="card-nav-actions">
+            {loginLabel && (
+              <a href={loginHref || '#'} className="card-nav-login" style={{ color: menuColor || '#000' }}>
+                {loginLabel}
+              </a>
+            )}
+            <a
+              href={buttonHref || '#'}
+              className="card-nav-cta-button"
+              style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+            >
+              {buttonLabel}
+            </a>
+          </div>
         </div>
 
+        {/* The full block: all cards revealed together on expand. */}
         <div className="card-nav-content" aria-hidden={!isExpanded}>
-          {(items || []).slice(0, 3).map((item, idx) => (
+          {navItems.map((item, idx) => (
             <div
               key={`${item.label}-${idx}`}
               className="nav-card"
-              ref={setCardRef(idx)}
-              style={{ backgroundColor: item.bgColor, color: item.textColor }}
+              style={{ backgroundColor: item.bgColor, color: item.textColor, transitionDelay: `${idx * 0.05}s` }}
             >
               <div className="nav-card-label">{item.label}</div>
               <div className="nav-card-links">

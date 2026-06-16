@@ -283,6 +283,15 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
       })();
     </script>
     <script>
+      /* React component mounts. Imports are STATIC so Vite's React plugin
+         can inject the Fast-Refresh preamble at build/transform time —
+         dynamic import('…jsx') from inline scripts breaks the preamble
+         detection and throws "@vitejs/plugin-react can't detect preamble". */
+      import * as React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import Grainient from '../components/Grainient/Grainient.jsx';
+      import DotGrid from '../components/DotGrid/DotGrid.jsx';
+
       const waitForDimensions = (el) =>
         new Promise((resolve) => {
           const check = () => {
@@ -292,45 +301,67 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
           };
           check();
         });
+
       const mountAllGrainients = async () => {
         const targets = document.querySelectorAll('[data-grainient]');
         if (!targets.length) return;
-        try {
-          const [React, ReactDOM, GrainientMod] = await Promise.all([
-            import('react'),
-            import('react-dom/client'),
-            import('../components/Grainient/Grainient.jsx'),
-          ]);
-          const Grainient = GrainientMod.default;
-          const createRoot = ReactDOM.createRoot;
-          for (const el of targets) {
-            if (el.dataset.gMounted === '1') continue;
-            el.dataset.gMounted = '1';
-            await waitForDimensions(el);
-            const props = {
-              color1: el.dataset.color1 || '#FF8308',
-              color2: el.dataset.color2 || '#EF4444',
-              color3: el.dataset.color3 || '#6B3BD5',
-              timeSpeed: 0.65,
-              warpStrength: 2.4,
-              warpFrequency: 1.1,
-              warpAmplitude: 130,
-              blendSoftness: 0.38,
-              noiseScale: 1.6,
-              grainAmount: 0.12,
-              contrast: 1.28,
-              saturation: 1.18,
-              zoom: 0.75,
-            };
-            try {
-              const root = createRoot(el);
-              root.render(React.createElement(Grainient, props));
-            } catch (e) { console.error('[bf-grainient] render error', e); }
-          }
-        } catch (e) { console.error('[bf-grainient] import error', e); }
+        for (const el of targets) {
+          if (el.dataset.gMounted === '1') continue;
+          el.dataset.gMounted = '1';
+          await waitForDimensions(el);
+          const props = {
+            color1: el.dataset.color1 || '#FF8308',
+            color2: el.dataset.color2 || '#EF4444',
+            color3: el.dataset.color3 || '#6B3BD5',
+            timeSpeed: 0.65,
+            warpStrength: 2.4,
+            warpFrequency: 1.1,
+            warpAmplitude: 130,
+            blendSoftness: 0.38,
+            noiseScale: 1.6,
+            grainAmount: 0.12,
+            contrast: 1.28,
+            saturation: 1.18,
+            zoom: 0.75,
+          };
+          try {
+            createRoot(el).render(React.createElement(Grainient, props));
+          } catch (e) { console.error('[bf-grainient] render error', e); }
+        }
       };
-      if (document.readyState === 'complete') mountAllGrainients();
-      else window.addEventListener('load', mountAllGrainients);
+
+      const mountAllDotGrids = async () => {
+        const targets = document.querySelectorAll('[data-dotgrid]');
+        if (!targets.length) return;
+        for (const el of targets) {
+          if (el.dataset.dgMounted === '1') continue;
+          el.dataset.dgMounted = '1';
+          await waitForDimensions(el);
+          const num = (k, d) => {
+            const v = el.dataset[k];
+            return v != null && v !== '' ? Number(v) : d;
+          };
+          const str = (k, d) => el.dataset[k] || d;
+          const props = {
+            dotSize: num('dotSize', 4),
+            gap: num('gap', 18),
+            baseColor: str('baseColor', '#2a3441'),
+            activeColor: str('activeColor', '#75B5FF'),
+            proximity: num('proximity', 140),
+            shockRadius: num('shockRadius', 220),
+            shockStrength: num('shockStrength', 5),
+            resistance: num('resistance', 750),
+            returnDuration: num('returnDuration', 1.5),
+          };
+          try {
+            createRoot(el).render(React.createElement(DotGrid, props));
+          } catch (e) { console.error('[bf-dotgrid] render error', e); }
+        }
+      };
+
+      const mountAll = () => { mountAllGrainients(); mountAllDotGrids(); };
+      if (document.readyState === 'complete') mountAll();
+      else window.addEventListener('load', mountAll);
     </script>
     <script is:inline>
       /* Subtle parallax for spotlight backgrounds. Sets --bf-parallax-y on

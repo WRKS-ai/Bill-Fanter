@@ -154,6 +154,41 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* --- Sandbox: align the bento photo + brand tile to the same left edge
+       for the legacy 3-col variant. The .is-split-form variant ships its
+       own 2fr/1fr layout (wide photo left, narrow brand tile right) and
+       must NOT be collapsed by this override. Scoped with :not so both
+       variants render correctly. */
+.bf-page .bf-watchlist-v2:not(.is-split-form) .bf-watchlist-v2__bento {
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+.bf-page .bf-watchlist-v2:not(.is-split-form) .bf-watchlist-v2__bento-tile {
+  aspect-ratio: auto !important;
+}
+
+/* --- Sandbox hero: bigger vertical padding. The default
+       .padding-section-large was 80px top/bottom which made the dark
+       hero feel cramped relative to the H1 + body block. Bumped to
+       140px on desktop, scaled down on smaller breakpoints so the
+       hero still feels roomy without dominating mobile. */
+.section_home-hero .padding-section-large {
+  padding-top: 140px !important;
+  padding-bottom: 140px !important;
+}
+@media (max-width: 991px) {
+  .section_home-hero .padding-section-large {
+    padding-top: 110px !important;
+    padding-bottom: 110px !important;
+  }
+}
+@media (max-width: 767px) {
+  .section_home-hero .padding-section-large {
+    padding-top: 88px !important;
+    padding-bottom: 88px !important;
+  }
+}
+
 /* =====================================================================
    HAMBURGER MENU — clean rebuild
    ---------------------------------------------------------------------

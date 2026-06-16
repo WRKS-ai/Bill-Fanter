@@ -1843,6 +1843,101 @@
   background: rgba(10, 10, 10, 0.04);
 }
 
+/* =====================================================================
+   2026 CTA SYSTEM — Primary / Secondary / Tertiary
+   ---------------------------------------------------------------------
+   Three tiers of emphasis, each with an .is-on-dark variant so the same
+   class set works against both light content sections and the dark hero.
+   Primary  = solid filled pill, highest emphasis.
+   Secondary = outlined pill, medium emphasis.
+   Tertiary = text + arrow link, low emphasis (no chrome).
+   ===================================================================== */
+
+/* --- Primary (light bg, dark fill) ---------------------------------- */
+.bf-page .bf-btn--primary {
+  background: #0a0a0a;
+  color: #ffffff;
+  border: 1px solid #0a0a0a;
+  font-weight: 600;
+}
+.bf-page .bf-btn--primary:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(10, 10, 10, 0.22);
+}
+.bf-page .bf-btn--primary.is-on-dark {
+  background: #ffffff;
+  color: #0a0a0a;
+  border-color: #ffffff;
+}
+.bf-page .bf-btn--primary.is-on-dark:hover {
+  background: #f5f5f5;
+  box-shadow: 0 8px 22px rgba(255, 255, 255, 0.18);
+}
+
+/* --- Secondary (outline) -------------------------------------------- */
+.bf-page .bf-btn--secondary {
+  background: transparent;
+  color: #0a0a0a;
+  border: 1px solid rgba(10, 10, 10, 0.22);
+  font-weight: 600;
+}
+.bf-page .bf-btn--secondary:hover {
+  background: rgba(10, 10, 10, 0.05);
+  border-color: rgba(10, 10, 10, 0.4);
+  transform: translateY(-1px);
+}
+.bf-page .bf-btn--secondary.is-on-dark {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.32);
+}
+.bf-page .bf-btn--secondary.is-on-dark:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* --- Tertiary (text + arrow) ---------------------------------------- */
+.bf-page .bf-btn--tertiary {
+  background: transparent;
+  color: #0a0a0a;
+  border: 0;
+  padding: 6px 0;
+  border-radius: 0;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  cursor: pointer;
+}
+.bf-page .bf-btn--tertiary::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 26px; /* leave the arrow free of the underline */
+  bottom: 2px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
+  transform-origin: left;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.bf-page .bf-btn--tertiary:hover {
+  transform: none;
+  box-shadow: none;
+}
+.bf-page .bf-btn--tertiary:hover::after {
+  opacity: 1;
+}
+.bf-page .bf-btn--tertiary:hover .bf-arrow {
+  transform: translateX(4px);
+}
+.bf-page .bf-btn--tertiary.is-on-dark {
+  color: #ffffff;
+}
+
 /* ===== Path-card numeric variant ===== */
 .bf-page .bf-path-card__num {
   font-family: 'Geist Mono', ui-monospace, monospace;
