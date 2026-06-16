@@ -390,6 +390,18 @@ const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
     .padding-global:has(.bf-closing) .container-large {
       max-width: none !important;
     }
+
+    /* The ported YouTube CTA + About-Bill sections went full-bleed because the
+       sandbox forces .bf-page .bf-container to full width. Re-constrain just
+       these two to the content rail (1224, centered) like every other section. */
+    .bf-container:has(> .bf-darkcta),
+    .bf-container:has(> .bf-about-grid) {
+      max-width: 1224px !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
     .section_reviews .home-review-heading {
       font-family: 'Geist', sans-serif !important;
       letter-spacing: -0.02em !important;
