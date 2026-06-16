@@ -4,9 +4,12 @@
 // /v2 so /sandbox stays as the reference to diff against; swapped to / when
 // it's complete and QA'd. noindex until then.
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReactReady from '../../components/ReactReady.jsx';
 import Footer from '../../components/Footer.astro';
 import HelpGrid from '../../components/sections/HelpGrid.astro';
+import YoutubeCta from '../../components/sections/YoutubeCta.astro';
 import AboutBill from '../../components/sections/AboutBill.astro';
+import Closing from '../../components/sections/Closing.astro';
 
 const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
 ---
@@ -17,9 +20,12 @@ const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
   wfPageId="664a5b263659c7265be280e3"
   extraHeadHtml={noindexTag}
 >
+  <ReactReady client:only="react" />
   <main class="bf-page">
     <HelpGrid />
+    <YoutubeCta />
     <AboutBill />
+    <Closing />
   </main>
   <Footer />
 </BaseLayout>

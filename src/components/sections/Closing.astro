@@ -1,0 +1,39 @@
+---
+// Closing dark block — testimonial + Book-a-Call grainient card. Clean Astro
+// (ported from /2026 bf-closing). Full-bleed dark section; grainient fill is
+// mounted by BaseLayout's global [data-grainient] script.
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+---
+<section class="bf-closing">
+  <div class="bf-closing__intro">
+    <h2 class="bf-closing__h2">Transforming potential into performance</h2>
+    <p class="bf-closing__lead">35+ years of investment expertise, distilled into a system anyone serious about their financial future can follow.</p>
+    <div class="bf-closing__rating">
+      <span style="font-weight:600;color:#fff">Trusted</span>
+      <span class="bf-closing__rating-stars">
+        {Array.from({ length: 5 }).map(() => (
+          <svg class="bf-star" viewBox="0 0 24 24" set:html={star} />
+        ))}
+      </span>
+      <span>500+ Students</span>
+    </div>
+  </div>
+
+  <div class="bf-closing__grid">
+    <div class="bf-closing__tile bf-closing__tile--quote">
+      <p class="bf-closing__tile-quote-text">&ldquo;Bill's Masterclass had everything I needed to start trading options confidently. The depth of insight is simply remarkable.&rdquo;</p>
+      <div class="bf-closing__tile-author">
+        <span class="bf-closing__tile-author-avatar"><img src="/assets/664a5b263659c7265be280ad/679c51ea7d9046f26ec04264_rob-stalkie.png" alt="Rob Stalkie" /></span>
+        <div>
+          <div class="bf-closing__tile-author-name">Rob Stalkie</div>
+          <div class="bf-closing__tile-author-title">Account Manager</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bf-closing__tile bf-closing__tile--cta">
+      <div data-grainient="closing" data-color1="#1d4ed8" data-color2="#3b82f6" data-color3="#60a5fa" class="bf-grainient-fill"></div>
+      <a class="bf-closing__cta-btn" href="/contact" style="position:relative;z-index:2">Book a Call</a>
+    </div>
+  </div>
+</section>
