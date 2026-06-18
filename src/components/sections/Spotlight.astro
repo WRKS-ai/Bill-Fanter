@@ -8,6 +8,8 @@
 // to action (e.g. the masterclass page swaps "Watch webinar" for "Join the
 // masterclass"). Defaults reproduce the homepage webinar CTA.
 const {
+  heading = 'Learn options trading in my free demo webinar',
+  lead = 'Whether you are new to options or sharpening your skills, this free webinar shows how the options market works and how to place your first trade with a plan.',
   ctaLabel = 'Watch webinar',
   ctaHref = '/webinar',
   ctaIcon = true,
@@ -18,8 +20,8 @@ const {
     <div data-griddistortion data-image="/assets/sandbox/webinar-distortion.png?v=2" class="bf-spotlight__distortion"></div>
     <div class="bf-spotlight__overlay"></div>
     <div class="bf-spotlight__content bf-spotlight__content--simple">
-      <h2 class="bf-spotlight__h2">Learn options trading in my free demo webinar</h2>
-      <p class="bf-spotlight__lead">Whether you are new to options or sharpening your skills, this free webinar shows how the options market works and how to place your first trade with a plan.</p>
+      <h2 class="bf-spotlight__h2">{heading}</h2>
+      <p class="bf-spotlight__lead">{lead}</p>
       <a class="bf-spotlight__primary-btn" href={ctaHref}>
         {ctaIcon && <span class="bf-spotlight__video-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg></span>}
         {ctaLabel}

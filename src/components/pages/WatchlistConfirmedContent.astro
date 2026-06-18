@@ -48,7 +48,8 @@ const arrow = '<svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" 
     background: #0a0a0a;
     color: #fff;
     text-align: center;
-    padding: 150px 0 84px;
+    /* main.bf-page adds 72px nav clearance; even 100px top + bottom on top of that. */
+    padding: 100px 0;
   }
   .bf-confirm__eyebrow {
     color: #75B5FF;
@@ -72,5 +73,5 @@ const arrow = '<svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" 
     justify-content: center;
     flex-wrap: wrap;
   }
-  @media (max-width: 767px) { .bf-confirm { padding: 120px 0 56px; } }
+  @media (max-width: 767px) { .bf-confirm { padding: 52px 0; } }
 </style>

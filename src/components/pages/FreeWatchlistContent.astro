@@ -214,11 +214,11 @@ const whyJoin = [
   .bf-fw-inside-media img {
     filter: drop-shadow(0 18px 40px rgba(20, 40, 80, 0.22));
   }
-  /* The cutout PNG has a chunk of empty (transparent) space above the device, so
-     on mobile it left a big gap below the heading. Pull the image up to crop that
-     dead space (transparent, so it just tightens the gap). Tunable. */
+  /* The cutout PNG has empty (transparent) space above AND below the device, so
+     on mobile it left big gaps around it. Pull the image in on both ends to crop
+     that dead space (transparent, so it just tightens the spacing). Tunable. */
   @media (max-width: 767px) {
-    .bf-fw-inside-section .bf-fw-inside-media img { margin-top: -56px; }
+    .bf-fw-inside-section .bf-fw-inside-media img { margin-top: -56px; margin-bottom: -56px; }
   }
 
   /* ---------- Dark dot-grid hero (mirrors the homepage Hero stage) ----------

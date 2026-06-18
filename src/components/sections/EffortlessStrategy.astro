@@ -218,7 +218,9 @@ const {
        gap the bento cards use on mobile, so the spacing reads consistent. */
     .es-split { grid-template-columns: 1fr; gap: 16px; }
     .es-copy { max-width: none; padding-right: 0; }
-    .es-media { height: auto; aspect-ratio: 16 / 11; max-height: 460px; }
+    /* Stacked: photo spans the full column (equal-width block with the copy
+       above it), instead of a narrower 560px centered crop. */
+    .es-media { height: auto; aspect-ratio: 16 / 10; max-height: 460px; max-width: none; }
     .es-features { grid-template-columns: 1fr; gap: 20px; margin-top: 56px; padding-top: 40px; }
     .es-features--4 { grid-template-columns: repeat(2, 1fr); }
   }

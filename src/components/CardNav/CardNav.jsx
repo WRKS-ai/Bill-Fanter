@@ -141,11 +141,13 @@ const CardNav = ({
                   {lnk.label}
                 </a>
               ))}
+              {/* Login is the final link in the last group (Company) on mobile,
+                  mirroring how the footer nav lists it. */}
+              {loginLabel && idx === navItems.length - 1 && (
+                <a className="card-nav-mobile-link card-nav-mobile-login" href={loginHref || '#'} target="_blank" rel="noopener">{loginLabel}</a>
+              )}
             </div>
           ))}
-          {loginLabel && (
-            <a className="card-nav-mobile-link card-nav-mobile-login" href={loginHref || '#'} target="_blank" rel="noopener">{loginLabel}</a>
-          )}
           <a className="card-nav-mobile-cta" href={buttonHref || '#'}>{buttonLabel}</a>
         </div>
       </nav>

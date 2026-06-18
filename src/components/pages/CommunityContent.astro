@@ -118,6 +118,17 @@ const faqs = [
 // Whop checkout for the direct "Join the Community Now" button (production).
 const joinUrl = 'https://whop.com/checkout/1ddAafJSDTQajCsTPH-nNmX-Fcbn-qisW-UgMERKflbcdf/';
 const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+
+// Decorative ticker chips (two rows, opposite directions) overlaid on the top
+// third of the middle "Connect with Bill" square — same marquee as /free-watchlist.
+const tickerA = [
+  ['AAPL', '+1.2%', 'up'], ['NVDA', '+2.4%', 'up'], ['SPY', '+0.4%', 'up'], ['TSLA', '-0.8%', 'down'],
+  ['QQQ', '+0.6%', 'up'], ['AMD', '+1.9%', 'up'], ['MSFT', '+0.3%', 'up'], ['META', '-0.5%', 'down'],
+];
+const tickerB = [
+  ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
+  ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
+];
 ---
 {/* =========================================================================
     HERO — kept exactly as-is.
@@ -132,7 +143,6 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
       <p class="bf-lead bf-hero__lead">Get live trade alerts, AI-built signals, and daily mentorship from Bill Fanter, a former banker with 35+ years in the markets. Trade alongside 1,000+ members who share setups, manage risk, and sharpen their options trading every day.</p>
       <div class="bf-hero__cta">
         <a class="bf-btn bf-btn--primary is-on-dark" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal>Join the community now</a>
-        <a class="bf-btn bf-btn--secondary is-on-dark" href="#pricing">See pricing</a>
       </div>
       <div class="bf-hero__trust">
         <span class="bf-hero__trust-source">Rated by</span>
@@ -262,9 +272,25 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
           <h3 class="bf-h3 bf-howit__title">Connect with Bill and the community</h3>
           <p class="bf-body bf-howit__body">Get instant Discord access. Ask questions, share ideas, and trade alongside 1,000+ serious traders.</p>
         </div>
-        <div class="bf-howit__media">
+        <div class="bf-howit__media bf-howit__media--ticker">
           <div class="bf-grainient-mount" data-grainient="howit-2" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
           <img src="/assets/664a5b263659c7265be280ad/68554a3a7298b4672c32b45a_Connect-with-Bill-and-a-Thriving-Community-(2).png" alt="Connect with Bill and a Thriving Community" loading="lazy" />
+          <div class="fw-ticker" aria-hidden="true">
+            <div class="fw-ticker__row">
+              <div class="fw-ticker__track fw-ticker__track--ltr">
+                {[...tickerA, ...tickerA].map(([sym, chg, dir]) => (
+                  <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                ))}
+              </div>
+            </div>
+            <div class="fw-ticker__row">
+              <div class="fw-ticker__track fw-ticker__track--rtl">
+                {[...tickerB, ...tickerB].map(([sym, chg, dir]) => (
+                  <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="bf-howit__step">
@@ -387,8 +413,9 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
     background: #0a0a0a;
     color: #fff;
     isolation: isolate;
-    padding-top: 100px;
-    padding-bottom: 100px;
+    /* Match the /free-watchlist dot-grid hero: even 150px top + bottom. */
+    padding-top: 150px;
+    padding-bottom: 150px;
   }
   /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
   @media (max-width: 767px) {
@@ -462,7 +489,7 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
     padding: 0 16px;
     will-change: transform;
     /* Each set is rendered twice; translateX(-50%) = exactly one set → seamless. */
-    animation: bf-comm-marq-x 20s linear infinite;
+    animation: bf-comm-marq-x 12s linear infinite;
   }
   @keyframes bf-comm-marq-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   .bf-comm-marquee__shot {
@@ -781,6 +808,54 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
   .bf-section .bf-howit .bf-howit__step:nth-child(2) .bf-howit__media img {
     width: 112%;
   }
+  /* Ticker marquee overlaid on the TOP THIRD of the middle "Connect with Bill"
+     square — two rows scrolling opposite ways (same chips as /free-watchlist). */
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 34%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__row { display: flex; overflow: hidden; }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__track { display: inline-flex; flex: 0 0 auto; white-space: nowrap; will-change: transform; }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__track--ltr { animation: comm-ticker-ltr 26s linear infinite; }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__track--rtl { animation: comm-ticker-rtl 26s linear infinite; }
+  @keyframes comm-ticker-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes comm-ticker-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-right: 8px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(10, 12, 20, 0.34);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__sym { font-weight: 700; letter-spacing: 0.01em; }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__chg--up { color: #6ee7a0; }
+  .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__chg--down { color: #ff9d98; }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__track--ltr,
+    .bf-section .bf-howit .bf-howit__media--ticker .fw-ticker__track--rtl { animation: none; }
+  }
+
   .bf-section .bf-howit__cta { margin-top: 40px; display: flex; justify-content: center; }
   @media (max-width: 880px) {
     .bf-section .bf-howit .bf-howit__step { grid-template-columns: 1fr; gap: 24px; padding: 28px; }

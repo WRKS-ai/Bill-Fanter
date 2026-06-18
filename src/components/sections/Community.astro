@@ -10,15 +10,21 @@ const benefits = [
   { num: '04', title: 'Trade in a focused community', body: 'Share setups, wins, and lessons with traders working the same strategies.' },
   { num: '05', title: 'Reach Bill directly', body: 'Ask questions and get answers straight from Bill.' },
 ];
-// CTA target defaults to /community; pages that reuse this block can point it
-// elsewhere (e.g. the masterclass page routes all CTAs to /contact for now).
-const { ctaHref = '/community' } = Astro.props;
+// CTA target + label default to the community join; pages that reuse this block
+// can point it elsewhere (e.g. the masterclass page routes its CTA to #pricing
+// with a "Reserve Your Seat" label, since the community is part of that offer).
+const {
+  ctaHref = '/community',
+  ctaLabel = 'Join the community',
+  heading = 'Join my options trading community',
+  lead = 'Trade alongside active options traders who share setups, alerts, and feedback in real time.',
+} = Astro.props;
 ---
 <section class="bf-section" id="community-2026">
   <div class="bf-container">
     <div class="bf-section-header is-center">
-      <h2 class="bf-h2">Join my options trading community</h2>
-      <p class="bf-lead">Trade alongside active options traders who share setups, alerts, and feedback in real time.</p>
+      <h2 class="bf-h2">{heading}</h2>
+      <p class="bf-lead">{lead}</p>
     </div>
     <div class="bf-community-grid">
       <div class="bf-community__media">
@@ -37,7 +43,7 @@ const { ctaHref = '/community' } = Astro.props;
           ))}
         </div>
         <a class="bf-btn bf-btn--primary" href={ctaHref} style="margin-top:8px;align-self:flex-start">
-          Join the community
+          {ctaLabel}
           <svg class="bf-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
