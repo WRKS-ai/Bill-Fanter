@@ -1,38 +1,27 @@
 ---
-// Production /student-comments — classic markup with modernization layer.
-// New UI preview at /2026/student-comments, original at /classic.
+// /student-comments — componentized 2026 redesign (clean bf-* sections + shared
+// CardNav / Footer / Islands chrome, incl. the roundtable video showcase).
+// Replaced the classic-modernized page.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import StudentCommentsContent from '../../components/pages/StudentCommentsContent.astro';
 ---
 <BaseLayout
-  title={`Student Reviews | Bill Fanter`}
-  description={`Real reviews from real students of Bill Fanter's masterclass and community.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`66d59f25ecf51171be5c77ae`}
-  extraHeadHtml={extraHeadHtml}
+  title="Student Reviews | Bill Fanter"
+  description="Real reviews from real students of Bill Fanter's masterclass and community."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="66d59f25ecf51171be5c77ae"
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
-  <script>
-    // Click-to-play for the BF video showcase. Lite-YouTube pattern: thumbnail
-    // sits until clicked, then we swap in the real iframe (saves ~3 embed loads on initial paint).
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      const btn = target.closest('.bf-vs-thumb') as HTMLButtonElement | null;
-      if (!btn || btn.classList.contains('is-playing')) return;
-      const card = btn.closest('.bf-vs-card');
-      const vid = card?.getAttribute('data-vid');
-      if (!vid) return;
-      btn.classList.add('is-playing');
-      const iframe = document.createElement('iframe');
-      iframe.className = 'bf-vs-iframe';
-      iframe.src = `https://www.youtube.com/embed/${vid}?autoplay=1&rel=0`;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      iframe.title = 'Video player';
-      btn.appendChild(iframe);
-    });
-  </script>
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <StudentCommentsContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

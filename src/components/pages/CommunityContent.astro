@@ -1,0 +1,913 @@
+---
+// /community page body — rebuilt as a CLONE of the homepage design. Every
+// section now uses a canonical homepage pattern (Hero, Reviews video+wall,
+// .bf-darkcta grainient CTA, Community image + numbered benefits, AboutBill
+// 50/50, bf-* card grids), with this page's copy re-homed in. The shared
+// CardNav island + Footer come from community/index.astro; grainient fills are
+// mounted by the Islands script.
+//
+// CONTENT is preserved verbatim from the prior page (which was itself
+// reconciled against production /community): every headline, paragraph, pillar,
+// review, FAQ, image, price and Whop checkout URL is intact — only the section
+// wrappers/styles changed to match the homepage.
+//
+// LOAD-BEARING / unchanged: the HERO, the CommunityPricing component, the
+// "How it works" 3-step-with-images block, and all Whop checkout URLs.
+import CommunityPricing from '../sections/CommunityPricing.astro';
+import YoutubeCta from '../sections/YoutubeCta.astro';
+import Reviews from '../sections/Reviews.astro';
+import Signature from '../Signature.astro';
+
+const ASSET = '/assets/664a5b263659c7265be280ad';
+
+// "A trading community that never sleeps" pillars — verbatim copy + icons from
+// the production page, re-homed into the homepage's clean white card-grid
+// language (was an off-brand full-bleed orange CTA, which doesn't exist on the
+// homepage). Bodies carry production punctuation as-is (set:html).
+const pillars = [
+  { title: 'Get real-time trade alerts', body: `Get buy and sell signals from Bill and a team of market analysts as setups form during the day.` },
+  { title: 'Trade in an active community', body: `Get day-to-day guidance from Bill and 1,000+ members who share setups, wins, and feedback around the clock.` },
+  { title: 'Put risk management first', body: `Clear rules, defined risk, and position sizing are the foundation here, built into how the community trades.` },
+  { title: 'Protect your capital with built-in guardrails', body: `Learn the risk rules Bill uses to cap downside before a trade ever works.` },
+  { title: 'Get the tools and daily market intel', body: `Use the same layouts, indicators, and daily market notes the members rely on.` },
+];
+
+// Production "Winning Trades from Our Community" screenshot grid.
+const winningTrades = [
+  '/assets/664a5b263659c7265be280ad/687628100d738c2868175391_image%20(7)%20(1).png',
+  '/assets/664a5b263659c7265be280ad/6877483d87e5102dd253d678_first-img.png',
+  '/assets/664a5b263659c7265be280ad/6876280f41314377162178d2_image.png',
+  '/assets/664a5b263659c7265be280ad/6876280fb21bf8e812573d1b_image%20(5)%20(1).png',
+];
+
+// Production community reviews — verbatim quotes + real attributions.
+const reviews = [
+  {
+    quote: "Hi Team! I've completed the Learn on You Own Masterclass from Bill, and decided to join the Discord community here. I've only joined a week or so ago, but I gotta say, I may have underestimated the value of COMMUNITY with regards to trading. It is awesome that the more experienced traders will post their own analysis and trades they are making, which definitely helps less experienced folks like myself gain some confidence. It's also great seeing everyone ROOT for each other. I have a day job, but I do aspire to become “W2 Optional” one day, after building trading skills and stacking wins.",
+    name: 'Clevumbinnati', initial: 'C',
+  },
+  {
+    quote: "I made 15% profit in just 3 days thanks to Bill's clear trade alerts and support.",
+    name: 'Jamie', initial: 'J',
+  },
+  {
+    quote: "It's not just about the money. It's about learning the skill and controlling emotions. Bill's community made that possible for me.",
+    name: 'Dana', initial: 'D',
+  },
+  {
+    quote: "It was another great day trading with you and the crew. All of these were opened last week during our morning calls. Closed them today for some nice returns. 86% win rate for the year at nearly 100 trades. Before your class and joining our morning calls, I had a 48% rate with options trading. Thanks again, it's all credit to you.",
+    name: 'Scott McDowell', initial: 'S',
+  },
+  {
+    quote: "Bill Fanter, I can only confirm what others are saying in the Discord. This trading community is incredibly powerful for learning a skill that's become a real passion for me. I've only had one red day in June, and yesterday was another banger.",
+    name: 'Stijn Ceelen', initial: 'S',
+  },
+  {
+    quote: "Just wanted to say your discord is awesome ive had success in other servers and built a skill but your style is exactly what I needed. This week I followed a few of your trades but also charted and leveraged your approach and entered/exited with more confidence than I had prior. I never thought I would have close to a $10k week but this week I accomplished that. Just wanted to say thank you for what you do, it means more to me and my family than you will ever know.",
+    name: 'Landon Stanfield', initial: 'L',
+  },
+  {
+    quote: "Great community that is always willing to help one another out. I love that Bill is constantly interacting with the members and answering questions!",
+    name: 'John Sammons', initial: 'J',
+  },
+];
+
+// Production "reviews_static" screenshot wall — real WhatsApp images + member
+// screenshots ported verbatim from the live /community page (class
+// "static_reviews-images"). Rendered as a 2-col masonry like the homepage wall.
+const reviewShots = [
+  '/assets/664a5b263659c7265be280ad/693619fe0c4897712052fd70_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(3).jpeg',
+  '/assets/664a5b263659c7265be280ad/693619fec6c7514bb589c309_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM.jpeg',
+  '/assets/664a5b263659c7265be280ad/693619feb4b6f8e17523d520_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(2).jpeg',
+  '/assets/664a5b263659c7265be280ad/66d5a2c88eb566d3ed69ce45_16.webp',
+  '/assets/664a5b263659c7265be280ad/693619fe8231380688f4eafe_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(1).jpeg',
+  '/assets/664a5b263659c7265be280ad/68e5a2958f2a94f22caf2a25_Screenshot%202025-10-05%20at%203.53.45%E2%80%AFPM.png',
+];
+
+// "What you get as a member" — the production benefit list, re-homed into the
+// homepage Community (image + numbered benefits) pattern. Bodies added so the
+// rows match the homepage rhythm and feed the AnimatedList island.
+const memberBenefits = [
+  { num: '01', title: 'Instant Discord access connect and learn daily', body: 'Join a community of like-minded individuals who are there to educate, support, and help you succeed from the start.' },
+  { num: '02', title: 'Live buy/sell signals with an 80%+ win rate', body: 'Get live buy/sell signals with an 80%+ daily win rate from professional market analysts.' },
+  { num: '03', title: 'Advanced AI-driven trade alerts', body: 'Learn how to use advanced technology for smarter, faster trading decisions.' },
+  { num: '04', title: 'One-on-one coaching options', body: 'Go deeper with personal coaching tailored to where you are in your trading journey.' },
+  { num: '05', title: 'Access to exclusive trading tools and layouts', body: 'Trade with the same tools, layouts, and daily market intel the pros use.' },
+  { num: '06', title: 'Monthly giveaways and member-only events', body: 'Stay engaged with member-only events and monthly giveaways for the community.' },
+];
+
+// "Inside the community" — daily-activity modules, re-homed into a homepage
+// card grid (like HelpGrid).
+const insideModules = [
+  { num: '01', title: 'Live trade alerts & market analysis', desc: 'Bill and the analysts drop real-time signals and watchlists.' },
+  { num: '02', title: 'Trade talk & strategy discussions', desc: 'Active channels for quick scalp ideas, swing setups, and chart reviews.' },
+  { num: '03', title: 'Video tutorials & educational resources', desc: 'Step-by-step guides, recorded sessions, and how-to videos anytime you need them.' },
+  { num: '04', title: 'Member trade reviews & feedback', desc: 'Community members post wins, losses, and learnings, keeping it real and transparent.' },
+  { num: '05', title: 'Market news & earnings alerts', desc: 'Stay up-to-date with the latest information so you never miss critical events or shifts.' },
+];
+
+// Production FAQ — verbatim Q&A.
+const faqs = [
+  { q: 'Do I need prior trading experience?', a: 'No. New traders join to learn the basics, and experienced traders join to sharpen entries and risk. Bill teaches both in plain language.' },
+  { q: 'How much time do I need to commit?', a: 'As little as one focused hour around the open. The alerts, notes, and recordings are there whenever you can check in.' },
+  { q: 'What if I lose money?', a: 'Trading options carries real risk, and losses are part of it. The community focuses on defined risk and position sizing so you control your downside on every trade. Nothing here is a guarantee of profit.' },
+  { q: 'Can I trade while working a full-time job?', a: 'Yes. Many members trade the opening hour, then log off and go about their day. The alerts and watchlist fit a quick morning routine.' },
+  { q: 'Is the community good for beginners?', a: 'Yes. Beginners get a clear starting point, step-by-step lessons, and a community to ask questions as they learn.' },
+];
+
+// Whop checkout for the direct "Join the Community Now" button (production).
+const joinUrl = 'https://whop.com/checkout/1ddAafJSDTQajCsTPH-nNmX-Fcbn-qisW-UgMERKflbcdf/';
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+---
+{/* =========================================================================
+    HERO — kept exactly as-is.
+    ========================================================================= */}
+<section class="bf-section bf-hero bf-comm-hero">
+  <div class="bf-comm-hero__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+  <div class="bf-comm-hero__scrim" aria-hidden="true"></div>
+  <div class="bf-container">
+    <div class="bf-hero__inner">
+      <div class="bf-hero__eyebrow"><span class="bf-eyebrow">Trades you can bank on, every day!</span></div>
+      <h1 class="bf-h1 bf-hero__h1">Trade options every day with Bill and a community of 1,000+ serious traders</h1>
+      <p class="bf-lead bf-hero__lead">Get live trade alerts, AI-built signals, and daily mentorship from Bill Fanter, a former banker with 35+ years in the markets. Trade alongside 1,000+ members who share setups, manage risk, and sharpen their options trading every day.</p>
+      <div class="bf-hero__cta">
+        <a class="bf-btn bf-btn--primary is-on-dark" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal>Join the community now</a>
+        <a class="bf-btn bf-btn--secondary is-on-dark" href="#pricing">See pricing</a>
+      </div>
+      <div class="bf-hero__trust">
+        <span class="bf-hero__trust-source">Rated by</span>
+        <span class="bf-hero__trust-stars">
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+        </span>
+        <span>1,000+ Traders</span>
+      </div>
+    </div>
+    {/* VSL combined into the hero: the click-to-play Vimeo card sits directly
+        below the hero copy as one unit (was a separate band below). */}
+    <div class="bf-comm-testi-wrap">
+      <article class="bf-comm-testi">
+        <button class="bf-comm-testi__thumb" type="button" data-bf-vimeo="1114053984" data-bf-wide aria-label="Play testimonial video">
+          <img src="/assets/664a5b263659c7265be280ad/664a67e526974fa9873cf4b0_home%20images-6.webp" loading="lazy" alt="Community testimonial video cover" />
+          <span class="bf-comm-testi__play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </span>
+        </button>
+      </article>
+    </div>
+  </div>
+</section>
+
+{/* =========================================================================
+    NEVER SLEEPS — the community's daily pillars, in the homepage's clean white
+    card-grid language (matched section). Replaces the old off-brand full-bleed
+    orange grainient CTA, which has no equivalent on the homepage.
+    ========================================================================= */}
+{/* Homepage-style white→light fade across the first two content sections after
+    the hero (mirrors the homepage .bf-bento-fade). */}
+<div class="bf-comm-fade">
+<section class="bf-section bf-comm-pillars">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <span class="bf-eyebrow">Learn, trade, win every day</span>
+      <h2 class="bf-h2">A trading community that never sleeps</h2>
+      <p class="bf-lead">This is a full options trading community, active every day. Members share setups, alerts, and feedback from the open to the close.</p>
+    </div>
+    <div class="bf-community-grid">
+      <div class="bf-community__media">
+        <img src="/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.png" alt="The Bill Fanter trading community live on Discord" loading="lazy" />
+      </div>
+      <div class="bf-community__benefits">
+        <div data-benefits-list style="display:contents">
+          {pillars.map((p, i) => (
+            <div class="bf-benefit">
+              <div class="bf-benefit__num">{`0${i + 1}`}</div>
+              <div>
+                <div class="bf-benefit__title">{p.title}</div>
+                <p class="bf-body" set:html={p.body}></p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <a class="bf-btn bf-btn--primary" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal style="margin-top:8px;align-self:flex-start">Join the community now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* =========================================================================
+    INSIDE THE COMMUNITY — HeroSplit-style bento of Discord screenshots (left) +
+    copy about what the day-to-day inside the community actually feels like
+    (right). Copy is deliberately vibe-focused, not a repeat of the pricing
+    "What's included" feature list.
+    ========================================================================= */}
+<section class="bf-section bf-comm-inside">
+  <div class="bf-container">
+    <div class="bf-comm-inside__split">
+      <div class="bf-comm-inside__media" aria-hidden="true">
+        <div class="bf-comm-inside__card">
+          <div class="bf-grainient-mount" data-grainient="comm-inside" data-color1="#1754d8" data-color2="#3b82f6" data-color3="#0b1f5c"></div>
+          <div class="bf-comm-marquee">
+            <div class="bf-comm-marquee__row">
+              {[...winningTrades, ...winningTrades].map((src) => (
+                <div class="bf-comm-marquee__shot"><img src={src} alt="" loading="lazy" /></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bf-comm-inside__copy">
+        <span class="bf-eyebrow">Inside the Discord</span>
+        <h2 class="bf-h2">What it's actually like inside the community</h2>
+        <p class="bf-lead" style="margin-top:22px">From the opening bell to the after-hours recap, the Discord is always buzzing. Traders post their entries and exits in real time, break down setups together, and back each other up on the red days. It feels less like a course and more like a trading desk you can pull up a chair to any time.</p>
+        <div class="bf-hero__cta" style="margin-top:28px">
+          <a class="bf-btn bf-btn--primary" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal>Join the community now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Student reviews — the shared homepage Reviews component (video cards +
+    screenshot wall), used site-wide for a single consistent reviews section. */}
+<Reviews showCta={false} />
+  </div>
+{/* /white→grey fade band (spans "never sleeps" → Inside → Reviews) */}
+
+
+{/* =========================================================================
+    HOW IT WORKS — on white now (the fade band above ends at Reviews).
+    ========================================================================= */}
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">How it works</h2>
+    </div>
+    <div class="bf-howit">
+      <div class="bf-howit__step">
+        <div class="bf-howit__copy">
+          <h3 class="bf-h3 bf-howit__title">Learn from live trade alerts and AI signals</h3>
+          <p class="bf-body bf-howit__body">Every morning, Bill and his analysts share what they are watching and when they plan to buy or sell.</p>
+        </div>
+        <div class="bf-howit__media">
+          <div class="bf-grainient-mount" data-grainient="howit-1" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+          <img src="/assets/664a5b263659c7265be280ad/68554a2036b038d602bb26ec_Learn-from-Real-Time-Trade-Alerts-and-AI-Signals-(3).png" alt="Learn from Real-Time Trade Alerts and AI Signals" loading="lazy" />
+        </div>
+      </div>
+      <div class="bf-howit__step">
+        <div class="bf-howit__copy">
+          <h3 class="bf-h3 bf-howit__title">Connect with Bill and the community</h3>
+          <p class="bf-body bf-howit__body">Get instant Discord access. Ask questions, share ideas, and trade alongside 1,000+ serious traders.</p>
+        </div>
+        <div class="bf-howit__media">
+          <div class="bf-grainient-mount" data-grainient="howit-2" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+          <img src="/assets/664a5b263659c7265be280ad/68554a3a7298b4672c32b45a_Connect-with-Bill-and-a-Thriving-Community-(2).png" alt="Connect with Bill and a Thriving Community" loading="lazy" />
+        </div>
+      </div>
+      <div class="bf-howit__step">
+        <div class="bf-howit__copy">
+          <h3 class="bf-h3 bf-howit__title">Build your skill and confidence</h3>
+          <p class="bf-body bf-howit__body">Follow Bill's risk rules, trade with him live, and build the discipline to trade options with a plan.</p>
+        </div>
+        <div class="bf-howit__media">
+          <div class="bf-grainient-mount" data-grainient="howit-3" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+          <img src="/assets/664a5b263659c7265be280ad/68554a4edca41e9e9ce967e7_Build-Your-Skill-and-Confidence-(1).png" alt="Build Your Skill and Confidence" loading="lazy" />
+        </div>
+      </div>
+    </div>
+    <div class="bf-howit__cta">
+      <a class="bf-btn bf-btn--primary" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal>Join the community now</a>
+    </div>
+  </div>
+</section>
+
+{/* Community membership pricing (shared component — Whop URLs intact). The
+    "What you get as a member" benefits are folded into the pricing cards. */}
+<CommunityPricing />
+
+{/* =========================================================================
+    MEET BILL — canonical AboutBill 50/50, now placed BELOW the pricing cards.
+    ========================================================================= */}
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-about-grid">
+      <div class="bf-about__media">
+        <img src="/assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1.webp" alt="Image of Bill Fanter" />
+        <Signature class="bf-about__sig" />
+      </div>
+      <div class="bf-about__copy">
+        <span class="bf-eyebrow">Your trading mentor</span>
+        <h2 class="bf-h2" style="margin-top:24px">Meet Bill Fanter</h2>
+        <p style="margin-top:28px">Bill Fanter spent 35+ years in banking and the markets, and he now trades options every morning around the open. He has taught 1,200+ students how options work, how to manage risk, and how to run a repeatable routine. He built this community to give traders the same daily prep, alerts, and feedback he relies on himself.</p>
+        <div class="bf-about__actions">
+          <a class="bf-btn bf-btn--primary" href="/contact">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* =========================================================================
+    FAQ — bf-* styled accordion on a soft band.
+    ========================================================================= */}
+<section class="bf-section is-soft">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <span class="bf-eyebrow">FAQ</span>
+      <h2 class="bf-h2">Frequently asked questions</h2>
+    </div>
+    <div class="bf-faq">
+      {faqs.map((f) => (
+        <details class="bf-faq__item">
+          <summary>{f.q}</summary>
+          <div class="bf-faq__answer">{f.a}</div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+{/* The closing block (testimonial + Book-a-Call) is supplied globally by the
+    shared Footer (Closing.astro), so this page does NOT render its own — that
+    was duplicating the closing/footer. */}
+
+{/* Simple pricing pop-up — the "Join the community" buttons open this; each
+    option links straight to its Whop checkout. */}
+<div class="bf-pmodal" id="bf-pmodal" aria-hidden="true">
+  <div class="bf-pmodal__overlay" data-pmodal-close></div>
+  <div class="bf-pmodal__card" role="dialog" aria-modal="true" aria-label="Select a pricing option">
+    <button class="bf-pmodal__close" type="button" data-pmodal-close aria-label="Close">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <h3 class="bf-pmodal__title">Select a plan</h3>
+    <p class="bf-pmodal__sub">Pick a plan below to continue to secure checkout.</p>
+    <a class="bf-pmodal__opt" href="https://whop.com/checkout/iRQgha92Uek2tWWhX-LAQH-OC2f-p8gz-VdmsucJo7FSM/" target="_blank" rel="noopener">
+      <span class="bf-pmodal__opt-main">
+        <span class="bf-pmodal__opt-name">1 Month</span>
+        <span class="bf-pmodal__opt-price">$150.00 / month</span>
+      </span>
+      <span class="bf-pmodal__opt-go" aria-hidden="true">&rarr;</span>
+    </a>
+    <a class="bf-pmodal__opt bf-pmodal__opt--featured" href="https://whop.com/checkout/Vh9cSagj8l5fRZFgR-eKu5-10rf-wqwM-pT6GfoEaA0Zh/" target="_blank" rel="noopener">
+      <span class="bf-pmodal__opt-main">
+        <span class="bf-pmodal__opt-name">1 Year <span class="bf-pmodal__badge">Save 17%</span></span>
+        <span class="bf-pmodal__opt-price">$1,500.00 / year</span>
+      </span>
+      <span class="bf-pmodal__opt-go" aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  /* =========================================================================
+     SCOPING NOTE — Astro scopes every compound selector below with this
+     component's [data-astro-cid]. The page's `.bf-page` wrapper lives in the
+     PARENT page (community/index.astro) and does NOT carry this component's
+     cid, so a selector LED by `.bf-page` never matches. Every rule is therefore
+     anchored on an in-component ancestor (`.bf-section`, `.bf-darkcta`, etc.),
+     which also out-specifies the shared `.bf-page .bf-*` base rules.
+     ========================================================================= */
+
+  /* Off-white band rhythm — alternate soft bands between white sections. */
+  .bf-section.is-soft { background: var(--bf-bg-2); }
+
+  /* =========================================================================
+     TESTIMONIAL VIDEO — homepage Reviews vidcard styling. Single landscape
+     click-to-play Vimeo card (id 1114053984), centered, brand-gradient poster.
+     ========================================================================= */
+  /* Hero — dark dot-grid stage (matches the webinar / watchlist heroes): dark
+     backdrop + React Bits DotGrid + scrim, white copy, on-dark CTAs. The VSL
+     video card sits below the copy on the same dark stage. */
+  .bf-comm-hero {
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    color: #fff;
+    isolation: isolate;
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+  /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
+  @media (max-width: 767px) {
+    .bf-comm-hero { padding-top: 52px; padding-bottom: 52px; }
+  }
+  .bf-comm-hero__dots { position: absolute; inset: 0; z-index: 1; opacity: 0.66; pointer-events: auto; }
+  .bf-comm-hero__scrim { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: rgba(10, 10, 10, 0.5); }
+  .bf-comm-hero .bf-container { position: relative; z-index: 3; }
+  .bf-comm-hero :global(.bf-hero__h1) { color: #fff; }
+  .bf-comm-hero :global(.bf-hero__lead) { color: #fff; }
+  .bf-comm-hero :global(.bf-hero__trust) { color: #fff; }
+  .bf-comm-hero :global(.bf-hero__trust > span:last-child) { color: #fff; }
+  /* "Recommended by" defaults to --bf-text (#0a0a0a) → invisible on the dark hero. */
+  .bf-comm-hero :global(.bf-hero__trust-source) { color: #fff; }
+
+  .bf-comm-hero .bf-comm-testi-wrap { max-width: 920px; margin: 48px auto 0; }
+
+  /* Homepage-style white→light fade across the first two content sections after
+     the hero (mirrors .bf-bento-fade). The wrapped sections go transparent so the
+     one gradient shows through both, then a hard edge into the content below. */
+  /* One white→grey fade band across "never sleeps" → Inside → Reviews. The wrapped
+     sections + the Reviews component go transparent so the band shows through. */
+  .bf-comm-fade { background: linear-gradient(180deg, #ffffff 0%, #f6f8fc 100%); }
+  .bf-comm-fade .bf-section { background: transparent; }
+  .bf-comm-fade :global(.bf-reviews) { background: transparent; }
+
+  /* "Inside the community" — copy (left) + a short grainient strip with Discord
+     screenshots scrolling as a single horizontal marquee (right), mirroring the
+     watchlist ticker pattern (duplicated track, infinite loop, edge mask). */
+  .bf-comm-inside__split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  /* Copy LEFT, media RIGHT → inset the copy on its right (gap side) to match the
+     canonical .bf-hero-split spacing used across the site. */
+  .bf-comm-inside__copy { max-width: 588px; order: 1; padding-right: 48px; }
+  .bf-comm-inside__copy .bf-hero__cta { justify-content: flex-start; }
+  .bf-comm-inside__media { order: 2; }
+  .bf-comm-inside__card {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    isolation: isolate;
+    /* Static CSS gradient fallback (blue); the grainient island mounts over it. */
+    background: linear-gradient(135deg, #1754d8 0%, #3b82f6 55%, #0b1f5c 100%);
+  }
+  .bf-comm-inside__card .bf-grainient-mount {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+  .bf-comm-marquee {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+  }
+  .bf-comm-marquee__row {
+    display: flex;
+    gap: 16px;
+    padding: 0 16px;
+    will-change: transform;
+    /* Each set is rendered twice; translateX(-50%) = exactly one set → seamless. */
+    animation: bf-comm-marq-x 20s linear infinite;
+  }
+  @keyframes bf-comm-marq-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .bf-comm-marquee__shot {
+    flex: 0 0 auto;
+    height: 280px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .bf-comm-marquee__shot img { height: 100%; width: auto; display: block; }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-comm-marquee__row { animation: none; }
+  }
+  @media (max-width: 980px) {
+    .bf-comm-inside__split { grid-template-columns: 1fr; gap: 32px; }
+    .bf-comm-inside__copy { padding-right: 0; max-width: none; }
+    .bf-comm-inside__media { max-width: 460px; margin: 0 auto; width: 100%; }
+  }
+  .bf-comm-hero .bf-comm-testi {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 18px 44px rgba(20, 60, 120, 0.12);
+  }
+  .bf-comm-hero .bf-comm-testi__thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0b1f5c 0%, #1754d8 55%, #3b82f6 100%);
+  }
+  .bf-comm-hero .bf-comm-testi__thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .bf-comm-hero .bf-comm-testi__thumb::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.35) 100%);
+    pointer-events: none;
+  }
+  .bf-comm-hero .bf-comm-testi__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #fff;
+    color: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+    z-index: 1;
+  }
+  .bf-comm-hero .bf-comm-testi__play svg { width: 30px; height: 30px; margin-left: 4px; }
+  .bf-comm-hero .bf-comm-testi__thumb:hover .bf-comm-testi__play { transform: translate(-50%, -50%) scale(1.08); }
+  .bf-comm-hero .bf-comm-testi__thumb.is-playing img,
+  .bf-comm-hero .bf-comm-testi__thumb.is-playing::after,
+  .bf-comm-hero .bf-comm-testi__thumb.is-playing .bf-comm-testi__play { display: none; }
+  .bf-comm-hero .bf-comm-testi iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+  /* =========================================================================
+     NEVER SLEEPS — the community's daily pillars in the homepage's clean white
+     card-grid language (mirrors HelpGrid / Inside cards): soft icon chip, white
+     surface, subtle border, lift on hover. No off-brand orange grainient.
+     ========================================================================= */
+  .bf-comm-pillars .bf-pillar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (max-width: 980px) { .bf-comm-pillars .bf-pillar-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .bf-comm-pillars .bf-pillar-grid { grid-template-columns: 1fr; } }
+  .bf-comm-pillars .bf-pillar-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 30px 28px;
+    background: var(--bf-surface);
+    border: 1px solid var(--bf-border);
+    border-radius: 12px;
+    box-shadow: var(--bf-shadow-card);
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), border-color 250ms, box-shadow 250ms;
+  }
+  .bf-comm-pillars .bf-pillar-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--bf-border-strong);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 18px 40px -18px rgba(20, 60, 120, 0.22);
+  }
+  .bf-comm-pillars .bf-pillar-card__icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 131, 8, 0.1), rgba(107, 59, 213, 0.1));
+    padding: 11px;
+  }
+  .bf-comm-pillars .bf-pillar-card__icon img { width: 100%; height: 100%; object-fit: contain; }
+  .bf-comm-pillars .bf-pillar-card__title { font-size: 16px; line-height: 1.3; font-weight: 600; letter-spacing: -0.01em; color: var(--bf-text); }
+  .bf-comm-pillars .bf-pillar-card__body { font-size: 16px; line-height: 1.55; color: var(--bf-text-muted); }
+  .bf-comm-pillars__note {
+    margin: 40px auto 0;
+    max-width: 720px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--bf-text);
+  }
+
+  /* =========================================================================
+     WINNING TRADES — production screenshots vary in aspect; show the FULL shot
+     (object-fit: contain) framed in a white card so nothing is cropped.
+     ========================================================================= */
+  /* WINNING TRADES — a masonry "bento" of community-win screenshots: each shot
+     keeps its natural aspect (no crop) inside a rounded card, packed into two
+     columns so there's no dead space between mismatched heights. */
+  .bf-section .bf-winning-bento {
+    columns: 2;
+    column-gap: 16px;
+    margin-top: 56px;
+  }
+  .bf-winning-tile {
+    break-inside: avoid;
+    margin: 0 0 16px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--bf-border);
+    box-shadow: var(--bf-shadow-card);
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), box-shadow 250ms, border-color 250ms;
+  }
+  .bf-winning-tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--bf-border-strong);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 18px 40px -16px rgba(20, 60, 120, 0.16);
+  }
+  .bf-winning-tile img { width: 100%; height: auto; display: block; }
+  @media (max-width: 700px) { .bf-section .bf-winning-bento { columns: 1; } }
+
+  /* =========================================================================
+     REVIEWS — homepage Reviews band (blue fade) + written-review cards laid out
+     as a balanced masonry (quotes vary 1→6 lines), plus the shared screenshot
+     wall. Mirrors src/components/sections/Reviews.astro.
+     ========================================================================= */
+  .bf-comm-reviews {
+    padding: var(--bf-section-pad) 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 55%, #eef4fc 100%);
+  }
+  .bf-comm-reviews .bf-comm-reviews__grid {
+    column-count: 3;
+    column-gap: 20px;
+    margin-top: 8px;
+  }
+  @media (max-width: 1000px) { .bf-comm-reviews .bf-comm-reviews__grid { column-count: 2; } }
+  @media (max-width: 640px)  { .bf-comm-reviews .bf-comm-reviews__grid { column-count: 1; } }
+  .bf-comm-reviews .bf-review-card {
+    break-inside: avoid;
+    margin: 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #fff;
+    border: 1px solid rgba(10, 30, 60, 0.06);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 30px rgba(20, 60, 120, 0.06);
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), box-shadow 250ms, border-color 250ms;
+  }
+  .bf-comm-reviews .bf-review-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(10, 30, 60, 0.14);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 18px 40px -16px rgba(20, 60, 120, 0.14);
+  }
+  .bf-comm-reviews .bf-comm-reviews__stars { display: inline-flex; gap: 3px; }
+  .bf-comm-reviews .bf-comm-reviews__stars .bf-star { width: 18px; height: 18px; fill: #ffc14d; }
+  .bf-comm-reviews .bf-review-card__quote { margin: 0; font-size: 16px; line-height: 1.6; color: #2c333c; }
+  .bf-comm-reviews .bf-review-card__author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+  .bf-comm-reviews .bf-review-card__avatar--initial {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #1754d8, #3b82f6);
+    flex: 0 0 auto;
+  }
+  .bf-comm-reviews .bf-review-card__name { font-weight: 600; color: #0a0a0a; }
+  .bf-comm-reviews .bf-review-card__title { font-size: 13px; color: #6a7280; }
+
+  /* Screenshot wall — masonry via CSS columns, matches the homepage wall. */
+  .bf-comm-reviews .bf-reviews__wall {
+    margin-top: 56px;
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .bf-comm-reviews .bf-reviews__wall .bf-reviews__shot {
+    width: 100%;
+    margin: 0 0 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 12px 30px -12px rgba(20, 60, 120, 0.12);
+    break-inside: avoid;
+    display: block;
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), box-shadow 250ms;
+  }
+  .bf-comm-reviews .bf-reviews__wall .bf-reviews__shot:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 44px -14px rgba(20, 60, 120, 0.18);
+  }
+  @media (max-width: 767px) { .bf-comm-reviews .bf-reviews__wall { column-count: 1; } }
+
+  /* =========================================================================
+     HOW IT WORKS — production 3-step layout: numbered copy beside its
+     screenshot, alternating sides on desktop, stacked on mobile.
+     ========================================================================= */
+  .bf-section .bf-howit { margin-top: 56px; display: flex; flex-direction: column; gap: 28px; }
+  /* Each step matches the homepage YouTube CTA: a BLACK card with copy on one side
+     and the grainient media (identical square) on the other. */
+  .bf-section .bf-howit .bf-howit__step {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 36px;
+    background: #0a0a0a;
+    border: 0;
+    border-radius: var(--bf-radius-lg);
+    padding: 48px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 24px 60px -28px rgba(20, 60, 120, 0.25);
+  }
+  /* All steps: copy LEFT, media RIGHT — no alternating (matches the homepage YT). */
+  .bf-section .bf-howit .bf-howit__num {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: var(--bf-accent);
+    margin-bottom: 18px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .bf-section .bf-howit .bf-howit__num::after {
+    content: "";
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.25);
+    margin-left: 12px;
+  }
+  /* Match the homepage YouTube CTA heading (.bf-darkcta__h2) exactly, and cap to the
+     same 520px as the body so the headline wraps as a consistent block (it was
+     stretching onto one wide line for the shorter titles). */
+  .bf-section .bf-howit .bf-howit__title { letter-spacing: -0.025em; font-size: clamp(24px, 2.6vw, 36px); font-weight: 500; line-height: 1.1; color: #fff; max-width: 520px; }
+  /* Cap the body to 520px — the exact max-width the homepage YT lead
+     (.bf-darkcta__lead) uses — so the copy block doesn't stretch wider here. */
+  .bf-section .bf-howit .bf-howit__body { margin-top: 14px; color: #fff; max-width: 520px; }
+  /* Media = the EXACT YoutubeCta grainient card: the real animated WebGL grainient
+     (mounted on [data-grainient] by the Islands script, same as the YouTube CTA)
+     with the step's mockup attached flat to the bottom. */
+  /* Identical SQUARE grainient card, sized exactly like the homepage YT media
+     (aspect 1/1, capped + centered) so every box is the same size. */
+  .bf-section .bf-howit .bf-howit__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 0;
+    background: #0a0a0a;
+    isolation: isolate;
+  }
+  .bf-section .bf-howit .bf-howit__media .bf-grainient-mount {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .bf-section .bf-howit .bf-howit__media img {
+    /* Mockup attached flat to the BOTTOM of the grainient (like the YouTube CTA
+       device) — rounded top, flush bottom edge. NO drop shadow beneath. */
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    /* Scaled past 100% so the device fills the card — the composed PNG has a lot of
+       empty grainient around the device, so we zoom in and let the card's
+       overflow:hidden crop the excess. */
+    width: 165%;
+    height: auto;
+    max-width: none;
+    z-index: 1;
+    border-radius: 12px 12px 0 0;
+  }
+  /* Middle step ("Connect with Bill") is a wider chat screenshot, not a phone —
+     zoom it less so its content isn't cropped off the top/sides. */
+  .bf-section .bf-howit .bf-howit__step:nth-child(2) .bf-howit__media img {
+    width: 112%;
+  }
+  .bf-section .bf-howit__cta { margin-top: 40px; display: flex; justify-content: center; }
+  @media (max-width: 880px) {
+    .bf-section .bf-howit .bf-howit__step { grid-template-columns: 1fr; gap: 24px; padding: 28px; }
+    /* Center the media when stacked (it's right-aligned on desktop). */
+    .bf-section .bf-howit .bf-howit__media { margin-left: auto; margin-right: auto; }
+  }
+
+  /* =========================================================================
+     MEET BILL — frame the AboutBill portrait + copy rhythm (the shared
+     bf-about-* rules already handle the 50/50 split + 48px copy padding).
+     ========================================================================= */
+  .bf-about__actions { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; }
+  .bf-section .bf-about-grid .bf-about__media { position: relative; }
+  .bf-section .bf-about-grid .bf-about__media :global(.bf-about__sig) {
+    position: absolute; right: 18px; bottom: 16px; width: 150px; max-width: 44%;
+    color: #0a0a0a; filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.55));
+  }
+  .bf-section .bf-about-grid .bf-about__media img {
+    width: 100%;
+    height: 480px;
+    object-fit: cover;
+    object-position: center 18%;
+    border-radius: var(--bf-radius-lg);
+    border: 1px solid var(--bf-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 48px -20px rgba(20, 60, 120, 0.22);
+  }
+  @media (max-width: 980px) { .bf-section .bf-about-grid .bf-about__media img { height: 320px; } }
+
+  /* =========================================================================
+     WHAT YOU GET — homepage Community pattern. The shared bf-community-grid /
+     bf-benefit rules handle layout; only frame the photo + map the AnimatedList
+     reveal var onto the rows, exactly like the homepage Community section.
+     ========================================================================= */
+  .bf-community-grid .bf-community__benefits .bf-benefit { opacity: var(--bf-reveal, 1); }
+  .bf-community-grid .bf-community__media {
+    align-self: start;
+    border-radius: var(--bf-radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--bf-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 20px 48px -20px rgba(20, 60, 120, 0.22);
+  }
+  .bf-community-grid .bf-community__media img { width: 100%; height: auto; display: block; }
+
+  /* =========================================================================
+     INSIDE THE COMMUNITY — homepage card grid (HelpGrid-style), with a tinted
+     number chip in place of the icon.
+     ========================================================================= */
+  .bf-section .bf-inside-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (max-width: 980px) { .bf-section .bf-inside-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .bf-section .bf-inside-grid { grid-template-columns: 1fr; } }
+  .bf-section .bf-inside-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 32px 28px;
+    background: var(--bf-surface);
+    border: 1px solid var(--bf-border);
+    border-radius: 12px;
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), border-color 250ms, box-shadow 250ms;
+  }
+  .bf-section .bf-inside-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--bf-border-strong);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  }
+  .bf-section .bf-inside-card__num {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, rgba(255, 131, 8, 0.1), rgba(107, 59, 213, 0.1));
+    color: var(--bf-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .bf-section .bf-inside-card__title { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; color: var(--bf-text); }
+  .bf-section .bf-inside-card .bf-body { font-size: 16px; line-height: 1.55; }
+
+  /* FAQ uses the canonical global .bf-faq accordion (clean bordered rows with a
+     +/- toggle) — same as the masterclass page. No scoped override here. */
+
+  /* ── Pricing pop-up ─────────────────────────────────────────────────────── */
+  .bf-pmodal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+  .bf-pmodal.is-open { display: flex; }
+  /* Neutral dark tint (no blue) + the SAME 5px blur as the nav dropdown backdrop. */
+  .bf-pmodal__overlay { position: absolute; inset: 0; background: rgba(10, 10, 10, 0.62); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+  .bf-pmodal__card { position: relative; width: 100%; max-width: 440px; background: #fff; border-radius: 12px; padding: 28px; box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.5); }
+  .bf-pmodal__close { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: 0; background: rgba(10, 10, 10, 0.06); color: #0a0a0a; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 150ms; }
+  .bf-pmodal__close:hover { background: rgba(10, 10, 10, 0.12); }
+  .bf-pmodal__title { font-size: 20px; font-weight: 600; color: #0a0a0a; margin: 0; }
+  .bf-pmodal__sub { margin: 6px 0 20px; font-size: 16px; color: #0a0a0a; }
+  .bf-pmodal__opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; border: 1px solid rgba(10, 10, 10, 0.12); border-radius: 12px; text-decoration: none; color: #0a0a0a; transition: border-color 150ms, transform 150ms; }
+  .bf-pmodal__opt + .bf-pmodal__opt { margin-top: 12px; }
+  .bf-pmodal__opt:hover { border-color: #0a0a0a; transform: translateY(-1px); }
+  .bf-pmodal__opt--featured { border-color: rgba(59, 130, 246, 0.5); }
+  .bf-pmodal__opt-main { display: flex; flex-direction: column; gap: 4px; }
+  .bf-pmodal__opt-name { font-weight: 600; font-size: 16px; color: #0a0a0a; display: inline-flex; align-items: center; gap: 8px; }
+  .bf-pmodal__opt-price { font-size: 16px; color: #0a0a0a; }
+  .bf-pmodal__badge { font-size: 11px; font-weight: 600; color: #1d4ed8; background: rgba(59, 130, 246, 0.12); padding: 2px 8px; border-radius: 999px; }
+  .bf-pmodal__opt-go { font-size: 18px; color: rgba(10, 10, 10, 0.4); }
+  .bf-pmodal__opt:hover .bf-pmodal__opt-go { color: #0a0a0a; }
+</style>
+
+<!-- The hero VSL opens in the global .bf-vreel-modal lightbox (data-bf-vimeo +
+     data-bf-wide on the thumb), wired in BaseLayout — same as the review videos. -->
+
+<script>
+  // Simple pricing pop-up: the "Join the community" buttons ([data-pricing-modal])
+  // open it; each plan option inside links straight to its Whop checkout.
+  (function () {
+    const modal = document.getElementById('bf-pmodal');
+    if (!modal) return;
+    const open = () => { modal.classList.add('is-open'); modal.setAttribute('aria-hidden', 'false'); };
+    const close = () => { modal.classList.remove('is-open'); modal.setAttribute('aria-hidden', 'true'); };
+    document.querySelectorAll('[data-pricing-modal]').forEach((btn) => {
+      btn.addEventListener('click', (e) => { e.preventDefault(); open(); });
+    });
+    modal.querySelectorAll('[data-pmodal-close]').forEach((el) => el.addEventListener('click', close));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+  })();
+</script>
+

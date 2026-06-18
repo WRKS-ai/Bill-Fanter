@@ -1,0 +1,668 @@
+---
+// /webinar page body — rebuilt as a CLONE of the homepage's design language.
+// Every section now uses the same bf-* homepage patterns (alternating
+// white / var(--bf-bg-2) bands, --bf-section-pad rhythm, .bf-container,
+// .bf-h2 / .bf-lead, 50/50 .bf-about-grid splits, .bf-help-grid even card
+// grids, the Reviews video+wall pattern, and the .bf-darkcta grainient CTA)
+// so /webinar matches homepage quality.
+//
+// CONTENT is preserved VERBATIM from the prior production /webinar page: every
+// heading, paragraph, list item, button label, image src/srcset, the
+// registration form (attributes untouched), the Whop community link, the 8
+// reviews (names + titles), and the disclaimer. Only the old non-homepage
+// section wrappers/styles were swapped for homepage-style sections — no copy
+// was dropped, reworded, summarized, or invented.
+//
+// The hero (with the reserve-your-spot form) is kept EXACTLY as-is. Grainient
+// fills (webinar-form / webinar-darkcta) are mounted by the Islands script.
+import Reviews from '../sections/Reviews.astro';
+import SubscribeForm from '../SubscribeForm.astro';
+import EffortlessStrategy from '../sections/EffortlessStrategy.astro';
+import Signature from '../Signature.astro';
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+
+// Reviews — homepage pattern (verbatim quotes, names, titles, image srcs).
+const A = '/assets/664a5b263659c7265be280ad/';
+const reviews = [
+  { name: 'Alex Pitcaithly', title: 'Dynamic People Leader', img: `${A}679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.png`, quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience. Thank you, Bill, for sharing your knowledge, looking forward to your continued mentoring and friendship. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, then I highly recommend Bill's Masterclass." },
+  { name: 'Dan Funderburk, MBA', title: 'Executive Recruiting at H-E-B', img: `${A}679c4f04407a54b6277c94f3_dan-funderburk.png`, quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. I had limited, cursory knowledge of the markets, charting, and supply & demand, but now I have the skills, albeit very green, to provide a lifetime of return. And the education doesn't stop with the class. There is a community of like-minded traders, all ready and willing to help and lend a hand. I'm super thankful for this opportunity and look forward to the journey ahead." },
+  { name: 'Danielle G', title: 'Sr. Epic Application Specialist', img: `${A}679c4ad9a63b20955c05a779_danielle-g.png`, quote: "Do not wait to get involved! Bill's master class is highly informative and so well presented. He is an expert with knowledge beyond what most traders have and is incredibly responsive with questions. I cannot say enough about this class nor the incredible trading community Bill has created. You will see returns in multiple forms, not just monetary. With the economy frequently in question and the many uncertainties in life, securing one's financial well being is a strong priority. Why wait? LFG!!" },
+  { name: 'John Gordy', title: 'Chief Financial Officer at DroneUp', img: `${A}678e77c8a0abd734e3415731_jogn-gordy.avif`, imgAlt: 'John Gordy profile image', quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!" },
+  { name: 'Riley H', title: 'Sales Specialist at AB Laboratories Inc.', img: `${A}678e7871274732ce809d928f_riley-h.avif`, imgAlt: 'Riley H profile image', quote: "It was an absolute joy learning from Bill. The brightest people can take complex ideas and explain them with simplicity. Bill certainly exemplifies this. I'm very much looking forward to continuing to grow my knowledge alongside the great community Bill has created. Thank you for your time Bill, it's much appreciated!" },
+  { name: 'Stijn Ceelen', title: 'Seasoned C-level leader in Banking & Wealth(Tech)', img: `${A}678e78e0ad106cbe59c5e816_stijn-ceelen.avif`, imgAlt: 'Stijn Ceelen profile image', quote: "Just wrapped up the masterclass in options trading with Bill Fanter, and I have to say, I absolutely loved it! This old fox (me) picked up some new tricks, proving once again that life always has more to teach you. A big thank you to Bill Fanter for being not just a great teacher, but also a fantastic person and mentor. Your insights and approach make all the difference! Now, time to put your lessons into action 🚀" },
+  { name: 'Rob Stalkie', title: 'Account Manager', img: `${A}679c51ea7d9046f26ec04264_rob-stalkie.png`, quote: "Bill's Masterclass was incredibly informative and fun. He weaves in and out of topics from trading psychology to charting and makes every lesson accessible to complete beginners. Well worth it!" },
+  { name: 'David Lawson', title: 'Founder Icegreen - Beautiful Bags For Brands', img: `${A}678e7a667540897023632d1b_david-lawson.avif`, imgAlt: 'David Lawson profile image', quote: "I just finished taking Bill Fanter's Master Class. It has been an amazing experience. Bill teaches a complex subject and presents it in a way that is easy to process and understand. I feel very grateful to come across Bill and this opportunity. He has big heart and cares about his students. I would highly recommend this course if you have an interest in trading options. Thank you very much Bill for what you have put into this, I look forward to learning and working with in the future." },
+];
+
+// Discord / chat screenshot wall — verbatim sources from the prior page.
+const shots = [
+  { src: `${A}693619fe0c4897712052fd70_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(3).jpeg`, alt: '' },
+  { src: `${A}693619fec6c7514bb589c309_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM.jpeg`, alt: '' },
+  { src: `${A}693619feb4b6f8e17523d520_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(2).jpeg`, alt: '' },
+  { src: `${A}66d5a2c88eb566d3ed69ce45_16.webp`, alt: '' },
+  { src: `${A}693619fe8231380688f4eafe_WhatsApp%20Image%202025-12-08%20at%2012.41.33%20AM%20(1).jpeg`, alt: '' },
+  { src: `${A}68e5a2958f2a94f22caf2a25_Screenshot%202025-10-05%20at%203.53.45%E2%80%AFPM.png`, alt: '' },
+];
+
+// "Before you place another trade" feature cards (verbatim).
+const features = [
+  { icon: `${A}664a67e395a23dde11b86219_home%20images.svg`, title: 'Control more of the move for less', body: 'Learn how a small options premium gives you exposure that usually takes a much larger stock position.' },
+  { icon: `${A}664a67e37d7ad83ed24c8b3c_home%20images-1.svg`, title: 'Read the opening hour', body: "Learn why the first hour shows the day's clearest moves and how to trade that window." },
+  { icon: `${A}664a67e36b4affa0be8c0a5e_home%20images-2.svg`, title: 'Cap your downside first', body: 'Learn the risk rules Bill uses to define each loss before he lets a trade work.' },
+  { icon: `${A}664a67e395a23dde11b86219_home%20images.svg`, title: 'Trade in any direction', body: 'Learn to spot setups whether the market opens up, down, or flat.' },
+  { icon: `${A}664a67e37d7ad83ed24c8b3c_home%20images-1.svg`, title: 'Set up your screen in minutes', body: "Learn the layouts, indicators, and broker settings so you can mirror Bill's setup fast." },
+];
+
+// Decorative tickers for the closing-CTA grainient square (same concept as the
+// /free-watchlist CTA): two rows scrolling in OPPOSITE directions. Purely visual
+// (the media is aria-hidden); values are illustrative, not live quotes.
+const tickerA = [
+  ['AAPL', '+1.2%', 'up'], ['NVDA', '+2.4%', 'up'], ['SPY', '+0.4%', 'up'], ['TSLA', '-0.8%', 'down'],
+  ['QQQ', '+0.6%', 'up'], ['AMD', '+1.9%', 'up'], ['MSFT', '+0.3%', 'up'], ['META', '-0.5%', 'down'],
+];
+const tickerB = [
+  ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
+  ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
+];
+---
+<!-- Hero: copy + registration form on the LEFT, iPad image on the RIGHT
+     (the homepage newsletter / watchlist split layout). -->
+<section class="bf-section bf-hero bf-hero--dark" id="register">
+  <div
+    class="bf-hero-dots"
+    data-dotgrid
+    data-dot-size="2"
+    data-gap="10"
+    data-base-color="#454545"
+    data-active-color="#75B5FF"
+    data-proximity="140"
+    data-return-duration="0.6"
+  ></div>
+  <div class="bf-hero-scrim" aria-hidden="true"></div>
+  <div class="bf-container">
+    <div class="bf-newsletter-split">
+      <div class="bf-newsletter-split__copy">
+        <h1 class="bf-h1">Learn how to trade the opening hour with a repeatable options plan</h1>
+        <p class="bf-lead" style="margin-top:22px">In under 60 minutes, see the exact rules Bill uses to trade the first hour of the market. You walk away with a routine you can practice the next morning. No hype, no hot tips. Just a rules-based way to place trades, define your downside, and skip the mistakes that drain most retail accounts.</p>
+        <div class="bf-newsletter-split__form">
+          <SubscribeForm
+            id="wf-form-Webinar-form"
+            name="wf-form-Webinar-form"
+            dataName="Webinar form"
+            redirect="https://www.billfanter.com/watch-webinar"
+            wfPageId="664c1c1ece7e660fcaf8ed86"
+            wfElementId="eb9cc3d0-5bee-f6c7-958c-fe96d382d256"
+            turnstileSitekey="0x4AAAAAAAQTptj2So4dx43e"
+            nameField="LM-name"
+            nameDataName="LM name"
+            nameRequired={false}
+            emailField="LM-email"
+            emailDataName="LM email"
+            submitLabel="Watch Now"
+          />
+        </div>
+      </div>
+      <div class="bf-newsletter-split__media bf-webinar-media">
+        <img
+          src="/assets/664a5b263659c7265be280ad/664a67e56ac2f27a7b0c898e_home%20images-2.webp"
+          alt="Bill Fanter webinar shown on an iPad"
+          sizes="(max-width: 640px) 100vw, 640px"
+          loading="lazy"
+          srcset="/assets/664a5b263659c7265be280ad/664a67e56ac2f27a7b0c898e_home%20images-2-p-500.webp 500w, /assets/664a5b263659c7265be280ad/664a67e56ac2f27a7b0c898e_home%20images-2-p-800.webp 800w, /assets/664a5b263659c7265be280ad/664a67e56ac2f27a7b0c898e_home%20images-2-p-1080.webp 1080w, /assets/664a5b263659c7265be280ad/664a67e56ac2f27a7b0c898e_home%20images-2.webp 1524w"
+        />
+        <!-- Rotating trust tags, top-right of the image: one shows at a time and
+             cross-fades to the next in sequence. -->
+        <div class="bf-webinar-tags" aria-hidden="true">
+          <span class="bf-webinar-tag">35-year finance pro; $10B+ overseen</span>
+          <span class="bf-webinar-tag">1,200+ students taught</span>
+          <span class="bf-webinar-tag">1,000+ traders in our community</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Before you place another trade… — WHITE bg. homepage HelpGrid rhythm:
+     centered header → framed full-width media → even feature-card grid → CTA. -->
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Before you place another options trade, see how Bill reads and trades the opening hour</h2>
+      <p class="bf-lead">The first hour of the trading day moves fast, and most traders react instead of trading a plan. In this free options webinar, Bill walks through how he reads the open and defines his risk before he places a trade, so you can run the same routine with your own account.</p>
+    </div>
+    <div class="bf-community-grid">
+      <div class="bf-community__media">
+        <img
+          src="/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.png"
+          alt="Bill Fanter's live trading community on Discord"
+          sizes="(max-width: 1080px) 100vw, 1080px"
+          loading="lazy"
+          srcset="/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS-p-500.png 500w, /assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS-p-800.png 800w, /assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS-p-1080.png 1080w, /assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.png 1860w"
+        />
+      </div>
+      <div class="bf-community__benefits">
+        <div data-benefits-list style="display:contents">
+          {features.map((f, i) => (
+            <div class="bf-benefit">
+              <div class="bf-benefit__num">{`0${i + 1}`}</div>
+              <div>
+                <div class="bf-benefit__title">{f.title}</div>
+                <p class="bf-body">{f.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <a href="#wf-form-Webinar-form" class="bf-btn bf-btn--primary" style="margin-top:8px;align-self:flex-start">Watch the free webinar</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gradient-fade band spanning the reviews. -->
+<div class="bf-webinar-fade">
+<!-- REVIEWS — the shared homepage Reviews component (video cards + screenshot
+     wall), used site-wide for a single consistent reviews section. -->
+<Reviews showCta={false} />
+</div>
+<!-- /gradient-fade band -->
+
+<!-- Blue gradient-fade band across the two sections after the reviews ("The
+     habits…" + "This webinar is for you if"): white at top → blue by the bottom. -->
+<div class="bf-webinar-fade3">
+<!-- Quick wins you can expect — masterclass EffortlessStrategy layout
+     (mirrors the watchlist "Why join" component). -->
+<EffortlessStrategy
+  heading="The habits you'll build for the opening hour"
+  lead="Walk away with a clear routine you can run the next time the market opens. You learn how to spot setups in the first hour and size every position to a risk you set before you ever click buy. These are the habits that build consistency, so you trade options with a plan instead of reacting to every move."
+  ctaHref="#wf-form-Webinar-form"
+  ctaLabel="Watch the free webinar"
+  image="/assets/664a5b263659c7265be280ad/664a67e595a23dde11b862af_home%20images-5.webp"
+  imageAlt="Image of Bill Fanter using his computer"
+  review={{
+    quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading.",
+    name: 'John Gordy',
+    title: 'Chief Financial Officer at DroneUp',
+    avatar: '/assets/664a5b263659c7265be280ad/678e77c8a0abd734e3415731_jogn-gordy.avif',
+  }}
+  features={[
+    { lead: 'Click buy or sell with a plan', rest: ': know your entry, exit, and stop before every trade.' },
+    { lead: 'Cap your downside to the dollar', rest: ': set your maximum loss per trade up front.' },
+    { lead: 'Trade one focused hour, then log off', rest: ': handle the open in the morning and get your day back.' },
+    { lead: 'Aim for asymmetric setups', rest: ' where the upside outweighs the risk you define going in.' },
+  ]}
+/>
+
+<!-- This options trading webinar is for you if — homepage even card grid (4-up). WHITE. -->
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">This options trading webinar is for you if</h2>
+    </div>
+    <div class="bf-help-grid bf-help-grid--four">
+      <div class="bf-help-card">
+        <div class="bf-help-card__icon"><img src="/assets/664a5b263659c7265be280ad/664a67e395a23dde11b86219_home%20images.svg" alt="" /></div>
+        <p class="bf-body">You're <strong>new to options</strong> and want a clear, practical place to start.</p>
+      </div>
+      <div class="bf-help-card">
+        <div class="bf-help-card__icon"><img src="/assets/664a5b263659c7265be280ad/664a67e37d7ad83ed24c8b3c_home%20images-1.svg" alt="" /></div>
+        <p class="bf-body">You trade <strong>stocks</strong> now and want more control over your risk and capital.</p>
+      </div>
+      <div class="bf-help-card">
+        <div class="bf-help-card__icon"><img src="/assets/664a5b263659c7265be280ad/664a67e36b4affa0be8c0a5e_home%20images-2.svg" alt="" /></div>
+        <p class="bf-body">You're a <strong>busy pro</strong> who can give 60 to 90 minutes around the open.</p>
+      </div>
+      <div class="bf-help-card">
+        <div class="bf-help-card__icon"><img src="/assets/664a5b263659c7265be280ad/664a67e395a23dde11b86219_home%20images.svg" alt="" /></div>
+        <p class="bf-body">You're tired of <strong>YouTube rabbit holes</strong> and want one repeatable routine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Meet Bill Fanter — homepage AboutBill 50/50 split. The blue band continues
+     through here and ENDS at the bottom of this section (CTA below is on white). -->
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-about-grid">
+      <div class="bf-about__media">
+        <img
+          src="/assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1.webp"
+          alt="image of bill fanter"
+          sizes="(max-width: 1168px) 100vw, 1168px"
+          loading="lazy"
+          srcset="/assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1-p-500.webp 500w, /assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1-p-800.webp 800w, /assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1-p-1080.webp 1080w, /assets/664a5b263659c7265be280ad/664c28d7ea8baa25095372ee_masterclass%20image-1.webp 1168w"
+        />
+        <Signature class="bf-about__sig" />
+      </div>
+      <div class="bf-about__copy">
+        <span class="bf-eyebrow">Who's teaching</span>
+        <h2 class="bf-h2">Meet Bill Fanter</h2>
+        <p style="margin-top:22px">Bill Fanter spent 35 years in banking and the markets, and he now trades options every morning around the open. He has taught 1,200+ students how options work, how to manage risk, and how to run the same routine each day. He teaches the way he wishes someone had taught him: clear rules, defined risk, and a plan you can repeat.</p>
+        <div class="bf-about__actions">
+          <a href="#wf-form-Webinar-form" class="bf-btn bf-btn--primary">Watch the free webinar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+<!-- /blue gradient-fade band (ends at the bottom of Meet Bill) -->
+
+<!-- Ready to trade the opening hour — homepage YoutubeCta .bf-darkcta grainient
+     pattern + disclaimer copy + Whop-style CTA. -->
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-darkcta bf-darkcta--black">
+      <div class="bf-darkcta__grid">
+        <div>
+          <h2 class="bf-darkcta__h2">Ready to trade the opening hour with a plan?</h2>
+          <p class="bf-darkcta__lead">Educational content only; not financial advice. Options involve risk and are not suitable for all investors. Results vary and are not guaranteed.</p>
+          <div class="bf-darkcta__buttons">
+            <a class="bf-darkcta__btn" href="#wf-form-Webinar-form">
+              <span class="bf-darkcta__btn-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg></span>
+              Watch the free webinar
+            </a>
+          </div>
+        </div>
+        <div class="bf-darkcta__media" aria-hidden="true">
+          <div class="bf-darkcta__grain-card">
+            <div class="bf-grainient-mount" data-grainient="webinar-darkcta" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+            <div class="fw-ticker">
+              <div class="fw-ticker__row">
+                <div class="fw-ticker__track fw-ticker__track--ltr">
+                  {[...tickerA, ...tickerA].map(([sym, chg, dir]) => (
+                    <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                  ))}
+                </div>
+              </div>
+              <div class="fw-ticker__row">
+                <div class="fw-ticker__track fw-ticker__track--rtl">
+                  {[...tickerB, ...tickerB].map(([sym, chg, dir]) => (
+                    <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ============================================================
+     /webinar scoped polish — homepage clone. Only minimal layout
+     glue lives here; the heavy lifting comes from the homepage
+     bf-* component classes in bf-design-system.css (untouched).
+     ============================================================ */
+
+  /* Alternating off-white band, same token the homepage uses between
+     white sections so the page reads as composed bands. */
+  /* Fade the band into white at its top + bottom edges so consecutive
+     white / band sections blend instead of reading as hard grey/white steps. */
+  .is-band { background: linear-gradient(180deg, #ffffff 0%, var(--bf-bg-2) 14%, var(--bf-bg-2) 86%, #ffffff 100%); }
+
+  /* "Before you place" sits on plain white now; the gradient band STARTS lower,
+     at the reviews (hard #eef4fc top edge) and fades to white by the bottom of
+     the reviews. The reviews section goes transparent so the band shows through. */
+  /* First band on the page → GREY, oriented white-top → colour-bottom (homepage
+     style). The blue band comes second (.bf-webinar-fade2). */
+  .bf-webinar-fade { background: linear-gradient(180deg, #ffffff 0%, #f4f4f7 100%); }
+  .bf-webinar-fade :global(.bf-reviews) { background: transparent; }
+
+  /* "Before you place" headline → content gap: drop the shared .bf-community-grid
+     64px margin-top so the gap is just the section-header rhythm (was a doubled
+     ~120px). */
+  .bf-community-grid { margin-top: 0; }
+
+  /* Second fade: hard NEUTRAL off-white top edge at "Meet Bill Fanter", fading to
+     white by the bottom of the final CTA (the first band above uses the cool
+     #eef4fc tint, so the page shows two distinct fades, not all blue). Wraps
+     "Meet Bill Fanter" + the closing CTA — all transparent so the band shows. */
+  /* Second band on the page → BLUE, oriented white-top → colour-bottom. */
+  .bf-webinar-fade2 { background: linear-gradient(180deg, #ffffff 0%, #eef4fc 100%); }
+  .bf-webinar-fade2 .bf-section { background: transparent; }
+
+  /* Blue band across "The habits…" + "This webinar is for you if" — white top
+     fading to blue by the bottom (the page's white→colour orientation). The
+     wrapped EffortlessStrategy + .bf-section go transparent so the band shows. */
+  .bf-webinar-fade3 { background: linear-gradient(180deg, #ffffff 0%, #eef4fc 100%); }
+  .bf-webinar-fade3 .bf-section { background: transparent; }
+  .bf-webinar-fade3 :global(.es-section) { background: transparent; }
+
+  /* ── Closing-CTA tickers: two rows of stock chips scrolling opposite ways,
+     centered over the grainient square (same concept as /free-watchlist). ────── */
+  .fw-ticker {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  }
+  .fw-ticker__row { display: flex; overflow: hidden; }
+  .fw-ticker__track { display: inline-flex; flex: 0 0 auto; white-space: nowrap; will-change: transform; }
+  .fw-ticker__track--ltr { animation: fw-ticker-ltr 26s linear infinite; }
+  .fw-ticker__track--rtl { animation: fw-ticker-rtl 26s linear infinite; }
+  @keyframes fw-ticker-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes fw-ticker-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .fw-ticker__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-right: 8px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(10, 12, 20, 0.34);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .fw-ticker__sym { font-weight: 700; letter-spacing: 0.01em; }
+  .fw-ticker__chg--up { color: #6ee7a0; }
+  .fw-ticker__chg--down { color: #ff9d98; }
+  @media (prefers-reduced-motion: reduce) {
+    .fw-ticker__track--ltr, .fw-ticker__track--rtl { animation: none; }
+  }
+
+  /* Rotating trust tags, top-right of the hero image. */
+  .bf-webinar-media { position: relative; }
+  .bf-webinar-tags { position: absolute; top: 16px; right: 16px; height: 38px; pointer-events: none; }
+  .bf-webinar-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    white-space: nowrap;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 22px -8px rgba(20, 60, 120, 0.35);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bf-text);
+    opacity: 0;
+    animation: bf-tag-cycle 9s infinite;
+  }
+  .bf-webinar-tag:nth-child(2) { animation-delay: 3s; }
+  .bf-webinar-tag:nth-child(3) { animation-delay: 6s; }
+  @keyframes bf-tag-cycle {
+    0%   { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    4%   { opacity: 1; transform: translateY(0) scale(1); }
+    29%  { opacity: 1; transform: translateY(0) scale(1); }
+    33%  { opacity: 0; transform: translateY(8px) scale(0.96); }
+    100% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-webinar-tag { animation: none; }
+    .bf-webinar-tag:nth-child(1) { opacity: 1; }
+  }
+
+  /* ---------- Dark dot-grid hero (mirrors the homepage Hero stage) ----------
+     Section becomes a near-black stage with the React Bits DotGrid behind the
+     copy + form. The white CardNav now reads against the dark hero (it was
+     white-on-white invisible on the old white hero). */
+  .bf-hero--dark {
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    color: #fff;
+    isolation: isolate;
+    /* Even hero padding, consistent with /free-watchlist: bigger than the
+       section rhythm (100px), smaller than the homepage hero. */
+    padding-top: 150px;
+    padding-bottom: 150px;
+  }
+  /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
+  @media (max-width: 767px) {
+    .bf-hero--dark { padding-top: 52px; padding-bottom: 52px; }
+  }
+  .bf-hero--dark .bf-container { position: relative; z-index: 3; }
+  .bf-hero-dots {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.66;
+    pointer-events: auto;
+  }
+  /* Scrim sits BELOW the dots so they read brighter (same trick as the homepage). */
+  .bf-hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: rgba(10, 10, 10, 0.5);
+  }
+  .bf-hero--dark .bf-h1 { color: #fff; }
+  .bf-hero--dark .bf-h1 strong { color: #fff; }
+  /* Bumped above the footer's 0.62 to COMPENSATE for the dot-grid backdrop (dots
+     + scrim sit behind the text and lighten it), so it reads as the same white as
+     the footer body text on solid #000. */
+  .bf-hero--dark .bf-lead { color: #fff; }
+  .bf-hero--dark .bf-lead strong { color: #fff; }
+  .bf-hero--dark .bf-webinar__trust { color: #fff; }
+  .bf-hero--dark .bf-webinar__trust-text { color: #fff; }
+
+  /* Lead-capture form as a frosted card floating on the dark stage. The
+     SubscribeForm internals are restyled for dark via :global (they carry the
+     child component's scope, not this page's). */
+  .bf-hero--dark .bf-newsletter-split__form {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 24px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
+  }
+  .bf-hero--dark :global(.bf-subform__input) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  .bf-hero--dark :global(.bf-subform__input::placeholder) { color: rgba(255, 255, 255, 0.5); }
+  .bf-hero--dark :global(.bf-subform__input:focus) {
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+  }
+  .bf-hero--dark :global(.bf-subform__submit) { background: #fff; color: #0a0a0a; }
+  .bf-hero--dark :global(.bf-subform__submit:hover) { background: #ececec; }
+
+  /* ---------- Hero (kept as-is) ---------- */
+  .bf-webinar--hero {
+    align-items: start;
+    gap: 56px;
+    padding-bottom: 8px;
+  }
+  .bf-webinar--hero .bf-webinar__copy { gap: 0; }
+  .bf-webinar__trust {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    font-size: 14px;
+    color: var(--bf-text-muted);
+  }
+  .bf-webinar__trust-stars { display: inline-flex; gap: 2px; color: var(--bf-gold); }
+  .bf-webinar__trust-stars .bf-star { width: 16px; height: 16px; fill: var(--bf-gold); }
+  .bf-webinar__trust-text { font-weight: 500; color: var(--bf-text); }
+
+  .bf-webinar__hero-image {
+    margin-top: 56px;
+    border-radius: var(--bf-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--bf-shadow-card);
+    border: 1px solid var(--bf-border);
+  }
+  .bf-webinar__hero-image img { width: 100%; display: block; }
+
+  /* ---------- Trust chips ---------- */
+  .bf-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .bf-chip {
+    border: 1px solid var(--bf-border);
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bf-text);
+    background: #fff;
+    box-shadow: 0 6px 18px -8px rgba(20, 60, 120, 0.18);
+    /* Gently float + rotate so the pills feel alive and couple with the hero. */
+    animation: bf-chip-float 4.5s ease-in-out infinite;
+    will-change: transform;
+  }
+  .bf-chip:nth-child(2) { animation-delay: -1.5s; }
+  .bf-chip:nth-child(3) { animation-delay: -3s; }
+  @keyframes bf-chip-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-9px) rotate(2deg); }
+  }
+  /* Pull the pill row up so it overlaps the hero's lower edge (coupled). */
+  #register + .bf-section.is-tight { margin-top: -48px; position: relative; z-index: 2; }
+  @media (prefers-reduced-motion: reduce) { .bf-chip { animation: none; } }
+
+  /* ---------- "Watch this first" framed media ---------- */
+  .bf-feature-frame {
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: var(--bf-radius-lg);
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow: var(--bf-shadow-card);
+    border: 1px solid var(--bf-border);
+  }
+  .bf-feature-frame img { width: 100%; height: auto; display: block; }
+
+  /* ---------- Feature / qualifier card grids ----------
+     Reuse the homepage .bf-help-grid + .bf-help-card surface exactly.
+     The five-up variant just changes the column count + tightens the
+     icon-on-image (the homepage cards use inline SVG icons; here the
+     icons are .svg images, so the icon box gets an image rule). */
+  .bf-help-card__icon img { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+
+  .bf-help-grid--five {
+    grid-template-columns: repeat(5, 1fr);
+    margin-top: 48px;
+  }
+  @media (max-width: 1100px) { .bf-help-grid--five { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .bf-help-grid--five { grid-template-columns: 1fr; } }
+
+  .bf-help-grid--four { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 980px) { .bf-help-grid--four { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .bf-help-grid--four { grid-template-columns: 1fr; } }
+
+  /* ---------- Reviews — homepage Reviews pattern ----------
+     White→off-white wash, screenshot masonry wall, and review cards
+     mirroring the homepage Reviews component's card + wall styling. */
+  .bf-reviews {
+    padding: var(--bf-section-pad) 0;
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 55%, #eef4fc 100%);
+  }
+  .bf-reviews__wall {
+    margin-top: 8px;
+    column-count: 3;
+    column-gap: 16px;
+  }
+  .bf-reviews__shot {
+    width: 100%;
+    margin: 0 0 16px;
+    border-radius: var(--bf-radius-lg);
+    border: 1px solid var(--bf-border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 26px rgba(20, 60, 120, 0.07);
+    break-inside: avoid;
+    display: block;
+  }
+  @media (max-width: 900px) { .bf-reviews__wall { column-count: 2; } }
+  @media (max-width: 560px) { .bf-reviews__wall { column-count: 1; } }
+
+  .bf-reviews__cards {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 800px) { .bf-reviews__cards { grid-template-columns: 1fr; } }
+  .bf-reviews__card {
+    background: #fff;
+    border: 1px solid rgba(10, 30, 60, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 30px rgba(20, 60, 120, 0.06);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bf-reviews__stars { display: inline-flex; gap: 3px; }
+  .bf-reviews__stars .bf-star { width: 18px; height: 18px; fill: #ffc14d; }
+  .bf-reviews__quote { margin: 0; font-size: 16px; line-height: 1.6; color: #2c333c; }
+  .bf-reviews__author { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+  .bf-reviews__avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+  .bf-reviews__author-name { display: block; font-weight: 600; color: #0a0a0a; }
+  .bf-reviews__author-title { display: block; font-size: 13px; color: #6a7280; }
+
+  /* ---------- About-grid media framing (Quick wins / Meet Bill) ----------
+     Match the homepage AboutBill controlled-height portrait crop. */
+  .bf-about__media img {
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    object-position: center 22%;
+    border-radius: var(--bf-radius-lg);
+    box-shadow: var(--bf-shadow-card);
+    border: 1px solid var(--bf-border);
+  }
+  @media (max-width: 980px) { .bf-about__media img { height: 320px; } }
+
+  .bf-about__media { position: relative; }
+  .bf-about__media :global(.bf-about__sig) {
+    position: absolute; right: 18px; bottom: 16px; width: 150px; max-width: 44%;
+    color: #0a0a0a; filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.55));
+  }
+  .bf-about__actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Community quick-wins list. */
+  .bf-check-list {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  .bf-check-list li {
+    position: relative;
+    padding-left: 28px;
+    line-height: 1.55;
+    color: var(--bf-text-muted);
+  }
+  .bf-check-list li strong { color: var(--bf-text); }
+  .bf-check-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #FF8308, #EF4444);
+  }
+
+  /* ---------- Closing CTA ---------- */
+  .bf-darkcta__h2 { max-width: 22ch; }
+</style>

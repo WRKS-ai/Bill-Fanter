@@ -1,25 +1,58 @@
 ---
-// Production homepage — hybrid: classic markup with a thin modernization layer
-// (new font + spacing + button styles) applied via modernization.css.
-//
-// Comparison routes:
-//   /2026  — new UI preview (post-2026 design refresh, bf-* component system)
-//   /classic — original Webflow site, frozen as a rollback checkpoint
-//
-// Both stay available for side-by-side review.
+// Homepage — componentized 2026 redesign, assembled from clean Astro section
+// components (no Webflow markup). Replaced the classic-modernized hybrid.
+// The /2026 preview and /classic rollback remain available for reference.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import bodyHtml from './_classic-modernized/_body.html?raw';
-import extraHeadHtml from './_classic-modernized/_head.html?raw';
-import modernizationCSS from '../styles/modernization.css?raw';
+import ReactReady from '../components/ReactReady.jsx';
+import Islands from '../components/Islands.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/sections/Hero.astro';
+import MegaBento from '../components/sections/MegaBento.astro';
+import Watchlist from '../components/sections/Watchlist.astro';
+import Community from '../components/sections/Community.astro';
+import HelpGrid from '../components/sections/HelpGrid.astro';
+import Spotlight from '../components/sections/Spotlight.astro';
+import HeroSplit from '../components/sections/HeroSplit.astro';
+import Reviews from '../components/sections/Reviews.astro';
+import VideoTestimonials from '../components/sections/VideoTestimonials.astro';
+import YoutubeCta from '../components/sections/YoutubeCta.astro';
+import AboutBill from '../components/sections/AboutBill.astro';
 ---
 <BaseLayout
-  title={`Master Stock Options Trading | Bill Fanter`}
-  description={`Join Bill Fanter's Masterclass to master stock options trading. Discover powerful strategies, deepen your market knowledge, and enhance your trading skills with 35+ years of investment expertise. Subscribe for weekly stock watchlists and join our exclusive trading community.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`664a5b263659c7265be280e3`}
-  extraHeadHtml={extraHeadHtml}
+  title="Options Trading Masterclass, Signals & Community | Bill Fanter"
+  description="Learn options trading with Bill Fanter. Get the masterclass, live trade alerts, AI trading signals, a free stock watchlist, and a working trader community."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="664a5b263659c7265be280e3"
 >
-  {/* Modernization layer — Geist + spacing + button polish over Webflow */}
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  {/* variant="split" = the narrow 57% header that meets the hero image edge. */}
+  <main class="bf-page" data-cardnav-host data-cardnav-variant="split">
+    <Hero />
+    {/* One continuous gradient fade across the bento + watchlist: white at the
+        top of the bento → #f6f8fc at the bottom of the watchlist, then a hard
+        edge into the white Community section below. */}
+    <div class="bf-bento-fade">
+      <MegaBento />
+      <Watchlist />
+    </div>
+    <Community />
+    <HelpGrid />
+    <Spotlight />
+    <HeroSplit />
+    <Reviews />
+    <YoutubeCta />
+    <AboutBill />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+  /* Continuous fade spanning the bento + watchlist (their own section
+     backgrounds go transparent so this one gradient shows through both). Ends
+     at #f6f8fc with a hard border into the white Community section. */
+  .bf-bento-fade { background: linear-gradient(180deg, #ffffff 0%, #f6f8fc 100%); }
+  .bf-bento-fade .bf-mega { background: transparent; }
+  .bf-bento-fade #watchlist.bf-section { background: transparent; }
+</style>

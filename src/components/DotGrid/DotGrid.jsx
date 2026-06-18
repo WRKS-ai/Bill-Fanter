@@ -72,15 +72,22 @@ const DotGrid = ({
     const canvas = canvasRef.current;
     if (!wrap || !canvas) return;
 
-    const { width, height } = wrap.getBoundingClientRect();
+    const rect = wrap.getBoundingClientRect();
+    // Round CSS + backing-store dimensions to whole pixels. At fractional browser
+    // zoom (e.g. 80%) devicePixelRatio is non-integer, and a fractional canvas
+    // buffer gets interpolated unevenly by the browser — which showed up as a
+    // glitched/aliased band of dots along the bottom edge. Integer dimensions +
+    // an explicit (reset) transform keep the grid crisp at any zoom / DPR.
+    const width = Math.round(rect.width);
+    const height = Math.round(rect.height);
     const dpr = window.devicePixelRatio || 1;
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
     const ctx = canvas.getContext('2d');
-    if (ctx) ctx.scale(dpr, dpr);
+    if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     const cols = Math.floor((width + gap) / (dotSize + gap));
     const rows = Math.floor((height + gap) / (dotSize + gap));
@@ -120,15 +127,29 @@ const DotGrid = ({
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-      const { x: px, y: py } = pointerRef.current;
-      // Render on demand: only repaint when the pointer moved or a dot is
-      // mid-inertia. While you scroll/idle (pointer still), skip the expensive
-      // full-grid repaint so the hero stops monopolizing the main thread.
-      let animating = false;
-      for (const d of dotsRef.current) { if (d.xOffset !== 0 || d.yOffset !== 0) { animating = true; break; } }
-      if (px !== lastPx || py !== lastPy || animating) {
-      lastPx = px; lastPy = py;
+      const m = pointerRef.current;
+      const { x: px, y: py } = m;
+      // Engagement fades the proximity highlight out when the cursor stops or
+      // leaves, so it never leaves a static circular "afterimage" of lit dots.
+      // (The reference DotField gates its effect on movement the same way.)
+      const moveTarget = (performance.now() - (m.lastMoveAt || 0) < 140) ? 1 : 0;
+      m.eng = (m.eng || 0) + (moveTarget - (m.eng || 0)) * 0.12;
+      if (m.eng < 0.002) m.eng = 0;
+      const eng = m.eng;
+      // Always repaint the full grid each frame while visible. (An earlier
+      // render-on-demand optimization could freeze a half-drawn band of dots
+      // after a resize / layout shift, since it skipped repaints when the
+      // pointer was still. The IntersectionObserver below still stops the loop
+      // entirely once the hero scrolls off-screen, so idle cost is bounded.)
+      // Clear the FULL backing store with the transform reset to identity.
+      // The ctx is scaled by dpr (buildGrid), so a plain clearRect runs in
+      // scaled coords and only covers width*dpr × height*dpr — at dpr < 1
+      // (zoomed out) that's SMALLER than the canvas, leaving the bottom band
+      // uncleared, so hover-raised dots never get erased (the "stuck" glitch).
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.restore();
       for (const dot of dotsRef.current) {
         const ox = dot.cx + dot.xOffset;
         const oy = dot.cy + dot.yOffset;
@@ -136,9 +157,9 @@ const DotGrid = ({
         const dy = dot.cy - py;
         const dsq = dx * dx + dy * dy;
         let style = baseColor;
-        if (dsq <= proxSq) {
+        if (eng > 0.002 && dsq <= proxSq) {
           const dist = Math.sqrt(dsq);
-          const t = 1 - dist / proximity;
+          const t = (1 - dist / proximity) * eng;
           const r = Math.round(baseRgb.r + (activeRgb.r - baseRgb.r) * t);
           const g = Math.round(baseRgb.g + (activeRgb.g - baseRgb.g) * t);
           const b = Math.round(baseRgb.b + (activeRgb.b - baseRgb.b) * t);
@@ -150,13 +171,23 @@ const DotGrid = ({
         ctx.fill(circlePath);
         ctx.restore();
       }
-      }
       rafId = requestAnimationFrame(draw);
     };
     // Pause the canvas loop while the grid is off-screen or the tab is hidden,
     // so the hero stops eating the main thread once you scroll past it.
-    const start = () => { if (!running && isVisible && isPageVisible) { running = true; draw(); } };
-    const stop = () => { running = false; cancelAnimationFrame(rafId); };
+    // Snap every dot home + clear its tweens so the loop can never freeze a
+    // half-lifted "band" of dots when it pauses mid-animation.
+    const settleDots = () => {
+      for (const d of dotsRef.current) { gsap.killTweensOf(d); d.xOffset = 0; d.yOffset = 0; d._inertiaApplied = false; }
+    };
+    const start = () => {
+      if (!running && isVisible && isPageVisible) {
+        running = true;
+        lastPx = lastPy = NaN; // force one clean repaint of the settled state on (re)start
+        draw();
+      }
+    };
+    const stop = () => { running = false; cancelAnimationFrame(rafId); settleDots(); };
     const io = new IntersectionObserver(
       ([entry]) => { isVisible = entry.isIntersecting; isVisible ? start() : stop(); },
       { threshold: 0 }
@@ -204,6 +235,7 @@ const DotGrid = ({
         speed = maxSpeed;
       }
       pr.lastTime = now;
+      pr.lastMoveAt = now;
       pr.lastX = e.clientX;
       pr.lastY = e.clientY;
       pr.vx = vx;
@@ -228,7 +260,7 @@ const DotGrid = ({
                 xOffset: 0,
                 yOffset: 0,
                 duration: returnDuration,
-                ease: 'elastic.out(1,0.75)',
+                ease: 'power3.out',
               });
               dot._inertiaApplied = false;
             },
@@ -256,7 +288,7 @@ const DotGrid = ({
                 xOffset: 0,
                 yOffset: 0,
                 duration: returnDuration,
-                ease: 'elastic.out(1,0.75)',
+                ease: 'power3.out',
               });
               dot._inertiaApplied = false;
             },

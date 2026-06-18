@@ -1,7 +1,9 @@
-/* No scroll animation: the nav stays put as the top header. It sits in place at
-   the top of the page (absolute, so it scrolls away with the hero rather than
-   overlaying content as a fixed white bar). On desktop it fills the wide
-   left-aligned header area that ends where the hero image begins (~57%). */
+/* Top header for Bill Fanter. The white bar stays a fixed 72px; each top-level
+   item (Join / Learn / Company) owns its own dropdown that drops just below the
+   bar on hover, revealing ONE colored card per link. Same colored-card look +
+   slide-up reveal as the original shared card-nav, just isolated per item.
+   On desktop it fills the wide left-aligned header area (homepage: ~57% split;
+   other pages: contained to the page content width). */
 .card-nav-container {
   position: absolute;
   top: 0;
@@ -11,9 +13,54 @@
   box-sizing: border-box;
 }
 
+/* Stripe-style focus: while a dropdown is open, blur + dim the rest of the page
+   so attention goes to the nav. Fixed full-viewport, sits just under the bar +
+   dropdown (which live above it in the same container). */
+.card-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  /* Neutral dark tint (no blue) + 5px blur — the pricing modal mirrors this. */
+  background: rgba(10, 10, 10, 0.16);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+  /* 0.4s matches the drawer roll-down so the blur fades in as the menu opens. */
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+.card-nav-container.has-open .card-nav-backdrop {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.4s ease, visibility 0s;
+}
+
+/* Non-homepage pages: the header sits statically at the top and scrolls away
+   with the page (absolute, anchored to the page top) — it does not follow the
+   scroll. The homepage (.is-split) keeps the same absolute overlay that melts
+   into the dark hero. */
+.card-nav-container:not(.is-split) {
+  position: absolute;
+}
+
 @media (min-width: 769px) {
-  .card-nav-container {
-    width: 57%;
+  /* Homepage opts into the narrow split via .is-split — the nav right edge lands
+     exactly on the watchlist grid line (the body-text / blue-tile left edge),
+     where the hero image also begins, so everything shares one vertical line.
+     The calc tracks that line: it equals it at the 1440 container width and
+     follows the centered container on wider monitors. */
+  .card-nav-container.is-split {
+    width: min(65vw, calc((100vw - 1440px) / 2 + 937px));
+  }
+  /* Every other page: contained to the page content width (centered) rather
+     than running full-bleed edge to edge. */
+  .card-nav-container:not(.is-split) {
+    max-width: var(--bf-container, 1440px);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
   }
 }
 
@@ -22,25 +69,23 @@
   box-shadow: none;
 }
 
+/* Closed state carries NO border or shadow on any page — the bar reads as a
+   clean flush block. The drop shadow only appears when a dropdown opens (see the
+   open-dropdown rule below); the homepage (.is-split) keeps its shadowless
+   overlay that melts into the dark hero. */
+
 .card-nav {
   display: block;
   height: 72px;
   padding: 0;
   background-color: white;
-  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  border: 0;
   border-radius: 0.75rem;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   position: relative;
-  overflow: hidden;
-  transition:
-    height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.4s ease,
-    box-shadow 0.4s ease;
-}
-
-/* Hover/open: the whole block extends down to reveal all cards at once. */
-.card-nav.open {
-  height: 272px;
+  /* Above the blur backdrop (which is the container's first child). */
+  z-index: 1;
+  /* No overflow:hidden — per-item dropdowns must spill below the bar. */
 }
 
 .card-nav-top {
@@ -52,7 +97,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.7rem 0.45rem 0.7rem 1.25rem;
+  /* Symmetric horizontal padding: the CTA's right gap matches the logo's left
+     gap (1.25rem), and the dropdown cards inset by the same amount (below) so the
+     bar edges + card edges all line up. */
+  padding: 0.7rem 1.25rem;
   z-index: 2;
 }
 
@@ -97,15 +145,21 @@
   transform: translate(-50%, -50%);
 }
 
-.logo {
-  height: 42px;
+/* `.card-nav` prefix raises specificity above the global `.bf-page img`
+   reset (height:auto) that otherwise wins when CardNav mounts inside .bf-page. */
+.card-nav .logo {
+  height: 44px;
+  width: auto;
 }
 
 /* Desktop nav links (top-level labels). Hidden on mobile (hamburger only). */
 .card-nav-menu {
   display: none;
   align-items: center;
-  gap: 0.25rem;
+  /* Wider gap between Join / Learn / Company so the hover targets sit farther
+     apart — less chance of skimming into the next item's dropdown while moving
+     the cursor across the bar. */
+  gap: 0.85rem;
 }
 
 .card-nav-menu-item {
@@ -136,7 +190,8 @@
   transition: transform 0.25s ease;
 }
 
-.card-nav.open .card-nav-menu-caret {
+.card-nav-item.is-open .card-nav-menu-caret,
+.card-nav-item:focus-within .card-nav-menu-caret {
   transform: rotate(180deg);
 }
 
@@ -186,85 +241,133 @@
   opacity: 0.65;
 }
 
-.card-nav-content {
+/* ===== Per-item dropdown (desktop) =====
+   `position: static` so the dropdown anchors to .card-nav-top (the positioned
+   72px bar) rather than the item — letting each item's panel span the FULL nav
+   width and drop straight down as one block (the original "nav extends down"
+   fill effect), just isolated to the hovered item. */
+.card-nav-item {
+  position: static;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Full-width panel: drops flush below the bar, spanning the entire nav width
+   (the white "fill area" extending down). Holds the hovered item's cards, which
+   stretch to fill the width just like the original shared card row. Each item's
+   panel occupies the same spot, so only the hovered one is visible. */
+.card-nav-dropdown {
   position: absolute;
+  top: 100%;
+  /* Tuck up 2px so the panel's white fill covers the bar's faint bottom edge
+     (and any sub-pixel gap), so it reads as one continuous block with the bar. */
+  margin-top: -2px;
+  /* Span the bar's EXACT width — the panel's containing block is the full-width
+     bar, so 0/0 lines it up edge-to-edge with the nav (was reading inset/off). */
   left: 0;
   right: 0;
-  top: 72px;
-  bottom: 0;
-  padding: 0.5rem;
   display: flex;
-  align-items: stretch;
   gap: 12px;
-  opacity: 0;
+  /* Cards inset 1.25rem from the nav edges so their outer edges line up with the
+     logo (left) and CTA button (right); 12px top/bottom keeps the panel tight. */
+  padding: 12px 1.25rem;
+  background: #fff;
+  border: 0;
+  /* Square edges — flush continuation of the squared bar. */
+  border-radius: 0;
+  /* DRAWER (ReactBits-style): the white panel rolls down on open and rolls up on
+     close via CLIP-PATH, which maps 1:1 to the panel's real height — so there's NO
+     dead-zone pause (a fixed max-height larger than the content made the close
+     hang ~70% then snap). The cards slide up + fade in (staggered); that card
+     motion is what makes it read as a drawer, not a static "scan". Synced to the
+     backdrop blur over the same 0.4s. */
+  overflow: hidden;
   visibility: hidden;
   pointer-events: none;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
   z-index: 1;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.4s cubic-bezier(0.33, 1, 0.68, 1), visibility 0s linear 0.4s;
 }
-
-.card-nav.open .card-nav-content {
-  opacity: 1;
+/* During a SWITCH the just-closed panel HOLDS open under the opening one, then
+   snaps closed — so the drawer reads as staying open while the content swaps. */
+.card-nav-container.has-open .card-nav-dropdown {
+  transition: clip-path 0s linear 0.4s, visibility 0s linear 0.4s;
+}
+.card-nav-item.is-open .card-nav-dropdown,
+.card-nav-item:focus-within .card-nav-dropdown {
   visibility: visible;
   pointer-events: auto;
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.4s cubic-bezier(0.33, 1, 0.68, 1), visibility 0s;
 }
+/* Cards rise + fade in as the drawer opens (staggered), like the ReactBits cards. */
+.card-nav-dropdown .nav-card {
+  transform: translateY(24px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.36s ease, box-shadow 0.25s ease;
+}
+.card-nav-item.is-open .nav-card,
+.card-nav-item:focus-within .nav-card {
+  transform: translateY(0);
+  opacity: 1;
+}
+.card-nav-item.is-open .nav-card:nth-child(2),
+.card-nav-item:focus-within .nav-card:nth-child(2) { transition-delay: 0.07s; }
+.card-nav-item.is-open .nav-card:nth-child(3),
+.card-nav-item:focus-within .nav-card:nth-child(3) { transition-delay: 0.14s; }
 
+/* One card per link — colored bg/text come from the item (inline). The cards
+   flex to fill the full-width panel (like the original 3-card fill row). */
 .nav-card {
+  position: relative;
   flex: 1 1 0;
   min-width: 0;
-  border-radius: calc(0.75rem - 0.2rem);
-  position: relative;
+  min-height: 130px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(10, 20, 40, 0.16);
   display: flex;
   flex-direction: column;
-  padding: 14px 16px;
-  gap: 8px;
-  user-select: none;
-  opacity: 0;
-  transform: translateY(18px);
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
-}
-
-.card-nav.open .nav-card {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.nav-card-label {
-  font-weight: 400;
-  font-size: 20px;
-  letter-spacing: -0.5px;
-}
-
-.nav-card-links {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.nav-card-link {
-  font-size: 15px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 0.3s ease;
-  display: inline-flex;
-  align-items: center;
+  padding: 18px 20px;
   gap: 6px;
+  text-decoration: none;
   color: inherit;
+  /* No per-card fade/slide — the cards ride down with the panel's clip reveal
+     as one solid block (the smooth original drop-down feel). No hover lift. */
+}
+.nav-card-arrow {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 18px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.nav-card:hover .nav-card-arrow {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+.nav-card-label {
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  max-width: 86%;
+}
+.nav-card-desc {
+  margin-top: auto;
+  font-size: 16px;
+  line-height: 1.4;
+  /* Pure white, no dimming (site font-color standard). */
+  opacity: 1;
 }
 
-.nav-card-link:hover {
-  opacity: 0.75;
-}
+/* ===== Mobile panel (hamburger) ===== */
+.card-nav-mobile { display: none; }
 
 @media (min-width: 769px) {
-  .hamburger-menu {
-    display: none;
-  }
+  .hamburger-menu { display: none; }
   .logo-container {
     position: static;
     transform: none;
@@ -272,45 +375,82 @@
   .card-nav-menu {
     display: flex;
     margin-left: 1.5rem;
+    height: 100%;
   }
-  .card-nav-actions {
-    margin-left: auto;
-  }
-
-  /* Desktop: hovering anywhere on the bar extends the whole block down and
-     reveals all cards (pure CSS — no JS state, no animation-loop starvation). */
-  .card-nav-container:hover .card-nav {
-    height: 272px;
-  }
-  .card-nav-container:hover .card-nav-content {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-  .card-nav-container:hover .nav-card {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .card-nav-container:hover .card-nav-menu-caret {
-    transform: rotate(180deg);
-  }
+  .card-nav-actions { margin-left: auto; }
 }
 
 @media (max-width: 768px) {
+  /* Mobile bar: full-width, anchored to the very top (not a floating centered
+     pill). Absolute (not fixed) so it scrolls away with the page instead of
+     following you down the screen. */
   .card-nav-container {
-    width: 90%;
-    top: 1.2em;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    transform: none;
+    top: 0;
   }
-  .card-nav.open {
-    height: auto;
-  }
-  .card-nav-content {
-    position: static;
+  /* Collapsed bar shows ONLY the logo + hamburger — the nav links, Login, and
+     CTA all live in the full-screen panel that the hamburger opens. */
+  .card-nav-menu { display: none; }
+  .card-nav-actions { display: none; }
+  /* Logo on the LEFT, hamburger on the RIGHT (the bar is a flex row with
+     space-between; order flips the default hamburger-left / logo-center). */
+  .logo-container { position: static; transform: none; left: auto; top: auto; order: 1; }
+  .hamburger-menu { order: 2; }
+  /* Keep the bar (with the hamburger) above the open panel so it stays tappable. */
+  .card-nav-top { z-index: 2; }
+
+  /* The hamburger opens a FULL-SCREEN panel (not a small dropdown). */
+  .card-nav-mobile {
+    display: none;
     flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
+    gap: 6px;
+    background: #fff;
+    overflow-y: auto;
   }
-  .nav-card {
-    min-height: 60px;
+  .card-nav-mobile.open {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    max-height: none;
+    padding: 96px 22px 40px;
+    border: 0;
+    border-radius: 0;
+  }
+  .card-nav-mobile-group { display: flex; flex-direction: column; padding: 6px 4px; }
+  .card-nav-mobile-grouplabel {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9aa3af;
+    padding: 6px 8px 2px;
+  }
+  .card-nav-mobile-link {
+    display: block;
+    padding: 10px 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #0a0a0a;
+    text-decoration: none;
+    border-radius: 8px;
+  }
+  .card-nav-mobile-link:hover { background: rgba(0, 0, 0, 0.04); }
+  .card-nav-mobile-login { font-weight: 600; }
+  /* Scoped two levels deep so the white label beats the global
+     `.bf-page a { color: inherit }` (which was inheriting black → invisible). */
+  .card-nav-mobile .card-nav-mobile-cta {
+    margin-top: 8px;
+    text-align: center;
+    background: #0a0a0a;
+    color: #fff;
+    border-radius: 999px;
+    padding: 14px;
+    font-weight: 600;
+    text-decoration: none;
   }
 }

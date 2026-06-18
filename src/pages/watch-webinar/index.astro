@@ -1,16 +1,26 @@
 ---
+// /watch-webinar — componentized 2026 redesign (clean bf-* sections + shared
+// CardNav / Footer / Islands chrome). Replaced the classic-modernized page.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import WatchWebinarContent from '../../components/pages/WatchWebinarContent.astro';
 ---
 <BaseLayout
-  title={`Watch the Webinar | Bill Fanter`}
-  description={`Watch Bill Fanter's free webinar: the 3-step system for finding, managing, and closing winning options trades.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`685f216882d72de2762d8776`}
-  extraHeadHtml={extraHeadHtml}
+  title="Watch the Webinar | Bill Fanter"
+  description="Watch Bill Fanter's free webinar: the 3-step system for finding, managing, and closing winning options trades."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="685f216882d72de2762d8776"
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <WatchWebinarContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

@@ -1,0 +1,277 @@
+---
+// /student-comments page body — clean bf-* sections (nav/footer stripped; the
+// page supplies CardNav + Footer + Islands).
+//
+// Content reconciled to match the PRODUCTION /student-comments page verbatim and
+// in production order:
+//   1. "Inside Bill's Best Trades" roundtable video showcase (live-page addition)
+//   2. VideoTestimonials (intentional addition — kept)
+//   3. "Students Testimonials" — the production screenshot wall (all 100 shots,
+//      exact /assets/... URLs, in production order)
+// The earlier reworded copy from the /2026 blueprint (hero, "Reviews From Real
+// Students", dark CTA, about, closing) was NOT on the production page and has
+// been removed.
+const shots = [
+  '/assets/664d688db3efb6a1eb568cf8/6998e9a888783fa24bf62152_IMG_4813.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e93236e8c911f305a4eb_IMG_4811.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e8b405b15492cddab761_IMG_4810.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e890a91220601eeda2ad_IMG_4809.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e87c1f126175c76eedea_IMG_4808.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e860abc19145c1a1ceb7_IMG_4807.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e842abc19145c1a1cbe2_IMG_4806.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e80d29bd6aa232259264_IMG_4805.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/6998e7dfc64e66bb8dcd3cfa_IMG_4804.jpeg',
+  '/assets/664d688db3efb6a1eb568cf8/68eacf3d0a31780da577b63b_25.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacf2e8b2570bcbbd87d6d_24.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacf1a8b2570bcbbd87b8a_23.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacf0c96a0c1c9de33e11b_22.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacefddab278a3949b4efe_21.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacedf2da71250305cc6e1_20.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eaced359cfb7b513c2fd55_19.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacec5e873d010688b63f9_18.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eaceb5fdbc32647a9cadea_17.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacea80a31780da577ac38_16.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace9afd70f93bb475e08d_15.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace8ab9b864273326534a_14.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace7ccac479937c22d546_13.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace6e9fe5021bdb936914_12.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace613dd72389f6ecc87b_11.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace332ab6fb760bf2ef55_10.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace2446c6c49acf9a566e_9.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace16eb66973be6b2e5e8_8.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eace08a1787015e526a9aa_7.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacdf803f05ee9228b7776_6.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacda4d6b76cc1ecc96e7a_Screenshot%202025-07-11%20at%204.36.52%E2%80%AFPM.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacd92bfdfbcaf86aba569_Screenshot%202025-07-11%20at%204.36.38%E2%80%AFPM.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacd7a24d64381d4dd2015_Screenshot%202025-07-11%20at%204.36.25%E2%80%AFPM.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacd6788fc606920d768ca_Screenshot%202025-07-11%20at%204.36.07%E2%80%AFPM.png',
+  '/assets/664d688db3efb6a1eb568cf8/68eacd387ddfb39276755398_Screenshot%202025-07-11%20at%204.35.49%E2%80%AFPM.png',
+  '/assets/664d688db3efb6a1eb568cf8/679c544cbd94aef22a61aaf4_dan-funderburk.webp',
+  '/assets/664d688db3efb6a1eb568cf8/679c541f7b261bac110a73fb_scott-mcdowell.webp',
+  '/assets/664d688db3efb6a1eb568cf8/679c53fa1f44d535f9ee764f_rob-stalkie.webp',
+  '/assets/664d688db3efb6a1eb568cf8/679c53ce77e9c706de49e385_danielle-g.webp',
+  '/assets/664d688db3efb6a1eb568cf8/679c53a17d9046f26ec18a35_alex-pitcaithly.png',
+  '/assets/664d688db3efb6a1eb568cf8/679c53741989cb82e96b013c_arbel-h.png',
+  '/assets/664d688db3efb6a1eb568cf8/678e847af1698f264a04ee11_Brian%20Walters.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e844ba353e2871dc2be0c_Jason%20Buchan.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8429ee11b459600b73ba_Brittany%20Ishmael.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e840bd1f733c9f65ecad3_Maxwell%20Gold.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e83e3815c337a93b978c2_Sandhya%20Gopal.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e83b6ee11b459600af9ae_Jason%20Jones.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e83935d392e76c943aa57_Dave%20Lynch.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8360adaf8890bf50044d_Jesse%20Stafford.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e834234d9e1005669a24c_Michael%20Nitz.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e83217a59117f4b192f87_Brian%20Rella.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e82fe6f83a95961df6360_David%20Lawson.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e82ddd84b9044248e64b6_John%20Gordy.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e82bcde6277334745d44f_Eric%20Rivera.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e82979a31bae6a2e2581f_Michelle%20Kusek.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e827600e1ecd2a9d76004_Brad%20Brooks.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e824b26aa0781caa657cf_Marcus%20Roberts.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8228623bfb7c1ccddc77_Riley%20H.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8204291be28e461fed1b_Scott%20McDowell.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e81e126aa0781caa5fd90_Nale%20Baldry.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e81c275408970236a873a_Tanner%20Henry.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8199cacd89a116783d11_Stijn%20Ceelen.webp',
+  '/assets/664d688db3efb6a1eb568cf8/678e8159d28da2629cf3ed5e_Seanita%20Tolliver.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c2d99a9cdb51c698aa11_102.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c29f855f7a2b451ee3b8_101.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c27a855f7a2b451e9b12_100.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c23985cc6690b5067072_99.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c1b9d779850f205af5b8_98.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c19027f597f4d64c3568_97.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c16013fc614ec035c2ce_95.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c13b70e8ad8baa0a29fc_94.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c11498b3a1be6d465c63_93.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c0dd1c578617baeefce3_92.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c0ac5f3151c027189cd5_91.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c0835160f32a7cf745b7_90.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c062fd14f2bfc8d7d3ff_89.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c03570e8ad8baa0915c8_88.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5c009499302d9a84829a9_87.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bfd8e25b0a75db241fb6_86.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bf9f120e5f7fb12d7eec_85.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bf1040eba8be97d690d8_84.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bee3adef8b8989de526d_83.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bec1a53fb32640ea14c8_82.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5be96499302d9a846bee8_81.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5be68d05578ee0b3958d9_80.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bd7702806350aaef413e_79.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bd3f4532a2c78b7b415f_74.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bd13c1a83d9753351d2a_73.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bcecda1e8e0e1ef580e3_72.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5bcc31b627615dd0c1dff_71.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5ba2db52f62868e129da6_70.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5ba08ba5ad6dfe80b36d2_69.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b9e3cfeab7082e10bc8b_68.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b9bea2e13cb8514052c6_67.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b97de50de633bf324312_66.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b936da1e8e0e1ef20eac_65.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b82bde49a1736a3edd8d_64.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b8097e1c4713b3c151b9_63.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b7e55160f32a7ceedbbb_62.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b7c24aaadc8d13cd777a_61.webp',
+  '/assets/664d688db3efb6a1eb568cf8/66d5b7a017be893d4d8a7d39_60.webp',
+];
+import VideoTestimonials from '../sections/VideoTestimonials.astro';
+---
+<!-- ===== Cinematic dark zone: dot-grid hero + the two video rows ===== -->
+<div class="bf-cinema">
+  <!-- Dot grid spans the WHOLE cinema zone (hero + both video rows) so the video
+       embeds sit on the same grid-dot backdrop, not a separate flat bg. -->
+  <div class="bf-cinema__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+  <section class="bf-rev-hero bf-section bf-hero">
+    <div class="bf-container">
+      <div class="bf-hero__inner">
+        <h1 class="bf-h1 bf-hero__h1">Real options trading reviews from Bill Fanter's students</h1>
+      </div>
+    </div>
+  </section>
+
+<!-- Roundtable video showcase (live-site addition, rebuilt clean) -->
+<section class="bf-video-showcase bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <div class="bf-vs-eyebrow">Roundtable discussions</div>
+      <h2 class="bf-h2">Inside Bill's best trades</h2>
+      <p class="bf-vs-subhead">Three roundtable conversations breaking down the strategies, decisions, and instincts behind some of Bill Fanter's most talked-about trades.</p>
+    </div>
+    <div class="bf-vs-grid">
+      <article class="bf-vs-card featured" data-vid="Te0c1iem3vI">
+        <button class="bf-vs-thumb" type="button" data-bf-youtube="Te0c1iem3vI" data-bf-wide aria-label="Play the most recent roundtable about Bill Fanter">
+          <img src="https://img.youtube.com/vi/Te0c1iem3vI/maxresdefault.jpg" loading="lazy" alt="" />
+          <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+        </button>
+        <div class="bf-vs-meta"><span class="bf-vs-tag">Most Recent</span></div>
+      </article>
+      <article class="bf-vs-card side" data-vid="xZ5RiPLQl8E">
+        <button class="bf-vs-thumb" type="button" data-bf-youtube="xZ5RiPLQl8E" data-bf-wide aria-label="Play the earlier roundtable about Bill Fanter">
+          <img src="https://img.youtube.com/vi/xZ5RiPLQl8E/maxresdefault.jpg" loading="lazy" alt="" />
+          <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+        </button>
+        <div class="bf-vs-meta"><span class="bf-vs-tag">Earlier</span></div>
+      </article>
+      <article class="bf-vs-card side" data-vid="5SgfaRbprQs">
+        <button class="bf-vs-thumb" type="button" data-bf-youtube="5SgfaRbprQs" data-bf-wide aria-label="Play the first roundtable about Bill Fanter">
+          <img src="https://img.youtube.com/vi/5SgfaRbprQs/maxresdefault.jpg" loading="lazy" alt="" />
+          <span class="bf-vs-play" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+        </button>
+        <div class="bf-vs-meta"><span class="bf-vs-tag">The First</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<VideoTestimonials />
+</div>
+<!-- /cinema -->
+
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Students testimonials</h2>
+    </div>
+    <div class="bf-screenshots">
+      {shots.map((src, i) => (
+        <figure class="bf-screenshots__item">
+          <img src={src} alt={`Student testimonial screenshot ${i + 1}`} loading="lazy" />
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ===== Cinematic dark zone: dot-grid hero + the two video rows =====
+     One uniform dark backdrop (no radial ellipse glows) so the hero + both video
+     rows read as a single continuous section. */
+  .bf-cinema { position: relative; background: #07080c; color: #fff; }
+  .bf-cinema > * { position: relative; z-index: 1; }
+  /* Dot grid behind the ENTIRE cinema zone (hero + both video rows). Sits below
+     the content (z-index 0). Content sections are transparent so the dots show
+     through behind the video embeds too. */
+  .bf-cinema > .bf-cinema__dots { position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+
+  /* Hero shares the standard company-page .bf-hero spacing + .bf-h1 size (matches
+     /contact). Bottom pad zeroed so the gap into the first video row is a single
+     section pad. No glow vignette — it dimmed the dots + H1 unevenly vs the rows
+     below, so the dot grid + headline color now read uniform across the zone. */
+  /* Identical padding across every subpage dot-grid hero: even 150px top+bottom. */
+  .bf-rev-hero { position: relative; padding-top: 150px; padding-bottom: 150px; }
+  /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
+  @media (max-width: 767px) {
+    .bf-rev-hero { padding-top: 52px; padding-bottom: 52px; }
+  }
+  .bf-cinema :global(.bf-h1) { color: #fff; }
+
+  /* Roundtable showcase — now on the dark cinema backdrop. Bottom pad zeroed so
+     the gap into the "Hear it straight from students" row is a single section
+     pad, not a doubled one. */
+  /* Top pad zeroed so the hero's 150px bottom is the single gap into the first
+     video row (not a doubled 250px); bottom zeroed so the gap into "Hear it
+     straight from students" is a single section pad. */
+  .bf-video-showcase { background: transparent; padding-top: 0; padding-bottom: 0; }
+  .bf-cinema .bf-h2 { color: #fff; }
+  /* Left-aligned row titles (Netflix-style) for both video rows. */
+  .bf-cinema .bf-section-header,
+  .bf-cinema :global(.bf-vidtest .bf-section-header) { text-align: left; align-items: flex-start; max-width: none; }
+  .bf-vs-eyebrow { display: inline-block; font-size: .75rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #75B5FF; }
+  .bf-vs-subhead { color: #fff; max-width: 600px; margin-left: 0; margin-right: 0; }
+  .bf-cinema :global(.bf-vidtest .bf-lead) { margin-left: 0; margin-right: 0; max-width: 600px; }
+  .bf-vs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: start; margin-top: 44px; }
+
+  /* Netflix-style cards: a cinematic thumbnail that scales + glows on hover. */
+  .bf-vs-card { position: relative; background: transparent; border: 0; border-radius: 12px; overflow: visible; display: flex; flex-direction: column; transition: transform .35s cubic-bezier(.2,.7,.2,1); }
+  .bf-vs-card:hover { transform: translateY(-6px) scale(1.05); z-index: 5; }
+  .bf-vs-thumb { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; padding: 0; margin: 0; background: #000; cursor: pointer; overflow: hidden; border-radius: 12px; font: inherit; color: inherit; box-shadow: 0 18px 44px -16px rgba(0,0,0,0.75); transition: box-shadow .35s; }
+  .bf-vs-card:hover .bf-vs-thumb { box-shadow: 0 32px 72px -20px rgba(0,0,0,0.9), 0 0 0 2px rgba(117,181,255,0.55); }
+  .bf-vs-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+  .bf-vs-thumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%); pointer-events: none; }
+  .bf-vs-card:hover .bf-vs-thumb img { transform: scale(1.06); }
+  .bf-vs-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 66px; height: 66px; border-radius: 50%; background: rgba(255,255,255,0.92); color: #0a0a0a; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(0,0,0,.4); transition: transform .3s cubic-bezier(.34,1.56,.64,1), background .2s; z-index: 2; }
+  .bf-vs-play svg { width: 26px; height: 26px; margin-left: 3px; fill: currentColor; }
+  .bf-vs-thumb:hover .bf-vs-play { transform: translate(-50%,-50%) scale(1.12); background: #fff; }
+  /* Tag chip overlaid on the thumbnail (replaces the old white meta bar). */
+  .bf-vs-meta { position: absolute; left: 12px; bottom: 12px; padding: 0; margin: 0; background: transparent; z-index: 3; }
+  .bf-vs-tag { display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: rgba(255,255,255,0.14); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.32); padding: .4rem .8rem; border-radius: 999px; }
+  .bf-vs-card.featured .bf-vs-tag { background: #4d65ff; border-color: #4d65ff; }
+  .bf-vs-thumb.is-playing { cursor: default; }
+  .bf-vs-thumb.is-playing img, .bf-vs-thumb.is-playing::after, .bf-vs-thumb.is-playing .bf-vs-play { display: none; }
+  .bf-vs-card:has(.is-playing), .bf-vs-card:has(.is-playing):hover { transform: none; }
+  .bf-vs-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 12px; }
+
+  /* VideoTestimonials ("Hear it straight from students") inside the cinema zone */
+  .bf-cinema :global(.bf-vidtest) { background: transparent; }
+  .bf-cinema :global(.bf-vidtest .bf-h2) { color: #fff; }
+  .bf-cinema :global(.bf-vidtest .bf-lead) { color: #fff; }
+  /* Hover stays INSIDE the card (image zoom) instead of scaling/lifting the whole
+     card — the slider track's overflow was cropping a scaled card at the top and
+     at the left edge (the leftmost card). */
+  .bf-cinema :global(.bf-vidtest-thumb img) { transition: transform .5s ease; }
+  .bf-cinema :global(.bf-vidtest-thumb:hover img) { transform: scale(1.06); }
+
+  /* Equal gap between the section copy and the slider for BOTH video rows
+     (roundtable grid + testimonials slider), so the two sections read the same. */
+  .bf-cinema .bf-vs-grid,
+  .bf-cinema :global(.bf-vidtest-slider) { margin-top: 36px; }
+
+  @media screen and (max-width: 880px) {
+    .bf-vs-grid { grid-template-columns: 1fr; }
+  }
+  /* Mobile: the gap from the subhead down to the video should match the gap from
+     the heading down to the subhead (~22px). Drop the content top-margin and set
+     the header's bottom margin to that same 22px. */
+  @media (max-width: 767px) {
+    .bf-cinema .bf-vs-grid,
+    .bf-cinema :global(.bf-vidtest-slider) { margin-top: 0; }
+    .bf-cinema .bf-section-header,
+    .bf-cinema :global(.bf-vidtest .bf-section-header) { margin-bottom: 22px; }
+  }
+  @media screen and (max-width: 479px) {
+    .bf-vs-play { width: 60px; height: 60px; }
+    .bf-vs-play svg { width: 24px; height: 24px; }
+  }
+</style>
+
+<!-- Roundtable + testimonial videos open in the shared bf-vreel lightbox
+     (wired globally in BaseLayout via the data-bf-youtube / data-bf-vimeo attrs). -->

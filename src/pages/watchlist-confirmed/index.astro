@@ -1,18 +1,30 @@
 ---
+// /watchlist-confirmed — componentized 2026 redesign (clean bf-* sections +
+// shared CardNav / Footer / Islands chrome). Replaced the classic-modernized
+// page. noindex (post-conversion thank-you page).
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import WatchlistConfirmedContent from '../../components/pages/WatchlistConfirmedContent.astro';
 
 const noindexTag = '<meta name="robots" content="noindex, nofollow" />';
 ---
 <BaseLayout
-  title={`You're In | Bill Fanter Weekly Watchlist`}
-  description={`Your subscription is confirmed. Your first Weekly Watchlist arrives this Sunday.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`664c2004b0e73bd9b6158f9f`}
-  extraHeadHtml={noindexTag + extraHeadHtml}
+  title="You're In | Bill Fanter Weekly Watchlist"
+  description="Your subscription is confirmed. Your first Weekly Watchlist arrives this Sunday."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="664c2004b0e73bd9b6158f9f"
+  extraHeadHtml={noindexTag}
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <WatchlistConfirmedContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

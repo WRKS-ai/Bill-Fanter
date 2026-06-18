@@ -1,0 +1,83 @@
+---
+// /blog page body — clean bf-* sections (no Webflow slop). The inline nav +
+// footer from the /2026 blueprint are dropped here; the page supplies the
+// shared CardNav island + Footer component instead. Grainient fills
+// (blog-bento / -darkcta / -closing) are mounted by the Islands script.
+//
+// Content is ported verbatim from the /2026/blog redesign so nothing is
+// added or removed.
+import YoutubeCta from '../sections/YoutubeCta.astro';
+---
+<section class="bf-section bf-hero bf-blog-hero">
+  <div class="bf-container">
+    <div class="bf-hero__inner">
+      <div class="bf-hero__eyebrow"><span class="bf-eyebrow">Learn the craft</span></div>
+      <h1 class="bf-h1 bf-hero__h1">Learn options trading from guides, tutorials, and real trades</h1>
+      <p class="bf-lead bf-hero__lead">Read free articles, tutorials, and trade breakdowns by Bill Fanter that show how real options trades work. It's all written to help you sharpen how you trade options.</p>
+      <div class="bf-hero__cta">
+        <a class="bf-btn bf-btn--primary" href="/contact">Book a call</a>
+        <a class="bf-btn bf-btn--ghost" href="/community">Join the community</a>
+      </div>
+      <div class="bf-hero__trust">
+        <span class="bf-hero__trust-source">Recommended by</span>
+        <span class="bf-hero__trust-stars">
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+          <svg class="bf-star" viewBox="0 0 24 24"><path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/></svg>
+        </span>
+        <span>500+ Students</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <span class="bf-eyebrow">Coming soon</span>
+      <h2 class="bf-h2">New posts on the way</h2>
+      <p class="bf-lead">I'm preparing a fresh series of articles. In the meantime, the fastest way to learn is to plug into the weekly watchlist and the community.</p>
+    </div>
+    <div class="bf-help-grid">
+      <a class="bf-help-card" href="/masterclass">
+        <div class="bf-help-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/><path d="M22 10v6"/></svg>
+        </div>
+        <div class="bf-help-card__title">The options masterclass</div>
+        <p class="bf-body">Go from beginner to confident options trader in 6 live sessions.</p>
+        <span class="bf-help-card__link">Explore <svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <a class="bf-help-card" href="/community">
+        <div class="bf-help-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-6 9a6 6 0 0 1 12 0"/><path d="M16 3.5a3 3 0 0 1 0 5.5M21 20a6 6 0 0 0-4.5-5.8"/></svg>
+        </div>
+        <div class="bf-help-card__title">Live community</div>
+        <p class="bf-body">Real-time trade alerts and 1,000+ serious traders in one Discord.</p>
+        <span class="bf-help-card__link">Join now <svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <a class="bf-help-card" href="/webinar">
+        <div class="bf-help-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v18l15-9z"/></svg>
+        </div>
+        <div class="bf-help-card__title">Free webinar</div>
+        <p class="bf-body">A 60-min training on the 3-step system I use to find every trade.</p>
+        <span class="bf-help-card__link">Watch now <svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <a class="bf-help-card" href="/free-watchlist">
+        <div class="bf-help-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+        </div>
+        <div class="bf-help-card__title">Free weekly watchlist</div>
+        <p class="bf-body">A curated list of stocks I'm watching, delivered every Sunday.</p>
+        <span class="bf-help-card__link">Subscribe free <svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Homepage YouTube CTA, reused on the blog. -->
+<YoutubeCta />
+<!-- (Removed the inline closing block — the shared Footer already renders the
+     Closing component with this same review + CTA layout site-wide.) -->

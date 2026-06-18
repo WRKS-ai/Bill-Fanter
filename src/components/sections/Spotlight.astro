@@ -1,0 +1,75 @@
+---
+// Webinar spotlight — full-bleed card with a React Bits GridDistortion abstract
+// behind the copy (mounted by the Islands script on [data-griddistortion]).
+// The design system already rails .bf-spotlight__content--simple to the
+// container, so the copy lines up with the other sections automatically.
+//
+// CTA is configurable so the same spotlight can be reused with a different call
+// to action (e.g. the masterclass page swaps "Watch webinar" for "Join the
+// masterclass"). Defaults reproduce the homepage webinar CTA.
+const {
+  ctaLabel = 'Watch webinar',
+  ctaHref = '/webinar',
+  ctaIcon = true,
+} = Astro.props;
+---
+<section class="bf-spotlight">
+  <div class="bf-spotlight__card bf-spotlight__card--simple">
+    <div data-griddistortion data-image="/assets/sandbox/webinar-distortion.png?v=2" class="bf-spotlight__distortion"></div>
+    <div class="bf-spotlight__overlay"></div>
+    <div class="bf-spotlight__content bf-spotlight__content--simple">
+      <h2 class="bf-spotlight__h2">Learn options trading in my free demo webinar</h2>
+      <p class="bf-spotlight__lead">Whether you are new to options or sharpening your skills, this free webinar shows how the options market works and how to place your first trade with a plan.</p>
+      <a class="bf-spotlight__primary-btn" href={ctaHref}>
+        {ctaIcon && <span class="bf-spotlight__video-icon"><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5v11l9-5.5z"/></svg></span>}
+        {ctaLabel}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bf-spotlight__distortion {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .bf-spotlight__content {
+    position: relative;
+    z-index: 2;
+  }
+  /* The GridDistortion canvas reacts to mousemove but sits BEHIND the overlay +
+     content — let pointer events fall through those layers so hover distortion
+     works. Keep the CTA itself clickable. */
+  .bf-spotlight:has(.bf-spotlight__distortion) .bf-spotlight__overlay,
+  .bf-spotlight:has(.bf-spotlight__distortion) .bf-spotlight__content {
+    pointer-events: none;
+  }
+  .bf-spotlight:has(.bf-spotlight__distortion) .bf-spotlight__primary-btn {
+    pointer-events: auto;
+  }
+  /* The abstract image's left side is already dark behind the copy — drop the
+     extra left→right gradient overlay. */
+  .bf-spotlight:has(.bf-spotlight__distortion) .bf-spotlight__overlay {
+    background: none;
+  }
+  .bf-spotlight:has(.bf-spotlight__distortion) .bf-spotlight__h2 {
+    max-width: 560px;
+  }
+
+  /* Frosted glass pill — matches the footer (.bf-closing__pill): simple flat
+     translucent fill + a uniform hairline border (no rim-light gradient). */
+  .bf-spotlight__primary-btn {
+    background: rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    color: #fff;
+    transition: background 200ms ease, transform 200ms ease;
+  }
+  .bf-spotlight__primary-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    transform: translateY(-1px);
+  }
+  .bf-spotlight__video-icon { color: #fff; }
+</style>

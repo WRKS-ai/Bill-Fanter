@@ -1,0 +1,228 @@
+---
+// "Effortless trading. Real strategy." — split section rebuilt CLEAN against the
+// 2026 bf-* design system (homepage quality). Copy is ported VERBATIM from the
+// legacy /2026 page (src/pages/2026/_body.html): headline, subhead, the Rob
+// Stalkie review card, and the 3 feature columns below.
+//
+// Self-contained: all styling lives in the scoped <style> below; only the
+// shared .bf-container / .bf-btn--primary classes come from the design system.
+const A = '/assets/664a5b263659c7265be280ad/';
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+
+// Defaults reproduce the masterclass content; pass props to reuse this exact
+// layout elsewhere (e.g. /free-watchlist "Why join the weekly watchlist?").
+const {
+  heading = 'Effortless trading.<br />Real strategy.',
+  lead = "Bill's unified system transforms scattered market noise into a clear, repeatable strategy. No prior trading experience required.",
+  ctaHref = '/contact',
+  ctaLabel = 'Book a call',
+  ctaTarget,
+  image = `${A}664c28d76c354e4acb60d3d4_masterclass%20image.webp`,
+  imageAlt = 'Bill Fanter working at his laptop',
+  review = {
+    quote: "Bill's Masterclass was incredibly informative and fun. He weaves in and out of topics from trading psychology to charting and makes every lesson accessible to complete beginners. Well worth it!",
+    name: 'Rob Stalkie',
+    title: 'Account Manager',
+    avatar: `${A}679c51ea7d9046f26ec04264_rob-stalkie.png`,
+  },
+  features = [
+    { lead: 'Automate the boring stuff', rest: ' with proven setups and alert systems so you spend less time hunting and more time executing.' },
+    { lead: 'Trade with conviction', rest: ' alongside a community of serious traders and real-time signals from 5 professional analysts.' },
+    { lead: 'Build long-term wealth', rest: ' with risk-managed strategies designed for sustained results, not lottery-ticket bets.' },
+  ],
+} = Astro.props;
+---
+<section class="es-section">
+  <div class="bf-container">
+    <div class="es-split">
+      <div class="es-copy">
+        <h2 class="es-h2" set:html={heading}></h2>
+        <p class="es-lead" set:html={lead}></p>
+        <a class="bf-btn bf-btn--primary es-cta" href={ctaHref} target={ctaTarget} rel={ctaTarget ? 'noopener' : undefined}>{ctaLabel}</a>
+
+        {review && (
+          <figure class="es-review">
+            <div class="es-review__stars" aria-label="5 out of 5 stars">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="es-star" viewBox="0 0 24 24" set:html={star} />
+              ))}
+            </div>
+            <blockquote class="es-review__quote">{review.quote}</blockquote>
+            <figcaption class="es-review__author">
+              <span class="es-review__avatar">
+                <img src={review.avatar} alt={review.name} loading="lazy" />
+              </span>
+              <span class="es-review__meta">
+                <span class="es-review__name">{review.name}</span>
+                {review.title && <span class="es-review__title">{review.title}</span>}
+              </span>
+            </figcaption>
+          </figure>
+        )}
+      </div>
+
+      <div class="es-media">
+        <img class="es-media__img" src={image} alt={imageAlt} loading="lazy" />
+      </div>
+    </div>
+
+    <div class={`es-features${features.length >= 4 ? ' es-features--4' : ''}`}>
+      {features.map((f) => (
+        <div class="es-feature">
+          <span class="es-feature__mark" aria-hidden="true">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <p class="es-feature__text"><strong>{f.lead}</strong>{f.rest}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .es-section {
+    padding: var(--bf-section-pad) 0;
+    background: #ffffff;
+  }
+
+  /* ---- Split: copy left, big rounded photo right ---- */
+  .es-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+
+  /* Copy LEFT, media RIGHT → inset the copy on its right (gap side), matching
+     the canonical .bf-hero-split spacing used across every left/right section. */
+  .es-copy { max-width: 588px; padding-right: 48px; }
+
+  /* Match the site-standard .bf-h2 so this heading is the same size as the other
+     section headings (e.g. "What's inside each weekly watchlist"). */
+  .es-h2 {
+    margin: 0;
+    font-size: clamp(24px, 2.6vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    color: var(--bf-text, #0a0a0a);
+  }
+
+  .es-lead {
+    margin: 24px 0 0;
+    font-size: 16px;
+    line-height: 1.6;
+    /* Match the rest of the site's body copy (full #0a0a0a) — the scoped muted
+       color was rendering noticeably lighter than every other section. */
+    color: var(--bf-text, #0a0a0a);
+  }
+
+  .es-cta {
+    margin-top: 32px;
+    display: inline-flex;
+    align-items: center;
+    width: auto;
+  }
+
+  /* ---- Review card: a mini version of the black review bento used elsewhere. */
+  .es-review {
+    margin: 40px 0 0;
+    padding: 28px 30px;
+    background: #0a0a0a;
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 18px 44px -20px rgba(0, 0, 0, 0.5);
+  }
+  .es-review__stars { display: inline-flex; gap: 3px; }
+  .es-star { width: 18px; height: 18px; fill: #ffc14d; }
+  .es-review__quote {
+    margin: 16px 0 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #fff;
+  }
+  .es-review__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .es-review__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex: 0 0 auto;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .es-review__avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .es-review__meta { display: flex; flex-direction: column; }
+  .es-review__name { font-weight: 600; color: #fff; }
+  .es-review__title { font-size: 14px; color: rgba(255, 255, 255, 0.6); }
+
+  /* ---- Photo ---- */
+  .es-media {
+    border-radius: 12px;
+    overflow: hidden;
+    /* Consistent square crop across both uses (Quick wins / Why join). A square
+       shows more of the photo than the old tall stretch (less zoomed-in).
+       Capped slightly smaller than the full column + centered; no shadow. */
+    aspect-ratio: 1 / 1;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .es-media__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* ---- 3-up feature row ---- */
+  .es-features {
+    margin-top: 72px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(10, 30, 60, 0.08);
+  }
+  /* Four features → one row of four (instead of 3 + 1 wrap). */
+  .es-features--4 { grid-template-columns: repeat(4, 1fr); }
+  .es-feature { display: flex; gap: 14px; }
+  .es-feature__mark {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--bf-accent, #3b82f6);
+    margin-top: 2px;
+  }
+  .es-feature__mark svg { width: 15px; height: 15px; }
+  .es-feature__text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--bf-text, #0a0a0a);
+  }
+  .es-feature__text strong { color: var(--bf-text, #0a0a0a); font-weight: 600; }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 960px) {
+    /* Stack the copy (with its review card) above the photo using the same 16px
+       gap the bento cards use on mobile, so the spacing reads consistent. */
+    .es-split { grid-template-columns: 1fr; gap: 16px; }
+    .es-copy { max-width: none; padding-right: 0; }
+    .es-media { height: auto; aspect-ratio: 16 / 11; max-height: 460px; }
+    .es-features { grid-template-columns: 1fr; gap: 20px; margin-top: 56px; padding-top: 40px; }
+    .es-features--4 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .es-features--4 { grid-template-columns: 1fr; }
+  }
+</style>

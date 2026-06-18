@@ -1,0 +1,66 @@
+---
+// /contact page body — clean bf-* design, but content reconciled VERBATIM against
+// the production /contact page (src/pages/contact/_body.html).
+//
+// Production /contact is a single section: an <h1>"Contact Us"</h1>, a hidden
+// email link (options@billfanter.com), and the Webflow Contact form. There are no
+// help cards, "about" block, or reviews/closing on production — those were dropped.
+//
+// The contact <form> is preserved EXACTLY from production: id / name / data-name /
+// method / data-wf-page-id / data-wf-element-id / data-turnstile-sitekey, every
+// input/textarea name + data-name + id + type, and the submit value / data-wait.
+// These wire the Kajabi/Webflow handler in BaseLayout (maps the message field via
+// extraFields custom_1 -> name="contact-form-message").
+//
+// No <nav>/<footer> — the page supplies the shared CardNav island + Footer.
+// Grainient fill (contact-side) is mounted by the Islands script.
+---
+<section class="bf-section bf-hero bf-contact-hero">
+  <div class="bf-container">
+    <div class="bf-hero__inner">
+      <h1 class="bf-h1 bf-hero__h1">Contact us</h1>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The title hero + the form section each carry a full section pad, which
+     doubled the gap. Zero the hero's bottom pad so the gap into the form is just
+     the form section's top pad. */
+  .bf-contact-hero { padding-bottom: 0; }
+  @media (max-width: 767px) {
+    /* Beat the global dot-grid hero padding (which was re-adding 52px below the
+       title) and set the headline → form gap to the standard 40px used site-wide. */
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-contact-hero { padding-bottom: 0; }
+    .bf-contact-form-section { padding-top: 40px; }
+  }
+</style>
+
+<section class="bf-section bf-contact-form-section">
+  <div class="bf-contact">
+    <div class="bf-contact__form-card">
+      <div id="contact-form" class="w-form">
+        <form id="wf-form-Contact-form" name="wf-form-Contact-form" data-name="Contact form" method="get" class="bf-contact__form" data-wf-page-id="664c15e452be1664d32dd28b" data-wf-element-id="7fb4ae3b-5279-58f6-fdd1-d78374f9aa38" data-turnstile-sitekey="0x4AAAAAAAQTptj2So4dx43e">
+          <label class="bf-contact__label">Name<input class="bf-contact__input" maxlength="256" name="contact-form-name" data-name="contact form name" placeholder="Name" type="text" id="contact-form-name" required /></label>
+          <label class="bf-contact__label">Email<input class="bf-contact__input" maxlength="256" name="contact-form-email" data-name="contact form email" placeholder="Email" type="email" id="contact-form-email" required /></label>
+          <label class="bf-contact__label">Message<textarea class="bf-contact__textarea" maxlength="5000" name="contact-form-message" data-name="contact form message" placeholder="Message" id="contact-form-message" required></textarea></label>
+          <input class="bf-contact__submit" type="submit" data-wait="Please wait..." value="Submit" />
+        </form>
+        <div class="w-form-done bf-contact__success" style="display:none">
+          <div class="bf-contact__success-h3">Thank you for reaching out!</div>
+          <p>We've received your message and will get back to you shortly.</p>
+        </div>
+        <div class="w-form-fail" style="display:none">
+          <div>Oops! Something went wrong while submitting the form.</div>
+        </div>
+      </div>
+    </div>
+    <div class="bf-contact__sidebar">
+      <div data-grainient="contact-side" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5" class="bf-grainient-fill"></div>
+      <div class="bf-contact__sidebar-inner">
+        <div class="bf-contact__sidebar-eyebrow">Email us at</div>
+        <h3 class="bf-contact__sidebar-h3"><a href="mailto:options@billfanter.com" style="color:inherit;text-decoration:none">options@billfanter.com</a></h3>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,65 @@
+---
+// Trading community — Discord screenshot beside an animated benefits list.
+// The React Bits AnimatedList island re-renders the .bf-benefit rows in place
+// (read from the static markup, so HTML stays the source of truth and the list
+// still renders if JS is off / pre-hydration).
+const benefits = [
+  { num: '01', title: 'Get instant Discord access', body: 'Join active options traders who share trades, answer questions, and help you start fast.' },
+  { num: '02', title: 'See live trade alerts', body: 'Get buy and sell signals from working market analysts as setups form.' },
+  { num: '03', title: 'Use AI trading signals', body: 'Read the market faster with AI-built signals that flag setups worth watching.' },
+  { num: '04', title: 'Trade in a focused community', body: 'Share setups, wins, and lessons with traders working the same strategies.' },
+  { num: '05', title: 'Reach Bill directly', body: 'Ask questions and get answers straight from Bill.' },
+];
+// CTA target defaults to /community; pages that reuse this block can point it
+// elsewhere (e.g. the masterclass page routes all CTAs to /contact for now).
+const { ctaHref = '/community' } = Astro.props;
+---
+<section class="bf-section" id="community-2026">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Join my options trading community</h2>
+      <p class="bf-lead">Trade alongside active options traders who share setups, alerts, and feedback in real time.</p>
+    </div>
+    <div class="bf-community-grid">
+      <div class="bf-community__media">
+        <img src="/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.png" alt="Bill Fanter's Discord community" />
+      </div>
+      <div class="bf-community__benefits">
+        <div data-benefits-list style="display:contents">
+          {benefits.map((b) => (
+            <div class="bf-benefit">
+              <div class="bf-benefit__num">{b.num}</div>
+              <div>
+                <div class="bf-benefit__title">{b.title}</div>
+                <p class="bf-body">{b.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <a class="bf-btn bf-btn--primary" href={ctaHref} style="margin-top:8px;align-self:flex-start">
+          Join the community
+          <svg class="bf-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #community-2026.bf-section {
+    background: #ffffff;
+  }
+  /* Map the AnimatedList fade (driven via --bf-reveal) onto the benefit rows.
+     Defaults to 1 (fully visible) when the island hasn't set the variable. */
+  .bf-community__benefits .bf-benefit {
+    opacity: var(--bf-reveal, 1);
+  }
+  /* Discord phone mockup: slightly smaller + raised toward the top of the row. */
+  #community-2026 .bf-community__media {
+    align-self: start;
+  }
+  #community-2026 .bf-community__media img {
+    width: 88%;
+    margin-inline: auto;
+  }
+</style>

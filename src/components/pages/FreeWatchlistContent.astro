@@ -1,0 +1,556 @@
+---
+// /free-watchlist page body — rebuilt as a CLONE of the HOMEPAGE design.
+// Uses the same canonical bf-* section patterns the homepage sections use
+// (Hero / AboutBill / HelpGrid / YoutubeCta): alternating white / var(--bf-bg-2)
+// bands on var(--bf-section-pad) rhythm, .bf-container, .bf-h2 / .bf-lead,
+// the 50/50 .bf-about-grid split, even card grid, and the .bf-darkcta grainient
+// CTA. Shared nav/footer come from the page (CardNav island + Footer); grainient
+// fills are mounted by the Islands script.
+//
+// CONTENT is the production /free-watchlist page, ported VERBATIM in the original
+// section order — nothing dropped, reworded, or invented:
+//   1. Hero + signup form
+//   2. "More than just picks – a strategic trading edge"
+//   3. "What's inside the weekly watchlist?" (5 points, each w/ 2 bullets)
+//   4. "Why join the weekly watchlist?" (roadmap + 3 checks)
+//   5. "Your competitive edge starts here" closing CTA
+//
+// The signup form keeps the Webflow name/method + every input name= and the
+// data-wf-* / data-turnstile attributes VERBATIM so the existing Kajabi/Webflow
+// handler still captures submissions. Do NOT rename or remove the form id/name
+// or the input name attributes.
+
+import SubscribeForm from '../SubscribeForm.astro';
+import EffortlessStrategy from '../sections/EffortlessStrategy.astro';
+
+const check = '<circle cx="12" cy="12" r="12" fill="#75B5FF"/><path d="M6.39844 13.0273L9.48344 16.1153L18.3984 7.20004" stroke="black" stroke-width="2" stroke-linecap="round"/>';
+
+// Decorative tickers for the closing-CTA grainient square — two rows scrolling in
+// OPPOSITE directions across the middle of the gradient. Purely visual (the media
+// is aria-hidden); values are illustrative, not live quotes.
+const tickerA = [
+  ['AAPL', '+1.2%', 'up'], ['NVDA', '+2.4%', 'up'], ['SPY', '+0.4%', 'up'], ['TSLA', '-0.8%', 'down'],
+  ['QQQ', '+0.6%', 'up'], ['AMD', '+1.9%', 'up'], ['MSFT', '+0.3%', 'up'], ['META', '-0.5%', 'down'],
+];
+const tickerB = [
+  ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
+  ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
+];
+
+// "What's inside each weekly watchlist" — 5 numbered items (title + body).
+const inside = [
+  {
+    title: 'Read the week ahead',
+    points: ['Get a clear breakdown of the economic events that move the market, from jobs reports to housing data, and what they mean for your trades.'],
+  },
+  {
+    title: 'See the charts that matter',
+    points: ['Get visual breakdowns of SPY, QQQ, and trending stocks, with plain explanations of the patterns, levels, and liquidity zones Bill watches.'],
+  },
+  {
+    title: "Get Bill's stock picks",
+    points: ['Get a curated list of stocks and ETFs set up for movement, with the entry, stop, and target zones Bill watches on his own screen.'],
+  },
+  {
+    title: 'Manage your risk',
+    points: ['Get the risk rules Bill uses in volatile weeks, including how he sizes positions when volume is thin and sentiment shifts.'],
+  },
+  {
+    title: 'Track the sectors moving',
+    points: ['See which sectors are gaining steam and why, plus the macro factors driving tech, housing, and energy.'],
+  },
+];
+
+// "Why Join the Weekly Watchlist?" — 3 production checkpoints.
+const whyJoin = [
+  'Save hours of analysis with curated insights.',
+  'Avoid costly mistakes by following reliable strategies.',
+  'Seize opportunities by identifying high-probability trades before the market does.',
+];
+---
+<!-- 1 ── Hero: copy + signup form on the LEFT, watchlist visual on the RIGHT
+     (homepage newsletter split). Form id/name/data-wf attrs preserved verbatim. -->
+<section class="bf-section bf-hero bf-hero--dark" id="watchlist">
+  <div
+    class="bf-hero-dots"
+    data-dotgrid
+    data-dot-size="2"
+    data-gap="10"
+    data-base-color="#454545"
+    data-active-color="#75B5FF"
+    data-proximity="140"
+    data-return-duration="0.6"
+  ></div>
+  <div class="bf-hero-scrim" aria-hidden="true"></div>
+  <div class="bf-container">
+    <div class="bf-newsletter-split">
+      <div class="bf-newsletter-split__copy">
+        <h1 class="bf-h1">Get your free weekly options trading <strong>advantage</strong></h1>
+        <p class="bf-lead" style="margin-top:22px">Subscribe to Bill's free weekly watchlist and get a curated list of top stocks and setups for the week ahead. It lands in your inbox every Sunday, so you start Monday with a plan.</p>
+        <div class="bf-newsletter-split__form">
+          <SubscribeForm
+            id="wf-form-Watchlist-form"
+            name="wf-form-Watchlist-form"
+            dataName="Watchlist form"
+            wfPageId="66bc55bfff4e9b5f45684c44"
+            wfElementId="fe547f1a-6e88-7d15-7553-c8235830ae82"
+            turnstileSitekey="0x4AAAAAAAQTptj2So4dx43e"
+            nameField="Watchlist-name"
+            nameDataName="Watchlist name"
+            emailField="Watchlist-email"
+            emailDataName="Watchlist email"
+            submitLabel="Sign Up Free"
+          />
+        </div>
+      </div>
+      <div class="bf-newsletter-split__media">
+        <img src="/assets/664a5b263659c7265be280ad/664c28d96e93d6cd1148821f_masterclass%20image-11.webp" alt="Example of the weekly stock picks watchlist" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gradient-fade band: starts at "What's inside" (the second section), white at
+     the top, fading to a soft neutral grey by the bottom of "Why join", then ENDS
+     before the final CTA (which sits on white). -->
+<div class="bf-fw-fade">
+<!-- 2 ── What's inside the weekly watchlist? — WHITE bg (homepage Community: image + numbered benefits) -->
+<section class="bf-section bf-fw-inside-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">What&rsquo;s inside each weekly watchlist</h2>
+    </div>
+    <div class="bf-community-grid">
+      <div class="bf-community__media bf-fw-inside-media">
+        <img src="/assets/664a5b263659c7265be280ad/bf-watchlist-inside-cutout.png" alt="Inside the weekly watchlist: charts, stock picks, and sector highlights" loading="lazy" />
+      </div>
+      <div class="bf-community__benefits">
+        <div data-benefits-list style="display:contents">
+          {inside.map((item, i) => (
+            <div class="bf-benefit">
+              <div class="bf-benefit__num">{`0${i + 1}`}</div>
+              <div>
+                <div class="bf-benefit__title">{item.title}</div>
+                <p class="bf-body">{item.points.join(' ')}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 ── Why join the weekly watchlist? (the masterclass EffortlessStrategy layout) -->
+<EffortlessStrategy
+  heading="Why join the weekly watchlist?"
+  lead="Most traders spend Sunday night guessing what to watch on Monday. Bill does that work for you. Every week, he turns 35+ years in the markets into one clear watchlist, so you start the week knowing the setups, levels, and risks that matter.<br /><br />You get his read on the economic calendar, his chart levels on SPY and QQQ, and the exact price zones he watches for entries and stops. It's the same prep Bill runs before his own trading week, written so you can use it in minutes. No noise, no 40 open tabs, no scrambling before the open."
+  ctaHref="#watchlist"
+  ctaLabel="Subscribe Now"
+  image="/assets/664a5b263659c7265be280ad/664a67e595a23dde11b862af_home%20images-5.webp"
+  imageAlt="Bill Fanter at his trading desk reviewing charts"
+  review={{
+    quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!",
+    name: 'John Gordy',
+    title: 'Chief Financial Officer at DroneUp',
+    avatar: '/assets/664a5b263659c7265be280ad/678e77c8a0abd734e3415731_jogn-gordy.avif',
+  }}
+  features={[
+    { lead: 'Save hours of weekend analysis.', rest: ' Bill screens the market for you and hands you a short, focused list, so you skip the late Sunday research and open the week ready.' },
+    { lead: 'Skip the common mistakes.', rest: ' Every pick comes with defined levels and a set risk, so you trade from a plan and size each position before the market moves.' },
+    { lead: 'Spot setups early.', rest: ' See the stocks, ETFs, and price zones Bill is watching before the week opens, so you know where to look when Monday starts.' },
+  ]}
+/>
+</div>
+<!-- /gradient-fade band (ends before the final CTA) -->
+
+<!-- 4 ── Your competitive edge — the homepage black CTA component (on white) -->
+<section class="bf-section is-tight">
+  <div class="bf-container">
+    <div class="bf-darkcta bf-darkcta--black">
+      <div class="bf-darkcta__grid">
+        <div>
+          <h2 class="bf-darkcta__h2">Start every trading week with a clear watchlist</h2>
+          <p class="bf-darkcta__lead">Stop guessing what to trade on Monday. Sign up for Bill&rsquo;s free weekly watchlist and start each week with a clear list of setups, levels, and risk. Free, every Sunday.</p>
+          <div class="bf-darkcta__buttons">
+            <a class="bf-darkcta__btn" href="#watchlist">Subscribe Now, It&rsquo;s Free</a>
+          </div>
+        </div>
+        <div class="bf-darkcta__media" aria-hidden="true">
+          <div class="bf-darkcta__grain-card">
+            <div class="bf-grainient-mount" data-grainient="fw-closing" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+            <div class="fw-ticker">
+              <div class="fw-ticker__row">
+                <div class="fw-ticker__track fw-ticker__track--ltr">
+                  {[...tickerA, ...tickerA].map(([sym, chg, dir]) => (
+                    <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                  ))}
+                </div>
+              </div>
+              <div class="fw-ticker__row">
+                <div class="fw-ticker__track fw-ticker__track--rtl">
+                  {[...tickerB, ...tickerB].map(([sym, chg, dir]) => (
+                    <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /gradient-fade band -->
+
+<style>
+  /* ── Alternating band: off-white sections match the homepage rhythm ─────── */
+  .bf-fw-bg2 { background: var(--bf-bg-2, #f6f8fb); }
+
+  /* "What's inside" mockup — now a transparent-background cutout (the original
+     PNG's hard black box clashed on the light section). drop-shadow follows the
+     card's rounded silhouette (box-shadow would draw a rectangle), so it floats
+     as an intentional dark-mode UI panel. */
+  .bf-fw-inside-media img {
+    filter: drop-shadow(0 18px 40px rgba(20, 40, 80, 0.22));
+  }
+  /* The cutout PNG has a chunk of empty (transparent) space above the device, so
+     on mobile it left a big gap below the heading. Pull the image up to crop that
+     dead space (transparent, so it just tightens the gap). Tunable. */
+  @media (max-width: 767px) {
+    .bf-fw-inside-section .bf-fw-inside-media img { margin-top: -56px; }
+  }
+
+  /* ---------- Dark dot-grid hero (mirrors the homepage Hero stage) ----------
+     Near-black stage with the React Bits DotGrid behind the copy + signup form,
+     so the white CardNav reads against the dark hero (it was white-on-white
+     invisible on the old white hero). The gradient band lives BELOW it. */
+  #watchlist.bf-hero--dark {
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    color: #fff;
+    isolation: isolate;
+    /* Even hero padding, consistent with /webinar: bigger than the section
+       rhythm (100px), smaller than the homepage hero. */
+    padding-top: 150px;
+    padding-bottom: 150px;
+  }
+  /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
+  @media (max-width: 767px) {
+    #watchlist.bf-hero--dark { padding-top: 52px; padding-bottom: 52px; }
+  }
+  .bf-hero--dark .bf-container { position: relative; z-index: 3; }
+  .bf-hero-dots {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.66;
+    pointer-events: auto;
+  }
+  /* Scrim sits BELOW the dots so they read brighter (same trick as the homepage). */
+  .bf-hero-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: rgba(10, 10, 10, 0.5);
+  }
+  .bf-hero--dark .bf-h1 { color: #fff; }
+  .bf-hero--dark .bf-h1 strong { color: #fff; }
+  /* Bumped above 0.62 to compensate for the dot-grid backdrop so it reads as the
+     same white as the footer body text on solid #000. */
+  .bf-hero--dark .bf-lead { color: #fff; }
+
+  /* Signup form as a frosted card floating on the dark stage. The SubscribeForm
+     internals are restyled for dark via :global (they carry the child
+     component's scope, not this page's). */
+  .bf-hero--dark .bf-newsletter-split__form {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 12px;
+    padding: 24px;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.7);
+  }
+  .bf-hero--dark :global(.bf-subform__input) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+  .bf-hero--dark :global(.bf-subform__input::placeholder) { color: rgba(255, 255, 255, 0.5); }
+  .bf-hero--dark :global(.bf-subform__input:focus) {
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+  }
+  .bf-hero--dark :global(.bf-subform__submit) { background: #fff; color: #0a0a0a; }
+  .bf-hero--dark :global(.bf-subform__submit:hover) { background: #ececec; }
+
+  /* "What's inside" sits on plain white now; the gradient band STARTS lower, at
+     "Why join" (hard #eef4fc top edge) and fades to white by the bottom of the
+     final CTA. The EffortlessStrategy + closing CTA sections go transparent so
+     the band shows through. */
+  /* Neutral fade tuned to THIS page's composition: a hard neutral edge at the TOP
+     of "Why join" (a visible border against the white "What's inside" section
+     above) that fades down to white by the bottom of the final CTA. */
+  .bf-fw-fade { background: linear-gradient(180deg, #ffffff 0%, #f4f4f7 100%); }
+
+  /* ── Closing-CTA tickers: two rows of stock chips scrolling opposite ways,
+     centered over the grainient square (decorative). ─────────────────────────── */
+  .fw-ticker {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    pointer-events: none;
+    /* Fade both horizontal edges so chips dissolve into the gradient. */
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  }
+  .fw-ticker__row { display: flex; overflow: hidden; }
+  .fw-ticker__track { display: inline-flex; flex: 0 0 auto; white-space: nowrap; will-change: transform; }
+  /* Each set is rendered twice; translateX(-50%) = exactly one set → seamless loop.
+     Trailing margin (not flex gap) keeps the wrap spacing even across the seam. */
+  .fw-ticker__track--ltr { animation: fw-ticker-ltr 26s linear infinite; }
+  .fw-ticker__track--rtl { animation: fw-ticker-rtl 26s linear infinite; }
+  @keyframes fw-ticker-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes fw-ticker-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .fw-ticker__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-right: 8px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(10, 12, 20, 0.34);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .fw-ticker__sym { font-weight: 700; letter-spacing: 0.01em; }
+  .fw-ticker__chg--up { color: #6ee7a0; }
+  .fw-ticker__chg--down { color: #ff9d98; }
+  @media (prefers-reduced-motion: reduce) {
+    .fw-ticker__track--ltr, .fw-ticker__track--rtl { animation: none; }
+  }
+  /* Band keeps the standard 100px section padding on top (matching every other
+     section) so "Why join" has even breathing room above the heading inside the
+     blue fade — it was flush to the band's top edge before. */
+  .bf-fw-fade :global(.es-section) { background: transparent; }
+  .bf-fw-fade .bf-section { background: transparent; }
+
+  /* "What's inside" has NO lead, so the shared .bf-community-grid's 64px margin-top
+     stacked on the section-header's 56px read as a ~120px gap below the headline.
+     Drop the grid margin (scoped higher than the global .bf-page .bf-community-grid
+     so it actually wins) → the gap is just the standard 56px header rhythm. And
+     zero the section's bottom pad so the gap into the "Why join" band below is a
+     single 100px (the band supplies the 100px top), not a doubled ~200px. */
+  .bf-fw-inside-section .bf-community-grid { margin-top: 0; }
+  .bf-fw-inside-section { padding-bottom: 0; }
+
+  /* The closing CTA is the last section before the footer — owns its 100px
+     bottom pad so it breathes before the dark footer. */
+  .bf-section.is-tight { padding-bottom: var(--bf-section-pad); }
+
+  /* ── Section 1 HERO — UNCHANGED. Copy left, premium newsletter form right.
+     The form keeps its Webflow/Kajabi attributes untouched. ──────────────── */
+  .bf-fw-hero {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 56px;
+    align-items: center;
+  }
+  .bf-fw-hero__h1 strong { font-weight: 700; }
+  .bf-fw-hero__lead { margin-top: 22px; max-width: 520px; }
+
+  .bf-fw-hero__form-wrap { width: 100%; }
+  .bf-fw-hero__form {
+    margin-top: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #fff;
+    padding: 28px;
+    border: 1px solid rgba(10, 10, 10, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+      0 24px 50px -28px rgba(20, 60, 120, 0.28);
+  }
+  .bf-fw-hero__form .bf-watchlist-v2__input {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(10, 10, 10, 0.12);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 16px;
+    color: #0a0a0a;
+    outline: 0;
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  .bf-fw-hero__form .bf-watchlist-v2__input::placeholder { color: rgba(10, 10, 10, 0.42); }
+  .bf-fw-hero__form .bf-watchlist-v2__input:focus {
+    border-color: #0a0a0a;
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
+  }
+  .bf-fw-hero__form .bf-watchlist-v2__submit {
+    width: 100%;
+    margin-top: 4px;
+    background: #0a0a0a;
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    padding: 16px 28px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 200ms, background-color 200ms;
+  }
+  .bf-fw-hero__form .bf-watchlist-v2__submit:hover {
+    transform: translateY(-1px);
+    background: #1a1a1a;
+  }
+  @media (max-width: 880px) {
+    .bf-fw-hero { grid-template-columns: 1fr; gap: 32px; }
+    .bf-fw-hero__lead { max-width: none; }
+  }
+
+  /* ── Sections 2 & 5 (50/50 splits) — frame the AboutBill portraits to a
+     controlled height so the split stays balanced, exactly like AboutBill. ── */
+  .bf-about__actions {
+    margin-top: 32px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .bf-fw-bg2 .bf-about__media img,
+  .bf-section:not(.bf-fw-bg2) .bf-about__media img {
+    height: 440px;
+    object-fit: cover;
+    object-position: center 24%;
+  }
+  @media (max-width: 980px) {
+    .bf-fw-bg2 .bf-about__media img,
+    .bf-section:not(.bf-fw-bg2) .bf-about__media img { height: 300px; }
+  }
+
+  /* ── Section 3 "What's inside" — even card grid, equal heights. Mirrors the
+     homepage HelpGrid card surface (bf-surface, bf-border, bf-radius-lg,
+     bf-shadow-card, lift-on-hover). ─────────────────────────────────────── */
+  .bf-fw-inside {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    align-items: stretch;
+  }
+  .bf-fw-inside__card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 36px 32px 32px;
+    background: var(--bf-surface, #fff);
+    border: 1px solid var(--bf-border, rgba(0, 0, 0, 0.08));
+    border-radius: var(--bf-radius-lg, 12px);
+    box-shadow: var(--bf-shadow-card, 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.05));
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), border-color 250ms, box-shadow 250ms;
+  }
+  .bf-fw-inside__card:hover {
+    transform: translateY(-3px);
+    border-color: var(--bf-border-strong, rgba(0, 0, 0, 0.14));
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  }
+  .bf-fw-inside__icon {
+    width: 28px;
+    height: 28px;
+  }
+  .bf-fw-inside__icon svg { width: 100%; height: 100%; display: block; }
+  .bf-fw-inside__title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--bf-text, #0a0a0a);
+  }
+  .bf-fw-inside__points { margin: 0; padding: 0; display: grid; gap: 12px; }
+  .bf-fw-inside__point {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--bf-text-muted, rgba(10, 10, 10, 0.62));
+  }
+  .bf-fw-inside__point::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #75B5FF;
+  }
+  @media (max-width: 980px) { .bf-fw-inside { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 540px) { .bf-fw-inside { grid-template-columns: 1fr; } }
+
+  /* ── Section 4 "Why join" — the homepage's black .bf-darkcta--black panel
+     (clean black, no full-bleed orange grainient); white-on-black list. ───── */
+  .bf-fw-why {
+    position: relative;
+    z-index: 1;
+  }
+  .bf-fw-why__header {
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .bf-fw-why .bf-darkcta__h2 { margin: 0 auto; max-width: 600px; }
+  .bf-fw-why .bf-darkcta__lead {
+    margin: 24px auto 0;
+    max-width: 640px;
+    color: #fff;
+  }
+  .bf-fw-why .bf-darkcta__lead strong { color: #fff; font-weight: 600; }
+  .bf-fw-why__list {
+    margin: 44px auto 0;
+    padding: 36px 0 0;
+    max-width: 980px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+  .bf-fw-why__item { display: flex; gap: 12px; align-items: flex-start; }
+  .bf-fw-why__dot {
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+  }
+  .bf-fw-why__text {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  @media (max-width: 880px) {
+    .bf-fw-why__list {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 32px;
+      padding-top: 28px;
+    }
+  }
+</style>

@@ -1,19 +1,22 @@
 'use client';
-// CardNav — adapted from React Bits (https://reactbits.dev/components/card-nav).
-// Behavior tuned for Bill Fanter:
-//  • At the top of the page it fills a wide header area (left-aligned, flush).
-//  • Once you scroll it pins to a centered, rounded pill (wider than the RB default).
-//  • Hovering anywhere on the bar expands the WHOLE block downward to reveal all
-//    cards at once (the original "card nav" concept), not a per-item dropdown.
-// CSS-driven (no GSAP) so the hover expand stays smooth alongside the hero's
-// WebGL/canvas animations.
-import { useState } from 'react';
+// CardNav — top header for Bill Fanter.
+//  • Desktop: each top-level item (Join / Learn / Company) owns its OWN
+//    dropdown. Hovering an item drops a small panel below the bar that reveals
+//    ONE colored card per link (e.g. Join → a "Masterclass" card + a
+//    "Community" card). Same colored-card look + slide-up reveal as the
+//    original shared card-nav — just isolated per item.
+//  • Mobile: the hamburger expands a stacked panel of every group + link.
+// Open state is JS-controlled with a short close delay so moving the cursor from
+// a label down into the full-width panel (across the small dead zone between
+// them) doesn't snap the menu shut before you can click a card.
+import { useState, useRef, useEffect } from 'react';
 import { GoArrowUpRight } from 'react-icons/go';
 import './CardNav.css';
 
 const CardNav = ({
   logo,
   logoAlt = 'Logo',
+  logoHref = '/',
   items,
   className = '',
   baseColor = '#fff',
@@ -23,31 +26,53 @@ const CardNav = ({
   buttonLabel = 'Get Started',
   buttonHref,
   loginLabel,
-  loginHref
+  loginHref,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const [openIdx, setOpenIdx] = useState(null);
+  const closeTimer = useRef(null);
   const navItems = (items || []).slice(0, 3);
 
-  // No scroll animation — the nav stays put as the top header (see CardNav.css).
+  // Lock page scroll while the full-screen mobile menu is open, so the page
+  // behind the panel can't be scrolled or interacted with.
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.body.style.overflow = isHamburgerOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isHamburgerOpen]);
 
-  // Desktop expand is pure CSS (:hover) — see CardNav.css — so it can't be
-  // starved by the hero's WebGL/canvas loops. React state only drives the
-  // mobile hamburger toggle.
-  const toggleHamburger = () => {
-    setIsHamburgerOpen(o => !o);
-    setIsExpanded(o => !o);
+  // Open immediately; close on a short delay so the cursor can cross the gap
+  // between a label and its panel (or hop between items) without it closing.
+  const openItem = (idx) => {
+    if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; }
+    setOpenIdx(idx);
+  };
+  const scheduleClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpenIdx(null), 220);
+  };
+  // Cancel a pending close — used when the cursor is anywhere within the nav so
+  // the open dropdown stays open while moving across the bar's blank areas.
+  const cancelClose = () => {
+    if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; }
   };
 
   return (
-    <div className={`card-nav-container ${className}`}>
-      <nav className={`card-nav ${isExpanded ? 'open' : ''}`} style={{ backgroundColor: baseColor }}>
+    <div className={`card-nav-container ${className} ${openIdx !== null ? 'has-open' : ''}`}>
+      {/* Stripe-style focus: blur + dim the rest of the page while a dropdown is open. */}
+      <div className="card-nav-backdrop" aria-hidden="true" />
+      <nav
+        className={`card-nav ${isHamburgerOpen ? 'open' : ''}`}
+        style={{ backgroundColor: baseColor }}
+        onMouseEnter={cancelClose}
+        onMouseLeave={scheduleClose}
+      >
         <div className="card-nav-top">
           <div
             className={`hamburger-menu ${isHamburgerOpen ? 'open' : ''}`}
-            onClick={toggleHamburger}
+            onClick={() => setIsHamburgerOpen((o) => !o)}
             role="button"
-            aria-label={isExpanded ? 'Close menu' : 'Open menu'}
+            aria-label={isHamburgerOpen ? 'Close menu' : 'Open menu'}
             tabIndex={0}
             style={{ color: menuColor || '#000' }}
           >
@@ -55,55 +80,73 @@ const CardNav = ({
             <div className="hamburger-line" />
           </div>
 
-          <div className="logo-container">
+          <a className="logo-container" href={logoHref} aria-label={`${logoAlt}, home`}>
             <img src={logo} alt={logoAlt} className="logo" />
-          </div>
+          </a>
 
-          {/* Visible top-level labels. Hovering the bar expands the whole block. */}
+          {/* Each top-level item owns its own dropdown of per-link cards. */}
           <div className="card-nav-menu" style={{ color: menuColor || '#000' }}>
             {navItems.map((item, idx) => (
-              <span key={`top-${item.label}-${idx}`} className="card-nav-menu-item">
-                {item.label}
-                <span className="card-nav-menu-caret" aria-hidden="true" />
-              </span>
+              <div
+                className={`card-nav-item ${openIdx === idx ? 'is-open' : ''}`}
+                key={`top-${item.label}-${idx}`}
+                onMouseEnter={() => openItem(idx)}
+              >
+                <span className="card-nav-menu-item" tabIndex={0} onFocus={() => openItem(idx)}>
+                  {item.label}
+                  <span className="card-nav-menu-caret" aria-hidden="true" />
+                </span>
+                <div className="card-nav-dropdown" role="menu" onMouseEnter={() => openItem(idx)}>
+                  {item.links?.map((lnk, i) => (
+                    <a
+                      key={`${lnk.label}-${i}`}
+                      className="nav-card"
+                      href={lnk.href}
+                      aria-label={lnk.ariaLabel}
+                      role="menuitem"
+                      style={{
+                        backgroundColor: item.bgColor,
+                        color: item.textColor,
+                      }}
+                    >
+                      <GoArrowUpRight className="nav-card-arrow" aria-hidden="true" />
+                      <div className="nav-card-label">{lnk.label}</div>
+                      {lnk.desc && <div className="nav-card-desc">{lnk.desc}</div>}
+                    </a>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 
           <div className="card-nav-actions">
             {loginLabel && (
-              <a href={loginHref || '#'} className="card-nav-login" style={{ color: menuColor || '#000' }}>
+              <a href={loginHref || '#'} target="_blank" rel="noopener" className="card-nav-login" style={{ color: menuColor || '#000' }}>
                 {loginLabel}
               </a>
             )}
-            <a
-              href={buttonHref || '#'}
-              className="card-nav-cta-button"
-              style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-            >
+            <a href={buttonHref || '#'} className="bf-btn bf-btn--primary card-nav-cta">
               {buttonLabel}
             </a>
           </div>
         </div>
 
-        {/* The full block: all cards revealed together on expand. */}
-        <div className="card-nav-content" aria-hidden={!isExpanded}>
+        {/* Mobile panel — every group + link, stacked (hamburger toggle). */}
+        <div className={`card-nav-mobile ${isHamburgerOpen ? 'open' : ''}`}>
           {navItems.map((item, idx) => (
-            <div
-              key={`${item.label}-${idx}`}
-              className="nav-card"
-              style={{ backgroundColor: item.bgColor, color: item.textColor, transitionDelay: `${idx * 0.05}s` }}
-            >
-              <div className="nav-card-label">{item.label}</div>
-              <div className="nav-card-links">
-                {item.links?.map((lnk, i) => (
-                  <a key={`${lnk.label}-${i}`} className="nav-card-link" href={lnk.href} aria-label={lnk.ariaLabel}>
-                    <GoArrowUpRight className="nav-card-link-icon" aria-hidden="true" />
-                    {lnk.label}
-                  </a>
-                ))}
-              </div>
+            <div className="card-nav-mobile-group" key={`m-${item.label}-${idx}`}>
+              <div className="card-nav-mobile-grouplabel">{item.label}</div>
+              {item.links?.map((lnk, i) => (
+                <a key={`${lnk.label}-${i}`} className="card-nav-mobile-link" href={lnk.href}>
+                  {lnk.label}
+                </a>
+              ))}
             </div>
           ))}
+          {loginLabel && (
+            <a className="card-nav-mobile-link card-nav-mobile-login" href={loginHref || '#'} target="_blank" rel="noopener">{loginLabel}</a>
+          )}
+          <a className="card-nav-mobile-cta" href={buttonHref || '#'}>{buttonLabel}</a>
         </div>
       </nav>
     </div>

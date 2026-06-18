@@ -1,18 +1,26 @@
 ---
-// Production /terms-conditions — classic markup with modernization layer.
-// New UI preview at /2026/terms-conditions, original at /classic.
+// /terms-conditions — componentized 2026 redesign (clean bf-* sections + shared
+// CardNav / Footer / Islands chrome). Replaced the classic-modernized page.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import TermsConditionsContent from '../../components/pages/TermsConditionsContent.astro';
 ---
 <BaseLayout
-  title={`Terms & Conditions | Bill Fanter`}
-  description={`Bill Fanter terms and conditions.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`664d817d48d0e0f27a5e2c5a`}
-  extraHeadHtml={extraHeadHtml}
+  title="Terms & Conditions | Bill Fanter"
+  description="Bill Fanter terms and conditions."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="664d817d48d0e0f27a5e2c5a"
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <TermsConditionsContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

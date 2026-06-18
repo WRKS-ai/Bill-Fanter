@@ -1,0 +1,154 @@
+---
+// AboutContent — /about page body, cloned from the homepage's design language.
+// Built entirely from homepage section PATTERNS (bf-* design-system classes):
+//   1. AboutBill-style 50/50 photo + copy (Bill's REAL bio — reused from AboutBill)
+//   2. HeroSplit-style 50/50 split with PLACEHOLDER philosophy copy
+//   3. The existing "How can we help?" HelpGrid section (4 ways to engage)
+//   4. A YoutubeCta-style .bf-darkcta grainient CTA (PLACEHOLDER closing CTA)
+// Alternating white / var(--bf-bg-2) bands + --bf-section-pad rhythm, same as home.
+// Copy is REAL bio only in section 1; everything else is clearly-generic placeholder
+// to be fleshed out for SEO later.
+import HelpGrid from '../sections/HelpGrid.astro';
+import Signature from '../Signature.astro';
+---
+
+{/* Hero — dark dot-grid stage (same H1 size + padding as the /student-comments
+    reviews hero); dark backdrop with the React Bits DotGrid behind the title. */}
+<section class="bf-section bf-hero bf-about-hero">
+  <div class="bf-about-hero__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+  <div class="bf-container">
+    <div class="bf-hero__inner">
+      <h1 class="bf-h1 bf-hero__h1">About Bill Fanter</h1>
+      <p class="bf-lead bf-hero__lead">35+ years of investment expertise, distilled into a system anyone can follow.</p>
+    </div>
+  </div>
+</section>
+
+{/* ===== 1. About Bill — 50/50 photo + copy (REAL bio, reused from AboutBill) ===== */}
+<section class="bf-section bf-about-bio">
+  <div class="bf-container">
+    <div class="bf-about-grid">
+      <div class="bf-about__media">
+        <img src="/assets/664a5b263659c7265be280ad/664c28db6c354e4acb60d5b7_masterclass%20image-13.webp" alt="Bill Fanter" />
+        <Signature class="bf-about__sig" />
+      </div>
+      <div class="bf-about__copy">
+        <h3 class="bf-h2" style="margin-top:0">Hi, I'm Bill. I'm excited to get to know you.</h3>
+        <p style="margin-top:28px">Over a 35-year career, I became one of the most sought-after executive-level bankers in the industry. I spearheaded the management of some of the largest multi-billion-dollar banks in America, and also taught at the CBA Executive Banking School.</p>
+        <p>I've spent thousands of hours and thousands of dollars learning the art of trading and testing the best tools for the job. After building a 6-figure income stream from scratch, I decided to combine my expertise with my passion and experience in teaching and leadership to help others learn this life-changing skill.</p>
+        <p>I will teach you the exact same strategies that helped me build my wealth from the ground up.</p>
+        <p>And the best part of all?</p>
+        <p>I'll make it easy on you. As I like to say&hellip; This ain't rocket science!</p>
+        <div class="bf-about__actions">
+          <a class="bf-btn bf-btn--primary" href="/contact">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* ===== 2. HelpGrid — "Trade options with confidence and grow your income"
+     (replaced the placeholder "disciplined approach" split; this single grid
+     now stands in for both, per request). ===== */}
+<HelpGrid />
+
+{/* ===== 4. Closing CTA — YoutubeCta-style .bf-darkcta grainient ===== */}
+<section class="bf-section bf-about-cta">
+  <div class="bf-container">
+    <div class="bf-darkcta bf-darkcta--black">
+      <div class="bf-darkcta__grid">
+        <div>
+          <h2 class="bf-darkcta__h2">Ready to trade options with confidence?</h2>
+          <p class="bf-darkcta__lead">Join the masterclass and learn a clear, repeatable system for trading options, built on 35+ years of real market experience.</p>
+          <div class="bf-darkcta__buttons">
+            <a class="bf-darkcta__btn" href="/masterclass">Join the masterclass</a>
+          </div>
+        </div>
+        <div class="bf-darkcta__media" aria-hidden="true">
+          <div class="bf-darkcta__grain-card">
+            <div class="bf-grainient-mount" data-grainient="about-cta" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+            <div class="bf-darkcta__reel">
+              <img src="/assets/664a5b263659c7265be280ad/664c28d76c354e4acb60d3d4_masterclass%20image.webp" alt="" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Dark dot-grid hero — mirrors the /student-comments reviews hero (same #07080c
+     stage, dot grid, white text, .bf-hero 120px top / 0 bottom padding). The
+     content sections below keep the standard doubled section rhythm. */
+  .bf-about-hero {
+    position: relative;
+    overflow: hidden;
+    background: #07080c;
+    isolation: isolate;
+    /* Identical padding across every subpage dot-grid hero (webinar /
+       free-watchlist / about / reviews): even 150px top + bottom. */
+    padding-top: 150px;
+    padding-bottom: 150px;
+  }
+  /* Mobile: even 52px top + bottom, consistent across every dot-grid hero. */
+  @media (max-width: 767px) {
+    .bf-about-hero { padding-top: 52px; padding-bottom: 52px; }
+  }
+  .bf-about-hero__dots { position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+  .bf-about-hero .bf-container { position: relative; z-index: 1; }
+  .bf-about-hero :global(.bf-h1) { color: #fff; }
+  /* Bumped above 0.62 to compensate for the dot-grid backdrop so it reads as the
+     same white as the footer body text on solid #000. */
+  .bf-about-hero :global(.bf-hero__lead) { color: #fff; }
+  /* Alternating off-white band on the 2nd 50/50 section, matching the homepage's
+     white / var(--bf-bg-2) section rhythm. */
+  .bf-about-band { background: var(--bf-bg-2); }
+  /* Mirror the AboutBill copy padding when the columns are flipped (copy LEFT,
+     media RIGHT) so the gap reads evenly — same trick HeroSplit uses. */
+  .bf-about-grid--flip .bf-about__copy { padding-left: 0; padding-right: 48px; }
+  @media (max-width: 980px) {
+    .bf-about-grid--flip .bf-about__copy { padding-right: 0; }
+  }
+  .bf-about__media { position: relative; }
+  .bf-about__media :global(.bf-about__sig) {
+    position: absolute;
+    right: 18px;
+    bottom: 16px;
+    width: 150px;
+    max-width: 44%;
+    color: #0a0a0a;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.55));
+  }
+  .bf-about__actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  /* Portrait crops, matching AboutBill's framing. */
+  .bf-about__media img {
+    height: 480px;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+  @media (max-width: 980px) {
+    .bf-about__media img { height: 320px; }
+  }
+
+  /* This closing CTA shows a PHOTO of Bill, not the YouTube phone-reel the
+     .bf-darkcta--black variant is built for — so override the tall 9/16 device
+     crop to a near-square 4/5 that sits fully inside the gradient card (all four
+     corners rounded, no bottom crop). Higher specificity than the base reel rule
+     (incl. its mobile @media), so it holds at every width. */
+  .bf-about-cta :global(.bf-darkcta--black .bf-darkcta__reel) {
+    aspect-ratio: 4 / 5;
+    top: 10%;
+    height: 80%;
+    max-width: 76%;
+    border-radius: 12px;
+  }
+  .bf-about-cta :global(.bf-darkcta--black .bf-darkcta__reel img) {
+    object-position: center 22%;
+  }
+</style>

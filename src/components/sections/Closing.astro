@@ -1,15 +1,46 @@
 ---
-// Closing dark block — testimonial + Book-a-Call grainient card. Clean Astro
-// (ported from /2026 bf-closing). Full-bleed dark section; grainient fill is
-// mounted by BaseLayout's global [data-grainient] script.
+// Closing dark block — rotating testimonial slideshow + Book-a-Call grainient
+// card. The quote tile cycles through several real student reviews (verbatim
+// from the masterclass review set) with clickable dots; auto-advances and
+// pauses on hover. Grainient fill mounted by BaseLayout's global script.
 const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+
+// Real student reviews (verbatim). Intentionally a DIFFERENT set from the homepage
+// MegaBento (which shows John Gordy, Riley H, Alex Pitcaithly, Dan Funderburk), so
+// the footer slideshow never repeats the same reviews the homepage already showed.
+const reviews = [
+  {
+    quote: "Bill's Masterclass was incredibly informative and fun. He weaves in and out of topics from trading psychology to charting and makes every lesson accessible to complete beginners. Well worth it!",
+    name: 'Rob Stalkie',
+    title: 'Account Manager',
+    img: '/assets/664a5b263659c7265be280ad/679c51ea7d9046f26ec04264_rob-stalkie.png',
+  },
+  {
+    quote: "Just wrapped up the masterclass in options trading with Bill Fanter, and I have to say, I absolutely loved it! This old fox (me) picked up some new tricks, proving once again that life always has more to teach you. A big thank you to Bill Fanter for being not just a great teacher, but also a fantastic person and mentor. Now, time to put your lessons into action 🚀",
+    name: 'Stijn Ceelen',
+    title: 'Seasoned C-level leader in Banking & Wealth(Tech)',
+    img: '/assets/664a5b263659c7265be280ad/678e78e0ad106cbe59c5e816_stijn-ceelen.avif',
+  },
+  {
+    quote: "I just finished taking Bill Fanter's Master Class. It has been an amazing experience. Bill teaches a complex subject and presents it in a way that is easy to process and understand. He has big heart and cares about his students. I would highly recommend this course if you have an interest in trading options.",
+    name: 'David Lawson',
+    title: 'Founder Icegreen - Beautiful Bags For Brands',
+    img: '/assets/664a5b263659c7265be280ad/678e7a667540897023632d1b_david-lawson.avif',
+  },
+  {
+    quote: "Do not wait to get involved! Bill's master class is highly informative and so well presented. He is an expert with knowledge beyond what most traders have and is incredibly responsive with questions. I cannot say enough about this class nor the incredible trading community Bill has created.",
+    name: 'Danielle G',
+    title: 'Sr. Epic Application Specialist',
+    img: '/assets/664a5b263659c7265be280ad/679c4ad9a63b20955c05a779_danielle-g.png',
+  },
+];
 ---
 <section class="bf-closing">
   <div class="bf-closing__intro">
-    <h2 class="bf-closing__h2">Transforming potential into performance</h2>
-    <p class="bf-closing__lead">35+ years of investment expertise, distilled into a system anyone serious about their financial future can follow.</p>
+    <h2 class="bf-closing__h2">Learn to trade options with a proven system.</h2>
+    <p class="bf-closing__lead">Bill Fanter shows you how to spot setups, size risk, and place trades you understand.</p>
     <div class="bf-closing__rating">
-      <span style="font-weight:600;color:#fff">Trusted</span>
+      <span style="font-weight:600;color:#fff">Recommended by</span>
       <span class="bf-closing__rating-stars">
         {Array.from({ length: 5 }).map(() => (
           <svg class="bf-star" viewBox="0 0 24 24" set:html={star} />
@@ -20,20 +51,217 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
   </div>
 
   <div class="bf-closing__grid">
-    <div class="bf-closing__tile bf-closing__tile--quote">
-      <p class="bf-closing__tile-quote-text">&ldquo;Bill's Masterclass had everything I needed to start trading options confidently. The depth of insight is simply remarkable.&rdquo;</p>
-      <div class="bf-closing__tile-author">
-        <span class="bf-closing__tile-author-avatar"><img src="/assets/664a5b263659c7265be280ad/679c51ea7d9046f26ec04264_rob-stalkie.png" alt="Rob Stalkie" /></span>
-        <div>
-          <div class="bf-closing__tile-author-name">Rob Stalkie</div>
-          <div class="bf-closing__tile-author-title">Account Manager</div>
+    <div class="bf-closing__tile bf-closing__tile--quote" data-review-slider>
+      <div class="bf-closing__slides">
+        {reviews.map((r, i) => (
+          <figure class={`bf-closing__slide ${i === 0 ? 'is-active' : ''}`} data-slide={i}>
+            <p class="bf-closing__tile-quote-text">&ldquo;{r.quote}&rdquo;</p>
+            <figcaption class="bf-closing__tile-author">
+              <span class="bf-closing__tile-author-avatar"><img src={r.img} alt={r.name} loading="lazy" /></span>
+              <div>
+                <div class="bf-closing__tile-author-name">{r.name}</div>
+                <div class="bf-closing__tile-author-title">{r.title}</div>
+              </div>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      <div class="bf-closing__slider-foot">
+        <a class="bf-closing__more" href="/student-comments">
+          Read all reviews
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <div class="bf-closing__dots" role="tablist" aria-label="Reviews">
+          {reviews.map((_, i) => (
+            <button
+              class={`bf-closing__dot ${i === 0 ? 'is-active' : ''}`}
+              data-dot={i}
+              type="button"
+              role="tab"
+              aria-label={`Show review ${i + 1}`}
+            ></button>
+          ))}
         </div>
       </div>
     </div>
 
     <div class="bf-closing__tile bf-closing__tile--cta">
       <div data-grainient="closing" data-color1="#1d4ed8" data-color2="#3b82f6" data-color3="#60a5fa" class="bf-grainient-fill"></div>
-      <a class="bf-closing__cta-btn" href="/contact" style="position:relative;z-index:2">Book a Call</a>
+      <div class="bf-closing__cta-pills">
+        <a class="bf-closing__pill" href="/masterclass">Masterclass</a>
+        <a class="bf-closing__pill" href="/community">Community</a>
+        <a class="bf-closing__pill" href="/free-watchlist">Free watchlist</a>
+        <a class="bf-closing__pill" href="/contact">Book a call</a>
+        <a class="bf-closing__pill" href="/student-comments">Reviews</a>
+      </div>
     </div>
   </div>
 </section>
+
+<style>
+  /* The quote tile becomes a slideshow: slides stack absolutely and crossfade;
+     the tile keeps its 4/3 shape (from the design system). */
+  .bf-closing__tile--quote {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+  .bf-closing__slides {
+    position: absolute;
+    inset: 0;
+  }
+  .bf-closing__slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    /* Bottom padding (30px) matches the slider-foot's bottom offset so the
+       author lines up with the "Read all reviews" CTA + dots. */
+    padding: 40px 44px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease,
+      visibility 0.5s ease;
+    pointer-events: none;
+  }
+  .bf-closing__slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  /* Slightly smaller than the single-quote default so longer reviews fit. */
+  .bf-closing__slide .bf-closing__tile-quote-text {
+    font-size: clamp(16px, 1.9vw, 22px);
+    margin: 0;
+  }
+  /* Slider footer (CTA + dots), bottom-right so it never collides with the
+     bottom-left author. */
+  .bf-closing__slider-foot {
+    position: absolute;
+    bottom: 30px;
+    right: 36px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    z-index: 3;
+  }
+  .bf-closing__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.2s ease, gap 0.2s ease;
+  }
+  .bf-closing__more:hover { opacity: 1; gap: 10px; }
+  .bf-closing__more svg { display: block; }
+  .bf-closing__dots {
+    display: flex;
+    gap: 8px;
+  }
+  .bf-closing__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 0;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.28);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .bf-closing__dot:hover { background: rgba(255, 255, 255, 0.5); }
+  .bf-closing__dot.is-active { background: #fff; transform: scale(1.15); }
+
+  /* CTA tile: a few relevant glassy pills side by side over the blue grainient. */
+  .bf-closing__cta-pills {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 28px;
+  }
+  .bf-closing__pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.16);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: background 200ms ease, transform 200ms ease;
+  }
+  .bf-closing__pill:hover { background: rgba(255, 255, 255, 0.28); transform: translateY(-1px); }
+
+  @media (max-width: 880px) {
+    /* Tiles grow to fit content on mobile instead of a fixed 4/3 ratio that
+       clipped the 5th pill and collided the review CTA with the author. */
+    .bf-closing__tile { aspect-ratio: auto; min-height: 300px; }
+    .bf-closing__tile--cta { padding: 44px 22px; }
+    /* Extra bottom padding leaves room for the foot below the author. */
+    .bf-closing__slide { padding: 28px 22px 70px; gap: 16px; }
+    /* Read-all-reviews + dots: a centered row pinned to the bottom, clear of the
+       author sitting above it (no more overlap). */
+    .bf-closing__slider-foot { left: 0; right: 0; bottom: 20px; justify-content: center; gap: 16px; }
+    .bf-closing__more { font-size: 13px; }
+    /* Truncate over-long quotes so they never collide with the author + foot. */
+    .bf-closing__slide .bf-closing__tile-quote-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 7;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    /* Pills wrap cleanly, one after another, with no clipping. */
+    .bf-closing__cta-pills { padding: 0 4px; }
+  }
+</style>
+
+<script>
+  // Rotate the closing review slider: auto-advance every 6s, pause on hover,
+  // and jump on dot click. Idempotent (guarded) so re-runs don't double-bind.
+  function initReviewSliders() {
+    document.querySelectorAll('[data-review-slider]').forEach((slider) => {
+      if (slider.dataset.rsInit === '1') return;
+      const slides = Array.from(slider.querySelectorAll('.bf-closing__slide'));
+      const dots = Array.from(slider.querySelectorAll('.bf-closing__dot'));
+      if (slides.length <= 1) return;
+      slider.dataset.rsInit = '1';
+      let idx = 0;
+      let timer;
+      const show = (i) => {
+        idx = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => s.classList.toggle('is-active', n === idx));
+        dots.forEach((d, n) => d.classList.toggle('is-active', n === idx));
+      };
+      const start = () => { timer = window.setInterval(() => show(idx + 1), 6000); };
+      const stop = () => window.clearInterval(timer);
+      dots.forEach((d, n) => d.addEventListener('click', () => { show(n); stop(); start(); }));
+      slider.addEventListener('mouseenter', stop);
+      slider.addEventListener('mouseleave', start);
+      show(0);
+      start();
+    });
+  }
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initReviewSliders);
+  } else {
+    initReviewSliders();
+  }
+</script>

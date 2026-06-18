@@ -45,7 +45,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Great+Vibes&display=swap" />
     <style>
       *, *::before, *::after { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
@@ -64,76 +64,6 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     <Fragment set:html={headBoilerplate} />
     {extraHeadHtml && <Fragment set:html={extraHeadHtml} />}
     <style set:html={designSystemCSS}></style>
-
-    <script is:inline>
-      /* ------------------------------------------------------------------
-         Disable Webflow IX2 scroll-reveal animations at the source.
-
-         IX2 keys its animations off the `data-w-id` attribute and a JSON
-         registry. Just stripping the inline `opacity:0` + translate3d is
-         not enough — IX2 re-applies them mid-frame from its registry.
-         To stop the animation, the link itself has to be severed:
-         remove `data-w-id` from any element that ships with the reveal
-         initial state, BEFORE IX2's DOMContentLoaded handler scans.
-
-         This script runs in <head>. A MutationObserver on <html>
-         catches each element as the parser inserts it — earlier than
-         any DOMContentLoaded listener can fire — and neutralizes it
-         in place. A final sweep on DOMContentLoaded catches stragglers.
-
-         Menu hamburger lines (`.nav_menu-line-up` / `-down`) have
-         `data-w-id` but NO reveal inline style, so they're untouched
-         and IX2 still drives their rotate-into-X animation on click.
-      ------------------------------------------------------------------ */
-      (function () {
-        var OFFSET_RE = /translate3d\(0,\s*-?20px,\s*0\)/;
-        var stripped = 0;
-
-        function looksLikeReveal(el) {
-          if (!el || el.nodeType !== 1 || !el.hasAttribute) return false;
-          var raw = el.getAttribute('style');
-          if (!raw) return false;
-          return OFFSET_RE.test(raw) || /opacity:\s*0\b/.test(raw);
-        }
-
-        function neutralize(el) {
-          el.style.removeProperty('transform');
-          el.style.removeProperty('-webkit-transform');
-          el.style.removeProperty('-moz-transform');
-          el.style.removeProperty('-ms-transform');
-          el.style.removeProperty('opacity');
-          el.removeAttribute('data-w-id');
-          stripped++;
-        }
-
-        function walk(root) {
-          if (!root) return;
-          if (looksLikeReveal(root)) neutralize(root);
-          if (root.querySelectorAll) {
-            var matches = root.querySelectorAll('[style]');
-            for (var i = 0; i < matches.length; i++) {
-              if (looksLikeReveal(matches[i])) neutralize(matches[i]);
-            }
-          }
-        }
-
-        var observer = new MutationObserver(function (mutations) {
-          for (var i = 0; i < mutations.length; i++) {
-            var added = mutations[i].addedNodes;
-            for (var j = 0; j < added.length; j++) walk(added[j]);
-          }
-        });
-        observer.observe(document.documentElement, { childList: true, subtree: true });
-
-        document.addEventListener('DOMContentLoaded', function () {
-          walk(document.body);
-          observer.disconnect();
-          if (window.console && window.console.debug) {
-            window.console.debug('[bf] IX2 reveal severed on ' + stripped + ' element(s)');
-          }
-        });
-      })();
-    </script>
   </head>
   <body>
     <slot />
@@ -141,42 +71,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     <!-- bf-vreel modal — Vimeo iframe activated when a .bf-vreel button is clicked.
          iframe stays at about:blank until needed so no video network requests happen on idle. -->
     <div class="bf-vreel-modal" id="bf-vreel-modal" aria-hidden="true">
-      <button class="bf-vreel-modal__close" id="bf-vreel-modal-close" aria-label="Close video">×</button>
+      <button class="bf-vreel-modal__close" id="bf-vreel-modal-close" aria-label="Close video"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       <iframe id="bf-vreel-modal-iframe" src="about:blank" title="Video player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <Fragment set:html={footerBoilerplate} />
-
-    <script is:inline>
-      /* Hamburger menu toggle — pairs with the CSS rules in
-         modernization.css. Click any nav icon wrapper to toggle the
-         `bf-menu-open` class on <body>; that flips the drawer + the
-         hamburger/cross icons. Also closes on link click and ESC. */
-      (function () {
-        function toggle() { document.body.classList.toggle('bf-menu-open'); }
-        function close()  { document.body.classList.remove('bf-menu-open'); }
-
-        document.addEventListener('click', function (e) {
-          // The menu button is one of these wrappers (different pages
-          // use slightly different markup, so match either).
-          var btn = e.target.closest('.nav_menu-icon-image-wrapper, .nav_menu-icon-wrapper');
-          if (btn) {
-            e.preventDefault();
-            toggle();
-            return;
-          }
-          // Tapping a nav link inside the drawer should close it.
-          var link = e.target.closest('.nav_menu-links a');
-          if (link && document.body.classList.contains('bf-menu-open')) {
-            close();
-          }
-        }, true);
-
-        document.addEventListener('keydown', function (e) {
-          if (e.key === 'Escape') close();
-        });
-      })();
-    </script>
 
     <script is:inline>
       (function () {
@@ -283,14 +182,15 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
       })();
     </script>
     <script>
-      /* React component mounts. Imports are STATIC so Vite's React plugin
-         can inject the Fast-Refresh preamble at build/transform time —
-         dynamic import('…jsx') from inline scripts breaks the preamble
-         detection and throws "@vitejs/plugin-react can't detect preamble". */
+      /* React island mounts. The .jsx component modules carry @vitejs/plugin-react's
+         preamble check, so they're imported LAZILY (below) only once the preamble
+         injected by <ReactReady client:only> is installed — otherwise they raced
+         it on navigation/refresh and threw "can't detect preamble", leaving the
+         DotGrid / Grainient islands unmounted. React/ReactDOM are deps → static. */
       import * as React from 'react';
       import { createRoot } from 'react-dom/client';
-      import Grainient from '../components/Grainient/Grainient.jsx';
-      import DotGrid from '../components/DotGrid/DotGrid.jsx';
+
+      let Grainient, DotGrid;
 
       const waitForDimensions = (el) =>
         new Promise((resolve) => {
@@ -307,6 +207,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
         if (!targets.length) return;
         for (const el of targets) {
           if (el.dataset.gMounted === '1') continue;
+          // Skip hidden mounts (mobile-disabled via display:none) so a 0-size
+          // element can't hang the loop and block every later grainient.
+          const r0 = el.getBoundingClientRect();
+          if (r0.width === 0 || r0.height === 0) continue;
           el.dataset.gMounted = '1';
           await waitForDimensions(el);
           const props = {
@@ -360,8 +264,35 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
       };
 
       const mountAll = () => { mountAllGrainients(); mountAllDotGrids(); };
-      if (document.readyState === 'complete') mountAll();
-      else window.addEventListener('load', mountAll);
+
+      // The .jsx components carry @vitejs/plugin-react's preamble guard. In dev we
+      // install the Fast-Refresh preamble OURSELVES rather than polling for the
+      // flag that <ReactReady client:only> sets — that island hydration was
+      // deferred, so the old polling waited (up to ~3s) before mounting. Prod has
+      // no guard → this is a no-op (DEV is false → early return; the import is
+      // @vite-ignore'd so the build never tries to resolve it).
+      async function ensureReactPreamble() {
+        if (!import.meta.env.DEV) return;
+        if (window.__vite_plugin_react_preamble_installed__) return;
+        try {
+          const RefreshRuntime = (await import(/* @vite-ignore */ '/@react-refresh')).default;
+          RefreshRuntime.injectIntoGlobalHook(window);
+          window.$RefreshReg$ = () => {};
+          window.$RefreshSig$ = () => (type) => type;
+          window.__vite_plugin_react_preamble_installed__ = true;
+        } catch (e) { console.warn('[bf] react preamble self-install failed', e); }
+      }
+      (async () => {
+        await ensureReactPreamble();
+        [Grainient, DotGrid] = (await Promise.all([
+          import('../components/Grainient/Grainient.jsx'),
+          import('../components/DotGrid/DotGrid.jsx'),
+        ])).map((m) => m.default);
+        // Mount as soon as the DOM is parsed — NOT on `load` (which waits for all
+        // images/fonts and delayed the islands by seconds on heavy pages).
+        if (document.readyState !== 'loading') mountAll();
+        else document.addEventListener('DOMContentLoaded', mountAll);
+      })();
     </script>
     <script is:inline>
       /* Subtle parallax for spotlight backgrounds. Sets --bf-parallax-y on
@@ -437,13 +368,19 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
              autoplay restarts from 00:00 even on a repeat click. */
           return 'https://player.vimeo.com/video/' + id + '?' + params + '#t=0&_=' + Date.now();
         }
-        function open(id) {
-          if (!modal || !modalIframe || !id) return;
+        function buildYouTubeURL(id) {
+          return 'https://www.youtube.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+        }
+        function open(src, wide) {
+          if (!modal || !modalIframe || !src) return;
+          /* Widescreen (16:9) videos — roundtables + testimonials — vs the default
+             vertical 9:16 reel shape. */
+          modal.classList.toggle('bf-vreel-modal--wide', !!wide);
           /* clear → next frame → assign. browsers need a tick to actually
              release the previous player before we point at the same video. */
           modalIframe.src = 'about:blank';
           requestAnimationFrame(function () {
-            modalIframe.src = buildVimeoURL(id);
+            modalIframe.src = src;
           });
           modal.classList.add('is-open');
           modal.setAttribute('aria-hidden', 'false');
@@ -454,10 +391,15 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
           modal.classList.remove('is-open');
           modal.setAttribute('aria-hidden', 'true');
         }
-        document.querySelectorAll('.bf-vreel').forEach(function (btn) {
+        /* Any element carrying data-bf-vimeo / data-bf-youtube opens the lightbox
+           (the .bf-vreel tiles, the reviews-page roundtable + testimonial cards). */
+        document.querySelectorAll('[data-bf-vimeo], [data-bf-youtube]').forEach(function (btn) {
           btn.addEventListener('click', function () {
-            var id = btn.getAttribute('data-bf-vimeo');
-            if (id) open(id);
+            var vimeo = btn.getAttribute('data-bf-vimeo');
+            var yt = btn.getAttribute('data-bf-youtube');
+            var wide = btn.hasAttribute('data-bf-wide');
+            if (vimeo) open(buildVimeoURL(vimeo), wide);
+            else if (yt) open(buildYouTubeURL(yt), wide);
           });
         });
         if (modalClose) modalClose.addEventListener('click', close);

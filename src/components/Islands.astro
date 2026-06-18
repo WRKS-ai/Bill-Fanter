@@ -1,0 +1,188 @@
+---
+// Shared React-island mount script. Lifted out of the old inline boot script so
+// any clean page can mount the same islands without duplicating the boot logic.
+//
+// Mounts (all idempotent, guarded by a dataset flag so a second include or
+// BaseLayout's own global mounts never double-render):
+//   - CardNav         the page nav, prepended into [data-cardnav-host] (else main.bf-page)
+//   - GridDistortion  every [data-griddistortion] WebGL abstract bg
+//   - AnimatedList    [data-benefits-list], reads the static .bf-benefit rows
+//   - Grainient       every [data-grainient] with the softer-warp props
+//
+// Imports are STATIC so Vite's React plugin can inject the Fast-Refresh
+// preamble; a dynamic import('…jsx') throws "can't detect preamble". Pair this
+// with <ReactReady client:only="react" /> on the page so the preamble exists.
+---
+<script>
+  import * as React from 'react';
+  import { createRoot } from 'react-dom/client';
+
+  // The React COMPONENT modules (.jsx) carry @vitejs/plugin-react's preamble
+  // check. Static-importing them raced the preamble that <ReactReady client:only>
+  // injects asynchronously, so on navigation/refresh the imports sometimes
+  // evaluated first and threw "can't detect preamble" → every island stayed
+  // unmounted. Import them LAZILY, only after the preamble is installed (see
+  // whenReactReady at the bottom). React / ReactDOM are deps (no preamble check)
+  // so they stay static.
+  let Grainient, AnimatedList, CardNav, GridDistortion;
+
+  /* React Bits GridDistortion — WebGL distorted abstract image. Mounts on
+     [data-griddistortion]; image source comes from data-image. */
+  const mountGridDistortion = () => {
+    for (const el of document.querySelectorAll('[data-griddistortion]')) {
+      if (el.dataset.gdMounted === '1') continue;
+      el.dataset.gdMounted = '1';
+      try {
+        createRoot(el).render(React.createElement(GridDistortion, {
+          imageSrc: el.dataset.image,
+          grid: 15, mouse: 0.12, strength: 0.15, relaxation: 0.9,
+        }));
+      } catch (e) { console.error('[bf-griddistortion] render error', e); }
+    }
+  };
+
+  /* React Bits CardNav — the site nav. Content maps the real nav into three
+     expandable cards. Mounted into a position:relative page root so its
+     absolute container anchors to the page top (over the dark hero). */
+  // Three cards, grouped by intent:
+  //   Join    — the two ways to join (Masterclass + Community); shown as
+  //             featured visual tiles (each link can carry an `image`).
+  //   Learn   — the free stuff
+  //   Company — everything else / about the brand
+  // Legal pages live in the footer; Home is the logo; the CTA + Login are separate.
+  const NAV_ITEMS = [
+    { label: 'Join', bgColor: '#0f1115', textColor: '#ffffff', links: [
+      { label: 'Join the masterclass', desc: '6 live sessions, beginner to confident', href: '/masterclass', ariaLabel: 'Join the Masterclass' },
+      { label: 'Join the community', desc: 'Live Discord, alerts & 1,000+ traders', href: '/community', ariaLabel: 'Join the trading community' },
+    ] },
+    { label: 'Learn', bgColor: '#0f1115', textColor: '#ffffff', links: [
+      { label: 'Free webinar', desc: 'Watch the free 60-min training', href: '/webinar', ariaLabel: 'Watch the free webinar' },
+      { label: 'Free watchlist', desc: 'Weekly stock picks in your inbox', href: '/free-watchlist', ariaLabel: 'Get the free weekly watchlist' },
+      { label: 'Blog', desc: 'Articles & trade breakdowns', href: '/blog', ariaLabel: 'Read the blog' },
+    ] },
+    { label: 'Company', bgColor: '#0f1115', textColor: '#ffffff', links: [
+      { label: 'Student reviews', desc: 'Real results from real students', href: '/student-comments', ariaLabel: 'Read student reviews' },
+      { label: 'About', desc: "Bill's story & 35+ years of expertise", href: '/about', ariaLabel: 'About Bill Fanter' },
+      { label: 'Contact', desc: 'Get in touch, I reply personally', href: '/contact', ariaLabel: 'Contact Bill Fanter' },
+    ] },
+  ];
+
+  const mountCardNav = () => {
+    const host = document.querySelector('[data-cardnav-host]') || document.querySelector('main.bf-page');
+    if (!host || host.dataset.cardnavMounted === '1') return;
+    host.dataset.cardnavMounted = '1';
+    if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+    const mount = document.createElement('div');
+    host.prepend(mount);
+    // Homepage uses the narrow 57% split (matches the hero-image edge); every
+    // other page gets the full-width header. Opt in via data-cardnav-variant.
+    const variant = host.dataset.cardnavVariant === 'split' ? 'is-split' : '';
+    try {
+      createRoot(mount).render(React.createElement(CardNav, {
+        className: variant,
+        logo: '/assets/664a5b263659c7265be280ad/664a67e5668f4d24bdabe38f_home%20images-10.webp',
+        logoAlt: 'Bill Fanter',
+        items: NAV_ITEMS,
+        baseColor: '#ffffff',
+        menuColor: '#0a0a0a',
+        buttonBgColor: '#0a0a0a',
+        buttonTextColor: '#ffffff',
+        buttonLabel: 'Get the masterclass',
+        buttonHref: '/masterclass',
+        loginLabel: 'Login',
+        loginHref: 'https://members.billfanter.com/login',
+        ease: 'power3.out',
+      }));
+    } catch (e) { console.error('[bf-cardnav] render error', e); }
+  };
+
+  /* React Bits AnimatedList — re-render the community benefits as animated
+     rows. Content is read from the static .bf-benefit fallback already in the
+     markup, so the source of truth stays in HTML (no duplication). */
+  const mountBenefits = () => {
+    // Mount EVERY benefits list on the page (homepage Community + the webinar
+    // "Before you place" + the watchlist "What's inside" lists all opt in via
+    // [data-benefits-list]), not just the first.
+    document.querySelectorAll('[data-benefits-list]').forEach((el) => {
+      if (el.dataset.blMounted === '1') return;
+      const items = [...el.querySelectorAll('.bf-benefit')].map((row) => ({
+        num: row.querySelector('.bf-benefit__num')?.textContent ?? '',
+        title: row.querySelector('.bf-benefit__title')?.textContent ?? '',
+        body: row.querySelector('.bf-body')?.textContent ?? '',
+      }));
+      if (!items.length) return;
+      el.dataset.blMounted = '1';
+      el.innerHTML = '';
+      try { createRoot(el).render(React.createElement(AnimatedList, { items })); }
+      catch (e) { console.error('[bf-benefits] render error', e); }
+    });
+  };
+
+  const waitForDimensions = (el) => new Promise((resolve) => {
+    const check = () => {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) resolve(); else requestAnimationFrame(check);
+    };
+    check();
+  });
+
+  /* Sandbox-tuned Grainient props — softer warp + lower speed than BaseLayout's
+     default. The dataset.gMounted guard means whichever mount runs first wins;
+     the other no-ops. */
+  const mountGrainients = async () => {
+    const targets = document.querySelectorAll('[data-grainient]');
+    for (const el of targets) {
+      if (el.dataset.gMounted === '1') continue;
+      // Skip hidden mounts (e.g. mobile-disabled via display:none). Leaving the
+      // guard unset + not awaiting dimensions avoids hanging the loop on a
+      // 0-size element (which would block every later grainient from mounting).
+      const r0 = el.getBoundingClientRect();
+      if (r0.width === 0 || r0.height === 0) continue;
+      el.dataset.gMounted = '1';
+      await waitForDimensions(el);
+      try {
+        createRoot(el).render(React.createElement(Grainient, {
+          color1: el.dataset.color1 || '#FF8308',
+          color2: el.dataset.color2 || '#EF4444',
+          color3: el.dataset.color3 || '#6B3BD5',
+          timeSpeed: 0.18, warpStrength: 1, warpFrequency: 4, warpAmplitude: 60,
+          blendSoftness: 0.08, noiseScale: 1.6, grainAmount: 0.08,
+          contrast: 1.4, saturation: 1.05, zoom: 0.85,
+        }));
+      } catch (e) { console.error('[bf-grainient] render error for', el, e); }
+    }
+  };
+
+  const runMounts = () => { mountGrainients(); mountBenefits(); mountCardNav(); mountGridDistortion(); };
+
+  // The .jsx components carry @vitejs/plugin-react's preamble guard. In dev we
+  // install the Fast-Refresh preamble OURSELVES rather than polling for the flag
+  // that <ReactReady client:only> sets — that island hydration was deferred, so
+  // the old polling waited (up to ~3s) before mounting. Prod has no guard → this
+  // is a no-op (DEV is false → early return; the import is @vite-ignore'd so the
+  // build never tries to resolve it).
+  async function ensureReactPreamble() {
+    if (!import.meta.env.DEV) return;
+    if (window.__vite_plugin_react_preamble_installed__) return;
+    try {
+      const RefreshRuntime = (await import(/* @vite-ignore */ '/@react-refresh')).default;
+      RefreshRuntime.injectIntoGlobalHook(window);
+      window.$RefreshReg$ = () => {};
+      window.$RefreshSig$ = () => (type) => type;
+      window.__vite_plugin_react_preamble_installed__ = true;
+    } catch (e) { console.warn('[bf] react preamble self-install failed', e); }
+  }
+  (async () => {
+    await ensureReactPreamble();
+    [Grainient, AnimatedList, CardNav, GridDistortion] = (await Promise.all([
+      import('./Grainient/Grainient.jsx'),
+      import('./AnimatedList/AnimatedList.jsx'),
+      import('./CardNav/CardNav.jsx'),
+      import('./GridDistortion/GridDistortion.jsx'),
+    ])).map((m) => m.default);
+    // Mount as soon as the DOM is parsed — NOT on `load` (which waits for all
+    // images/fonts and delayed the islands by seconds on heavy pages).
+    if (document.readyState !== 'loading') runMounts();
+    else document.addEventListener('DOMContentLoaded', runMounts);
+  })();
+</script>

@@ -1,0 +1,80 @@
+---
+// /watch-webinar — post-registration page: dark confirmation header with the
+// embedded webinar, then a "next step" card grid. Clean rebuild (no /2026
+// blueprint existed); content ported verbatim from the production page. Shared
+// CardNav + Footer + Islands are supplied by the page.
+const nextSteps = [
+  { href: '/masterclass', title: 'Join the masterclass', body: 'Go from beginner to confident options trader in 6 live sessions with me.', cta: 'Learn more', icon: '<path d="M22 10 12 5 2 10l10 5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/><path d="M22 10v6"/>' },
+  { href: '/community', title: 'Access the community', body: 'Live Discord with real-time trade alerts and 1,000+ serious traders.', cta: 'Learn more', icon: '<path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-6 9a6 6 0 0 1 12 0"/><path d="M16 3.5a3 3 0 0 1 0 5.5M21 20a6 6 0 0 0-4.5-5.8"/>' },
+  { href: '/free-watchlist', title: 'Get the watchlist', body: "A curated weekly list of stocks I'm watching, delivered every Sunday.", cta: 'Learn more', icon: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>' },
+  { href: '/contact', title: 'Ask me a question', body: 'Send a note. I personally read and reply to every message.', cta: 'Contact me', icon: '<path d="M4 5h16v14H4z"/><path d="m4 7 8 6 8-6"/>' },
+];
+const arrow = '<svg class="bf-arrow" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+---
+<section class="bf-confirm">
+  <div class="bf-container">
+    <div class="bf-confirm__eyebrow">You're in</div>
+    <h1 class="bf-h1 bf-confirm__h1">Watch the webinar</h1>
+    <p class="bf-confirm__lead">Press play to watch the 3-step system I use to find, manage, and close winning options trades. Then take the next step below.</p>
+    <div class="bf-confirm__video">
+      <iframe src="https://www.youtube.com/embed/3StoQYsS5c8?start=3" title="Bill Fanter Webinar" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<section class="bf-section">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Take the next step</h2>
+    </div>
+    <div class="bf-help-grid">
+      {nextSteps.map((c) => (
+        <a class="bf-help-card" href={c.href}>
+          <div class="bf-help-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={c.icon} />
+          </div>
+          <div class="bf-help-card__title">{c.title}</div>
+          <p class="bf-body">{c.body}</p>
+          <span class="bf-help-card__link">{c.cta} <Fragment set:html={arrow} /></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .bf-confirm {
+    background: #0a0a0a;
+    color: #fff;
+    text-align: center;
+    padding: 150px 0 84px;
+  }
+  .bf-confirm__eyebrow {
+    color: #75B5FF;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    font-size: 0.78rem;
+  }
+  .bf-confirm__h1 {
+    color: #fff;
+    margin-top: 14px;
+  }
+  .bf-confirm__lead {
+    color: #dddddd;
+    max-width: 680px;
+    margin: 18px auto 0;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.55;
+  }
+  .bf-confirm__video {
+    max-width: 900px;
+    margin: 40px auto 0;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  }
+  .bf-confirm__video iframe { width: 100%; height: 100%; border: 0; display: block; }
+  @media (max-width: 767px) { .bf-confirm { padding: 120px 0 56px; } }
+</style>

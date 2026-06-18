@@ -1,18 +1,26 @@
 ---
-// Production /free-watchlist — classic markup with modernization layer.
-// New UI preview at /2026/free-watchlist, original at /classic.
+// /free-watchlist — componentized 2026 redesign (clean bf-* sections + shared
+// CardNav / Footer / Islands chrome). Replaced the classic-modernized page.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import FreeWatchlistContent from '../../components/pages/FreeWatchlistContent.astro';
 ---
 <BaseLayout
-  title={`Free Weekly Watchlist | Bill Fanter`}
-  description={`Subscribe to Bill Fanter's free weekly watchlist for curated stock picks every Sunday with exact entry and exit levels.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`66bc55bfff4e9b5f45684c44`}
-  extraHeadHtml={extraHeadHtml}
+  title="Free Weekly Options Watchlist | SPY, QQQ & Stock Setups | Bill Fanter"
+  description="Get Bill Fanter's free weekly options watchlist every Sunday. Curated stock and ETF setups, SPY and QQQ chart levels, and the risk zones he watches. Free to join."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="66bc55bfff4e9b5f45684c44"
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <FreeWatchlistContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

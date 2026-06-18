@@ -1,0 +1,216 @@
+---
+// Student reviews — written testimonials in a swipeable carousel + a masonry
+// wall of LinkedIn screenshots. Clean rebuild of the Webflow w-slider section
+// (no webflow.js dependency): the carousel is a CSS scroll-snap track with
+// arrow controls wired by a tiny scoped script.
+const A = '/assets/664a5b263659c7265be280ad/';
+
+const testimonials = [
+  { name: 'Alex Pitcaithly', title: 'Dynamic People Leader', img: `${A}679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.png`, quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience. Thank you, Bill, for sharing your knowledge, looking forward to your continued mentoring and friendship. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, then I highly recommend Bill's Masterclass." },
+  { name: 'Dan Funderburk, MBA', title: 'Executive Recruiting at H-E-B', img: `${A}679c4f04407a54b6277c94f3_dan-funderburk.png`, quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. I had limited, cursory knowledge of the markets, charting, and supply & demand, but now I have the skills, albeit very green, to provide a lifetime of return. And the education doesn't stop with the class. There is a community of like-minded traders, all ready and willing to help and lend a hand. I'm super thankful for this opportunity and look forward to the journey ahead." },
+  { name: 'Danielle G', title: 'Sr. Epic Application Specialist', img: `${A}679c4ad9a63b20955c05a779_danielle-g.png`, quote: "Do not wait to get involved! Bill's master class is highly informative and so well presented. He is an expert with knowledge beyond what most traders have and is incredibly responsive with questions. I cannot say enough about this class nor the incredible trading community Bill has created. You will see returns in multiple forms, not just monetary. With the economy frequently in question and the many uncertainties in life, securing one's financial well being is a strong priority. Why wait? LFG!!" },
+  { name: 'John Gordy', title: 'Chief Financial Officer at DroneUp', img: `${A}678e77c8a0abd734e3415731_jogn-gordy.avif`, quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!" },
+  { name: 'Riley H', title: 'Sales Specialist at AB Laboratories Inc.', img: `${A}678e7871274732ce809d928f_riley-h.avif`, quote: "It was an absolute joy learning from Bill. The brightest people can take complex ideas and explain them with simplicity. Bill certainly exemplifies this. I'm very much looking forward to continuing to grow my knowledge alongside the great community Bill has created. Thank you for your time Bill, it's much appreciated!" },
+  { name: 'Stijn Ceelen', title: 'Seasoned C-level leader in Banking & Wealth(Tech)', img: `${A}678e78e0ad106cbe59c5e816_stijn-ceelen.avif`, quote: "Just wrapped up the masterclass in options trading with Bill Fanter, and I have to say, I absolutely loved it! This old fox (me) picked up some new tricks, proving once again that life always has more to teach you. A big thank you to Bill Fanter for being not just a great teacher, but also a fantastic person and mentor. Your insights and approach make all the difference! Now, time to put your lessons into action 🚀" },
+  { name: 'Rob Stalkie', title: 'Account Manager', img: `${A}679c51ea7d9046f26ec04264_rob-stalkie.png`, quote: "Bill's Masterclass was incredibly informative and fun. He weaves in and out of topics from trading psychology to charting and makes every lesson accessible to complete beginners. Well worth it!" },
+  { name: 'David Lawson', title: 'Founder Icegreen - Beautiful Bags For Brands', img: `${A}678e7a667540897023632d1b_david-lawson.avif`, quote: "I just finished taking Bill Fanter's Master Class. It has been an amazing experience. Bill teaches a complex subject and presents it in a way that is easy to process and understand. I feel very grateful to come across Bill and this opportunity. He has big heart and cares about his students. I would highly recommend this course if you have an interest in trading options. Thank you very much Bill for what you have put into this, I look forward to learning and working with in the future." },
+];
+
+// LinkedIn screenshot wall — full-size sources, masonry across columns.
+const screenshots = [
+  '68762145f84c52b1d73b6639_Screenshot%202025-07-11%20at%204.35.49%E2%80%AFPM.png',
+  '687621ada403613c0a3bf9af_Screenshot%202025-07-11%20at%204.36.25%E2%80%AFPM.png',
+  '687621cda307f7320689063b_Screenshot%202025-07-11%20at%204.36.38%E2%80%AFPM.png',
+  '687621e6a05e43a792e67ecb_Screenshot%202025-07-11%20at%204.36.52%E2%80%AFPM.png',
+  '6876224cb841f03797602362_Screenshot%202025-07-11%20at%204.37.58%E2%80%AFPM.png',
+  '687622afa403613c0a3d2313_Screenshot%202025-07-11%20at%204.38.40%E2%80%AFPM.png',
+  '687622c7b4b62d3a9e0a9cbb_Screenshot%202025-07-11%20at%204.38.54%E2%80%AFPM.png',
+  '687622e9b4b62d3a9e0ac571_Screenshot%202025-07-11%20at%204.39.05%E2%80%AFPM.png',
+  '68762304b841f0379760ecc0_Screenshot%202025-07-11%20at%204.39.24%E2%80%AFPM.png',
+  '68762321751e88dc018a9bbb_Screenshot%202025-07-11%20at%204.39.37%E2%80%AFPM.png',
+  '6876233d508506c496696b2d_Screenshot%202025-07-11%20at%204.39.51%E2%80%AFPM.png',
+  '68e5a295a9096b6352947f15_Screenshot%202025-10-05%20at%204.00.09%E2%80%AFPM.png',
+  '68e5a295e9af62f951313a30_Screenshot%202025-10-05%20at%203.51.50%E2%80%AFPM.png',
+  '68e5a2958f2a94f22caf2a25_Screenshot%202025-10-05%20at%203.53.45%E2%80%AFPM.png',
+  '68e5a29546cc9711d4029259_Screenshot%202025-10-05%20at%203.54.11%E2%80%AFPM.png',
+  '68e5a295601e158164a7660d_Screenshot%202025-10-05%20at%203.56.04%E2%80%AFPM.png',
+  '68e5a295afd89572b1cacf71_Screenshot%202025-10-05%20at%203.57.40%E2%80%AFPM.png',
+  '68e5a29501f9e5dd806d9ddc_Screenshot%202025-10-05%20at%203.58.23%E2%80%AFPM.png',
+  '68e5a29543247efa5797c82c_Screenshot%202025-10-05%20at%203.58.48%E2%80%AFPM.png',
+  '68e5a295820df7997ccaedb4_Screenshot%202025-10-05%20at%203.59.48%E2%80%AFPM.png',
+];
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+// On landing pages we hide the "See all reviews" link so visitors stay on the
+// page (set showCta={false}); the homepage keeps it.
+const { showCta = true } = Astro.props;
+---
+<section class="bf-reviews" id="reviews">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <span class="bf-eyebrow">Student reviews</span>
+      <h2 class="bf-h2">Hear success stories from real options traders learning with Bill Fanter</h2>
+    </div>
+
+    <div class="bf-reviews__videos">
+      {['1173480173', '1173480185', '1173480159'].map((id) => (
+        <article class="bf-reviews__vidcard" data-vimeo={id}>
+          <button class="bf-reviews__vidthumb" type="button" data-bf-vimeo={id} data-bf-wide aria-label="Play student testimonial">
+            <img src={`https://vumbnail.com/${id}.jpg`} loading="lazy" alt="" onerror="this.style.display='none'" />
+            <span class="bf-reviews__vidplay" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+          </button>
+        </article>
+      ))}
+    </div>
+
+    <div class="bf-reviews__wall">
+      {screenshots.map((s) => (
+        <img class="bf-reviews__shot" src={`${A}${s}`} alt="LinkedIn review screenshot" loading="lazy" />
+      ))}
+    </div>
+
+    {showCta && (
+      <div class="bf-reviews__cta-wrap">
+        <a class="bf-btn bf-btn--primary" href="/student-comments">
+          See all reviews
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="margin-left:8px"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .bf-reviews {
+    padding: var(--bf-section-pad) 0;
+    /* Flipped: starts white at the top, fades to off-white at the bottom. */
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 55%, #eef4fc 100%);
+  }
+  .bf-reviews__carousel { margin-top: 48px; }
+
+  /* Three click-to-play testimonial videos (replaces the old text slider). */
+  .bf-reviews__videos {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .bf-reviews__vidcard { border-radius: 12px; overflow: hidden; background: #0a0a0a; box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 12px 30px rgba(20,60,120,.08); }
+  .bf-reviews__vidthumb {
+    position: relative; display: block; width: 100%; aspect-ratio: 16 / 9;
+    border: 0; margin: 0; padding: 0; cursor: pointer; overflow: hidden;
+    background: linear-gradient(135deg, #0b1f5c 0%, #1754d8 55%, #3b82f6 100%);
+  }
+  .bf-reviews__vidthumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bf-reviews__vidthumb::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.35) 100%); pointer-events: none; }
+  .bf-reviews__vidplay {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #0a0a0a;
+    display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 24px rgba(0,0,0,.35);
+    transition: transform .3s cubic-bezier(.34,1.56,.64,1); z-index: 1;
+  }
+  .bf-reviews__vidplay svg { width: 26px; height: 26px; margin-left: 3px; }
+  .bf-reviews__vidthumb:hover .bf-reviews__vidplay { transform: translate(-50%, -50%) scale(1.08); }
+  .bf-reviews__vidthumb.is-playing img,
+  .bf-reviews__vidthumb.is-playing::after,
+  .bf-reviews__vidthumb.is-playing .bf-reviews__vidplay { display: none; }
+  .bf-reviews__vidframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  @media (max-width: 900px) { .bf-reviews__videos { grid-template-columns: 1fr; max-width: 480px; margin-left: auto; margin-right: auto; } }
+  /* Phones: keep the cards widescreen (16:9) and let them run full-width. */
+  @media (max-width: 600px) {
+    .bf-reviews__videos { max-width: none; }
+  }
+  /* Mobile: drop the 48px top margin so the gap below the heading is just the
+     shared 40px header margin (consistent with the rest of the site). */
+  @media (max-width: 767px) {
+    .bf-reviews__videos { margin-top: 0; }
+  }
+  .bf-reviews__track {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .bf-reviews__track::-webkit-scrollbar { display: none; }
+  .bf-reviews__card {
+    scroll-snap-align: start;
+    flex: 0 0 min(520px, 86%);
+    margin: 0;
+    background: #fff;
+    border: 1px solid rgba(10, 30, 60, 0.06);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 30px rgba(20, 60, 120, 0.06);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bf-reviews__stars { display: inline-flex; gap: 3px; }
+  .bf-reviews__stars .bf-star { width: 18px; height: 18px; fill: #ffc14d; }
+  .bf-reviews__quote {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #2c333c;
+  }
+  .bf-reviews__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+  }
+  .bf-reviews__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: 0 0 auto;
+  }
+  .bf-reviews__author-name { display: block; font-weight: 600; color: #0a0a0a; }
+  .bf-reviews__author-title { display: block; font-size: 13px; color: #6a7280; }
+
+  .bf-reviews__controls { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  .bf-reviews__arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(10, 30, 60, 0.16);
+    background: #fff;
+    color: #0a0a0a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .bf-reviews__arrow:hover { background: #f1f5fb; border-color: rgba(10, 30, 60, 0.32); }
+
+  /* Screenshot wall — masonry via CSS columns. */
+  .bf-reviews__wall {
+    margin-top: 56px;
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .bf-reviews__shot {
+    width: 100%;
+    margin: 0 0 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 26px rgba(20, 60, 120, 0.07);
+    break-inside: avoid;
+    display: block;
+  }
+  @media (max-width: 767px) { .bf-reviews__wall { column-count: 1; } }
+
+  /* See-all-reviews CTA centered below the screenshot wall. */
+  .bf-reviews__cta-wrap { display: flex; justify-content: center; margin-top: 56px; }
+  .bf-reviews__cta-wrap .bf-btn { display: inline-flex; align-items: center; width: auto; }
+  /* Tighter on mobile — the 56px left an oversized ghost gap above the CTA. */
+  @media (max-width: 767px) {
+    .bf-reviews__cta-wrap { margin-top: 28px; }
+  }
+</style>
+
+<!-- Posters open the shared bf-vreel lightbox (wired globally in BaseLayout via
+     the data-bf-vimeo / data-bf-wide attrs) — no inline in-frame playback. -->

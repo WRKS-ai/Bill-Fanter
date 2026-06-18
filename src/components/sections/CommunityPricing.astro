@@ -1,0 +1,60 @@
+---
+// Community membership pricing — restored from the production /community page
+// (the /2026 blueprint dropped it). Two plans, each linking straight to its live
+// Whop checkout. Prices + checkout URLs are ported verbatim from production.
+// "What you get as a member" benefits folded in here (that standalone section was
+// redundant), so the pricing cards carry the full membership feature list.
+const plans = [
+  {
+    name: 'Monthly', price: '$150', period: '/month', featured: false, badge: null,
+    url: 'https://whop.com/checkout/iRQgha92Uek2tWWhX-LAQH-OC2f-p8gz-VdmsucJo7FSM/',
+    desc: 'Full community access, billed monthly. Cancel anytime.',
+    features: [
+      'Real-time trade alerts from Bill and the analyst team',
+      "Live buy and sell signals with Bill's notes",
+      'Instant Discord access to 1,000+ members',
+      'Daily market analysis and watchlist',
+      'Risk rules and position sizing guidance',
+      'Direct access to Bill in the community',
+    ],
+  },
+  {
+    name: 'Yearly', price: '$1,500', period: '/year', featured: true, badge: 'Best value',
+    url: 'https://whop.com/checkout/Vh9cSagj8l5fRZFgR-eKu5-10rf-wqwM-pT6GfoEaA0Zh/',
+    desc: 'Everything in Monthly, billed yearly, with two months free. Cancel anytime.',
+    features: [
+      'Everything in the Monthly plan',
+      'Two months free vs paying monthly',
+      'Members-only sessions and events',
+    ],
+  },
+];
+---
+<section class="bf-section" id="pricing">
+  <div class="bf-container">
+    <div class="bf-pricing__intro">
+      <span class="bf-eyebrow">Membership</span>
+      <h2 class="bf-h2">Join the community</h2>
+      <p class="bf-lead">Pick a plan and you are in. Download Discord, connect your accounts, and start trading with the community.</p>
+    </div>
+    <div class="bf-blueprint-grid">
+      {plans.map((p) => (
+        <div class={`bf-price-card${p.featured ? ' bf-price-card--featured' : ''}`}>
+          {p.badge && <div class="bf-price-card__badge">{p.badge}</div>}
+          <div>
+            <div class="bf-price-card__name">{p.name}</div>
+            <div class="bf-price-card__price">{p.price}<span style="font-size:16px;font-weight:500;opacity:.7">{p.period}</span></div>
+          </div>
+          <p class="bf-price-card__desc">{p.desc}</p>
+          <a class={`bf-btn ${p.featured ? '' : 'bf-btn--primary '}bf-price-card__cta`} href={p.url} target="_blank" rel="noopener">Join the community</a>
+          <div>
+            <div class="bf-price-card__included-label">What's included?</div>
+            <ul class="bf-price-card__list" style="margin-top:14px">
+              {p.features.map((f) => <li>{f}</li>)}
+            </ul>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

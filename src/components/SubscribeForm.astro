@@ -1,0 +1,77 @@
+---
+// Reusable subscribe / lead-capture form (name + email + submit). One canonical
+// styled form used across the site (homepage watchlist, /free-watchlist,
+// /webinar) so the markup + styling stay consistent and don't need re-QA per
+// page. The Webflow/Kajabi-critical attributes (form name/method, data-wf-*,
+// turnstile sitekey, redirect, input name=) are all passed in as props so each
+// page keeps its exact handler wiring — do NOT hardcode them here.
+const {
+  id,
+  name,
+  dataName,
+  method = 'get',
+  redirect,
+  wfPageId,
+  wfElementId,
+  turnstileSitekey,
+  nameField,
+  nameDataName,
+  nameRequired = true,
+  emailField,
+  emailDataName,
+  submitLabel = 'Subscribe',
+  submitWait = 'Please wait...',
+} = Astro.props;
+---
+<form
+  id={id}
+  name={name}
+  data-name={dataName}
+  method={method}
+  redirect={redirect}
+  data-redirect={redirect}
+  class="bf-subform"
+  data-wf-page-id={wfPageId}
+  data-wf-element-id={wfElementId}
+  data-turnstile-sitekey={turnstileSitekey}
+>
+  <input class="bf-subform__input" maxlength="256" name={nameField} data-name={nameDataName} placeholder="Name" type="text" required={nameRequired} />
+  <input class="bf-subform__input" maxlength="256" name={emailField} data-name={emailDataName} placeholder="Email" type="email" required />
+  <input class="bf-subform__submit" type="submit" data-wait={submitWait} value={submitLabel} />
+</form>
+
+<style>
+  .bf-subform { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+  .bf-subform__input {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--bf-text, #0a0a0a);
+    background: #fff;
+    border: 1px solid var(--bf-border, rgba(10, 10, 10, 0.14));
+    border-radius: 999px;
+    outline: none;
+    transition: border-color 150ms, box-shadow 150ms;
+  }
+  .bf-subform__input::placeholder { color: rgba(10, 10, 10, 0.45); }
+  .bf-subform__input:focus {
+    border-color: var(--bf-text, #0a0a0a);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
+  }
+  .bf-subform__submit {
+    width: 100%;
+    margin-top: 2px;
+    padding: 16px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #fff;
+    background: #0a0a0a;
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform 200ms, background-color 200ms;
+  }
+  .bf-subform__submit:hover { transform: translateY(-1px); background: #1a1a1a; }
+</style>

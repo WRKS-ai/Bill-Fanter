@@ -1,0 +1,146 @@
+---
+// "Welcome to Bill Fanter" split — media on the LEFT (autoplay video reel +
+// grainient testimonial tile / portrait), copy on the RIGHT. Clean Astro;
+// grainient fill is mounted by the [data-grainient] island script, and the
+// .bf-vreel click-to-expand is wired by BaseLayout's global Vimeo handler.
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+// Copy is configurable so the same media bento can be reused with different copy
+// (e.g. the masterclass page). Defaults reproduce the homepage version. Pass
+// eyebrow={null} to drop the eyebrow.
+const {
+  eyebrow = 'Welcome to Bill Fanter',
+  heading = 'Learn proven options trading strategies that work in any market',
+  lead = 'Go past random tips and learn a repeatable options trading system. Bill shows you how to read setups, manage risk, and trade with a plan you can run on your own.',
+  ctaLabel = 'Join the masterclass',
+  ctaHref = '/masterclass',
+} = Astro.props;
+---
+<section class="bf-section bf-hero-split-wrap">
+  <div class="bf-container">
+    <div class="bf-hero-split">
+      <div class="bf-hero-split__grid">
+        <div class="bf-hero-split__copy">
+          {eyebrow && <div class="bf-hero__eyebrow"><span class="bf-eyebrow">{eyebrow}</span></div>}
+          <h2 class="bf-h1 bf-hero__h1">{heading}</h2>
+          <p class="bf-lead bf-hero__lead">{lead}</p>
+          <div class="bf-hero__cta">
+            <a class="bf-btn bf-btn--primary" href={ctaHref}>{ctaLabel}</a>
+          </div>
+          <div class="bf-hero__trust">
+            <span class="bf-hero__trust-source">Recommended by</span>
+            <span class="bf-hero__trust-stars">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="bf-star" viewBox="0 0 24 24" set:html={star} />
+              ))}
+            </span>
+            <span>500+ Students</span>
+          </div>
+        </div>
+
+        <div class="bf-hero-split__bento">
+          <div class="bf-hero-split__video">
+            <button type="button" class="bf-vreel" data-bf-vimeo="1202056894" aria-label="Watch Bill's intro short">
+              <span class="bf-vreel__frame">
+                <iframe class="bf-vreel__video" src="https://player.vimeo.com/video/1202056894?background=1&autoplay=1&muted=1&loop=1&controls=0&playsinline=1&dnt=1" allow="autoplay; fullscreen" loading="lazy" title=""></iframe>
+                <span class="bf-vreel__overlay"></span>
+                <span class="bf-vreel__play" aria-hidden="true">
+                  <svg viewBox="0 0 24 24"><polygon points="8 5 19 12 8 19 8 5" fill="currentColor"/></svg>
+                </span>
+              </span>
+            </button>
+          </div>
+          <div class="bf-hero-split__tile bf-hero-split__tile--quote-on-gradient">
+            <div class="bf-grainient-mount" data-grainient="split-hero" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+            <div class="bf-hero-split__tile-content">
+              <p class="bf-hero-split__tile-quote">&ldquo;Bill's Masterclass was incredibly informative and fun. He makes every lesson accessible to complete beginners. Well worth it.&rdquo;</p>
+              <div class="bf-hero-split__tile-footer">
+                <div class="bf-hero-split__tile-author">
+                  <div class="bf-hero-split__tile-author-name">Rob Stalkie</div>
+                  <div class="bf-hero-split__tile-author-title">Account Manager</div>
+                </div>
+                <a class="bf-hero-split__tile-link" href="/student-comments">Read more reviews <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              </div>
+            </div>
+          </div>
+          <div class="bf-hero-split__tile bf-hero-split__tile--photo">
+            <img src="/assets/664a5b263659c7265be280ad/664a67e595a23dde11b862af_home%20images-5.webp" alt="Bill Fanter at his trading desk" />
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* Optional extra content rendered inside this section's container, below the
+        media+copy grid (e.g. the masterclass page's feature tiles). */}
+    <slot />
+  </div>
+</section>
+
+<style>
+  /* This is wrapped in <section class="bf-section"> (80px padding), but
+     .bf-hero-split also carries its own section padding in the design system —
+     zero it here so the top/bottom spacing isn't doubled (the 160px ghost gap). */
+  .bf-hero-split { padding-top: 0 !important; padding-bottom: 0 !important; }
+  /* The blue spotlight above already contributes a full section pad of white
+     below its card; our own top pad stacked on top of it doubled the gap (160 vs
+     80 below). Drop the top pad so the visual top gap matches the bottom. */
+  .bf-hero-split-wrap { padding-top: 0; }
+  /* Vertically center the copy against the (taller) bento column. */
+  .bf-hero-split__grid { align-items: center; }
+  /* Swap column order: media LEFT, copy RIGHT. */
+  .bf-hero-split__bento { order: 1; }
+  .bf-hero-split__copy {
+    order: 2;
+    /* The design's separation was built for copy-on-left; after the swap the
+       copy hugs the bento, so add left padding to even out the column gap. */
+    padding-left: 48px;
+  }
+  /* Match the headline to the watchlist "Get your free weekly…" size. */
+  .bf-hero-split__copy .bf-h1 {
+    font-size: clamp(24px, 2.6vw, 36px);
+  }
+  /* Photo tile fills its grid cell so the right column's quote + photo stack
+     stays exactly as tall as the video pillar — no overflow past the video
+     frame. The img is absolutely positioned so its (portrait) natural height
+     can't dictate the row; it just covers the cell the grid gives it. */
+  .bf-hero-split__tile--photo {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+  }
+  .bf-hero-split__tile--photo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 800px) {
+    .bf-hero-split__copy { padding-left: 0; }
+  }
+
+  /* Tablet/phone: the design-system 2-col bento puts a narrow centered video
+     beside a wider quote card (reads lopsided). Stack it into one centered column
+     — video, quote, then photo — from 980px down. Scoped to this instance so the
+     shared bento layout elsewhere is untouched. */
+  @media (max-width: 980px) {
+    .bf-hero-split__bento {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .bf-hero-split__video {
+      grid-row: auto;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+    /* The photo tile's <img> is absolutely positioned, so in a single-column
+       auto-row track it has no intrinsic height — give it a ratio to stay visible. */
+    .bf-hero-split__tile--photo { aspect-ratio: 16 / 10; }
+  }
+  /* Phones: let the quote + photo tiles run the full container width (matching the
+     other bento cards site-wide); only the vertical video reel stays capped. */
+  @media (max-width: 560px) {
+    .bf-hero-split__bento { max-width: none; }
+  }
+</style>

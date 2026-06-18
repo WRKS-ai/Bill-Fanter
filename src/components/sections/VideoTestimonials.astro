@@ -1,0 +1,171 @@
+---
+// Reusable video-testimonials section — click-to-play Vimeo reels (landscape).
+// Used across homepage / masterclass / community / student-comments so the
+// testimonial videos stay consistent everywhere. Poster comes from vumbnail
+// (Vimeo thumbnail service) with a brand-gradient fallback if it can't load;
+// clicking swaps in an autoplaying, fullscreen-capable Vimeo iframe.
+const videos = [
+  { id: '1173480173' },
+  { id: '1173480185' },
+  { id: '1173480159' },
+  { id: '1173480212' },
+  { id: '1173480196' },
+];
+---
+<section class="bf-section bf-vidtest">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Hear it straight from students</h2>
+      <p class="bf-lead">Real students on what the masterclass and community changed for their trading.</p>
+    </div>
+    <div class="bf-vidtest-slider" data-vidtest-slider>
+      <button class="bf-vidtest-nav bf-vidtest-nav--prev" type="button" aria-label="Previous" data-vidtest-prev>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="bf-vidtest-track" data-vidtest-track>
+        {videos.map((v) => (
+          <article class="bf-vidtest-card" data-vimeo={v.id}>
+            <button class="bf-vidtest-thumb" type="button" data-bf-vimeo={v.id} data-bf-wide aria-label="Play student testimonial">
+              <img src={`https://vumbnail.com/${v.id}.jpg`} loading="lazy" alt="" onerror="this.style.display='none'" />
+              <span class="bf-vidtest-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              </span>
+            </button>
+          </article>
+        ))}
+      </div>
+      <button class="bf-vidtest-nav bf-vidtest-nav--next" type="button" aria-label="Next" data-vidtest-next>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Horizontal slider (>3 videos): 3 in view, scroll for the rest, with glass
+     prev/next buttons. */
+  .bf-vidtest-slider { position: relative; margin-top: 44px; }
+  .bf-vidtest-track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 4px 2px 14px;
+    scrollbar-width: none;
+  }
+  .bf-vidtest-track::-webkit-scrollbar { display: none; }
+  .bf-vidtest-card {
+    flex: 0 0 calc((100% - 40px) / 3);
+    scroll-snap-align: start;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #0a0a0a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 12px 30px rgba(20, 60, 120, 0.08);
+  }
+  /* Glass prev/next buttons. */
+  .bf-vidtest-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* Above hovered cards (which rise to z-index 5 in the cinema zone) so the
+       prev/next arrows stay clickable even when a card is hovered. */
+    z-index: 10;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .bf-vidtest-nav:hover { background: rgba(255, 255, 255, 0.22); transform: translateY(-50%) scale(1.06); }
+  .bf-vidtest-nav svg { width: 22px; height: 22px; }
+  .bf-vidtest-nav--prev { left: -12px; }
+  .bf-vidtest-nav--next { right: -12px; }
+  .bf-vidtest-thumb {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    /* Brand-gradient fallback shown if the Vimeo poster can't load. */
+    background: linear-gradient(135deg, #0b1f5c 0%, #1754d8 55%, #3b82f6 100%);
+  }
+  @media (max-width: 900px) {
+    .bf-vidtest-card { flex-basis: calc((100% - 20px) / 2); }
+  }
+  @media (max-width: 560px) {
+    .bf-vidtest-card { flex-basis: 86%; }
+    .bf-vidtest-nav { display: none; }
+  }
+  .bf-vidtest-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .bf-vidtest-thumb::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.35) 100%);
+    pointer-events: none;
+  }
+  .bf-vidtest-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fff;
+    color: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1);
+    z-index: 1;
+  }
+  .bf-vidtest-play svg { width: 26px; height: 26px; margin-left: 3px; }
+  .bf-vidtest-thumb:hover .bf-vidtest-play { transform: translate(-50%, -50%) scale(1.08); }
+  .bf-vidtest-thumb.is-playing img,
+  .bf-vidtest-thumb.is-playing::after,
+  .bf-vidtest-thumb.is-playing .bf-vidtest-play { display: none; }
+  .bf-vidtest-iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+
+</style>
+
+<script>
+  // Posters open the shared bf-vreel lightbox (wired globally in BaseLayout via
+  // the data-bf-vimeo attr on each thumb) — no inline in-frame playback.
+
+  // Slider: prev/next buttons scroll the track by ~one card width.
+  for (const slider of document.querySelectorAll('[data-vidtest-slider]')) {
+    const track = slider.querySelector('[data-vidtest-track]');
+    const prev = slider.querySelector('[data-vidtest-prev]');
+    const next = slider.querySelector('[data-vidtest-next]');
+    if (!track) continue;
+    const step = () => {
+      const card = track.querySelector('.bf-vidtest-card');
+      return card ? card.getBoundingClientRect().width + 20 : 320;
+    };
+    if (prev) prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    if (next) next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+  }
+</script>

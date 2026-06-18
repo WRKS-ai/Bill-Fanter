@@ -1,22 +1,25 @@
 ---
 // About Bill — "Meet your mentor" section. Clean Astro, no Webflow classes.
 // Styling comes from bf-design-system.css (bf-about-*, loaded globally).
+import Signature from '../Signature.astro';
 ---
 <section class="bf-section">
   <div class="bf-container">
     <div class="bf-about-grid">
       <div class="bf-about__media">
-        <img src="/assets/664a5b263659c7265be280ad/664a67e526974fa9873cf4b0_home%20images-6.webp" alt="Bill Fanter at his trading desk" />
+        <img src="/assets/664a5b263659c7265be280ad/664c28db6c354e4acb60d5b7_masterclass%20image-13.webp" alt="Bill Fanter" />
+        <Signature class="bf-about__sig" />
       </div>
       <div class="bf-about__copy">
         <span class="bf-eyebrow">Meet your mentor</span>
-        <h2 class="bf-h2" style="margin-top:24px">Hi, I'm Bill. I'm excited to get to know you.</h2>
+        <h2 class="bf-h2">Hi, I'm Bill. I'm excited to get to know you.</h2>
         <p style="margin-top:28px">Over a 35-year career, I became one of the most sought-after executive-level bankers in the industry. I spearheaded the management of some of the largest multi-billion-dollar banks in America, and also taught at the CBA Executive Banking School.</p>
-        <p>I've spent thousands of hours and thousands of dollars learning what actually works in the options market &mdash; and I've distilled it into a system that anyone serious about their financial future can follow.</p>
-        <p>My goal is simple: make you successful.</p>
+        <p>I've spent thousands of hours and thousands of dollars learning the art of trading and testing the best tools for the job. After building a 6-figure income stream from scratch, I decided to combine my expertise with my passion and experience in teaching and leadership to help others learn this life-changing skill.</p>
+        <p>I will teach you the exact same strategies that helped me build my wealth from the ground up.</p>
+        <p>And the best part of all?</p>
+        <p>I'll make it easy on you. As I like to say&hellip; This ain't rocket science!</p>
         <div class="bf-about__actions">
-          <a class="bf-btn bf-btn--primary" href="/contact">Book a Call</a>
-          <a class="bf-btn bf-btn--ghost" href="/contact">Get in Touch</a>
+          <a class="bf-btn bf-btn--primary" href="/contact">Book a call</a>
         </div>
       </div>
     </div>
@@ -24,10 +27,35 @@
 </section>
 
 <style>
+  /* Last <main> section before the footer — owns its 100px bottom pad so the
+     white section breathes before the dark footer (the footer no longer adds
+     outer spacing of its own). */
+  section.bf-section { padding-bottom: var(--bf-section-pad); }
+  /* Signature overlaid on the bottom-right of the photo. */
+  .bf-about__media { position: relative; }
+  .bf-about__media :global(.bf-about__sig) {
+    position: absolute;
+    right: 18px;
+    bottom: 16px;
+    width: 150px;
+    max-width: 44%;
+    color: #0a0a0a;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.55));
+  }
   .bf-about__actions {
-    margin-top: 32px;
+    margin-top: 28px;
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+  }
+  /* New photo is portrait — frame it to a controlled height and keep Bill's
+     head in view (top-weighted crop) so it doesn't dominate the section. */
+  .bf-about__media img {
+    height: 480px;
+    object-fit: cover;
+    object-position: center 18%;
+  }
+  @media (max-width: 980px) {
+    .bf-about__media img { height: 320px; }
   }
 </style>

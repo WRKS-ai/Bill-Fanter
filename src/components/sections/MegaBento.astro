@@ -1,0 +1,522 @@
+---
+// "Everything you need" — a Stripe-inspired mega bento. A grid of varying-size
+// tiles that surface the site's major destinations as large, clickable cards.
+// Each tile is a single <a> with a title, one-line description, an up-right
+// arrow, and a visual (real photo/screenshot with a dark scrim, or a tasteful
+// gradient + stroked SVG icon). Self-contained: all styles scoped below.
+const ASSET = '/assets/664a5b263659c7265be280ad';
+
+// Tiles, in 3 rows on a 6-col grid (`span` = column width class):
+//   Row 1  Masterclass (w4) + Community (w2)
+//   Row 2  Watchlist (w2) + Webinar (w2) + YouTube (w2)
+//   Row 3  Reviews (w6, full width)  — Blog added later once it has content.
+// `image` tiles cover with a dark scrim; `gradient` tiles use a grainient bg
+// (+ optional inline icon / floated pick image).
+const tiles = [
+  {
+    kind: 'image',
+    featured: true,
+    span: 'w4',
+    href: '/masterclass',
+    title: 'The options masterclass',
+    desc: 'Go from beginner to confident options trader in 6 live sessions.',
+    img: `${ASSET}/664a67e526974fa9873cf4b0_home%20images-6.webp`,
+    aria: 'Explore the Masterclass: go from beginner to confident options trader in 6 live sessions',
+  },
+  {
+    kind: 'gradient',
+    span: 'w2',
+    grad: 'linear-gradient(135deg, #FF8308 0%, #EF4444 52%, #6B3BD5 100%)',
+    g1: '#FF8308', g2: '#EF4444', g3: '#6B3BD5',
+    device: `${ASSET}/68554a4edca41e9e9ce967e7_Build-Your-Skill-and-Confidence-(1).png`,
+    href: '/community',
+    title: 'The trading community',
+    desc: 'Live Discord with real-time trade alerts & 1,000+ traders.',
+    aria: 'Join the Community: live Discord with real-time trade alerts and 1,000+ traders',
+  },
+  {
+    kind: 'gradient',
+    span: 'w2',
+    square: true,
+    grad: 'linear-gradient(135deg, #1754d8 0%, #3b82f6 55%, #0b1f5c 100%)',
+    g1: '#1754d8', g2: '#3b82f6', g3: '#0b1f5c',
+    pick: `${ASSET}/664c28d96e93d6cd1148821f_masterclass%20image-11.webp`,
+    href: '/free-watchlist',
+    title: 'Free stock watchlist',
+    desc: "A curated weekly list of stocks I'm watching, every Sunday.",
+    aria: "Get the free watchlist: a curated weekly list of stocks Bill is watching, delivered every Sunday",
+  },
+  {
+    kind: 'image',
+    span: 'w2',
+    href: '/webinar',
+    title: 'Free trading webinar',
+    desc: 'Free 60-min training on how I find, manage & close trades.',
+    img: `${ASSET}/664c28d7ea8baa25095372ee_masterclass%20image-1.webp`,
+    aria: 'Watch the free webinar: a 60-minute training on how Bill finds, manages, and closes trades',
+  },
+  {
+    kind: 'gradient',
+    span: 'w2',
+    tall: true,
+    grad: '#0a0a0a',
+    video: 'https://player.vimeo.com/video/1201304705?background=1&autoplay=1&muted=1&loop=1&controls=0&playsinline=1&dnt=1',
+    href: 'https://www.youtube.com/@BillFanter',
+    target: '_blank',
+    title: 'YouTube',
+    desc: 'Free trading insights & breakdowns on my channel.',
+    icon: '<path d="M2 8.5a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v7a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z"/><path d="M10.5 9.2l4.5 2.8-4.5 2.8z"/>',
+    aria: "Watch trading insights on Bill Fanter's YouTube channel",
+  },
+  {
+    kind: 'reviews',
+    span: 'w4',
+    href: '/student-comments',
+    title: 'Student reviews',
+    testimonials: [
+      { quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!", name: 'John Gordy', title: 'Chief Financial Officer at DroneUp', img: `${ASSET}/678e77c8a0abd734e3415731_jogn-gordy.avif` },
+      { quote: "It was an absolute joy learning from Bill. The brightest people can take complex ideas and explain them with simplicity. Bill certainly exemplifies this. I'm very much looking forward to continuing to grow my knowledge alongside the great community Bill has created.", name: 'Riley H', title: 'Sales Specialist at AB Laboratories Inc.', img: `${ASSET}/678e7871274732ce809d928f_riley-h.avif` },
+      { quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, I highly recommend Bill's Masterclass.", name: 'Alex Pitcaithly', title: 'Dynamic People Leader', img: `${ASSET}/679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.png` },
+      { quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. And the education doesn't stop with the class; there is a community of like-minded traders, all ready and willing to help.", name: 'Dan Funderburk', title: 'Executive Recruiting at H-E-B', img: `${ASSET}/679c4f04407a54b6277c94f3_dan-funderburk.png` },
+    ],
+    aria: 'Read student reviews: real results from 500+ students',
+  },
+];
+
+const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+---
+<section class="bf-section bf-mega">
+  <div class="bf-container">
+    <div class="bf-section-header bf-mega__header">
+      <h2 class="bf-h2">Everything you need to trade options with confidence</h2>
+    </div>
+
+    <div class="bf-mega__grid">
+      {tiles.map((t) => (
+        t.kind === 'reviews' ? (
+          <div class={`bf-mega__tile bf-mega__tile--reviews bf-mega__tile--${t.span}`} data-mega-reviews data-href={t.href}>
+            <div class="bf-mega__slides">
+              {t.testimonials.map((r, i) => (
+                <figure class={`bf-mega__slide${i === 0 ? ' is-active' : ''}`}>
+                  <p class="bf-mega__quote">&ldquo;{r.quote}&rdquo;</p>
+                  <figcaption class="bf-mega__rauthor">
+                    <img class="bf-mega__ravatar" src={r.img} alt={r.name} loading="lazy" />
+                    <span class="bf-mega__rmeta">
+                      <span class="bf-mega__rname">{r.name}</span>
+                      <span class="bf-mega__rtitle">{r.title}</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <div class="bf-mega__slider-foot">
+              <a class="bf-mega__more" href={t.href}>Read all reviews <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <div class="bf-mega__dots" role="tablist" aria-label="Reviews">
+                {t.testimonials.map((_, i) => (
+                  <button class={`bf-mega__dot${i === 0 ? ' is-active' : ''}`} type="button" role="tab" aria-label={`Show review ${i + 1}`}></button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+        <a
+          class={`bf-mega__tile bf-mega__tile--${t.kind} bf-mega__tile--${t.span}${t.featured ? ' is-featured' : ''}${t.square ? ' is-square' : ''}${t.tall ? ' is-tall' : ''}${t.dark ? ' is-dark' : ''}${t.tight ? ' is-tight' : ''}`}
+          href={t.href}
+          target={t.target}
+          rel={t.target ? 'noopener' : undefined}
+          aria-label={t.aria}
+          style={t.kind === 'gradient' ? `--tile-grad:${t.grad}` : undefined}
+        >
+          {t.kind === 'image' && (
+            <img class="bf-mega__img" src={t.img} alt="" aria-hidden="true" loading="lazy" />
+          )}
+          {t.kind === 'image' && <span class="bf-mega__scrim" aria-hidden="true"></span>}
+
+          {t.kind === 'gradient' && t.g1 && (
+            <span class="bf-mega__grain" data-grainient data-color1={t.g1} data-color2={t.g2} data-color3={t.g3} aria-hidden="true"></span>
+          )}
+          {t.kind === 'gradient' && t.video && (
+            <iframe class="bf-mega__video" src={t.video} title="" tabindex="-1" aria-hidden="true" loading="lazy" allow="autoplay; fullscreen"></iframe>
+          )}
+          {t.kind === 'gradient' && (t.video || t.device) && <span class="bf-mega__scrim" aria-hidden="true"></span>}
+          {t.kind === 'gradient' && t.device && (
+            <img class="bf-mega__device" src={t.device} alt="" aria-hidden="true" loading="lazy" />
+          )}
+          {t.kind === 'gradient' && t.pick && (
+            <img class="bf-mega__pick" src={t.pick} alt="" aria-hidden="true" loading="lazy" />
+          )}
+          {t.kind === 'gradient' && t.icon && (
+            <span class="bf-mega__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={t.icon} />
+            </span>
+          )}
+
+          <span class="bf-mega__body">
+            <span class="bf-mega__title">{t.title}</span>
+          </span>
+
+          <span class="bf-mega__arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" set:html={arrow} />
+          </span>
+        </a>
+        )
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ===== Mega bento ===================================================== */
+  /* Background is supplied by the .bf-bento-fade wrapper (one continuous fade
+     spanning the bento + watchlist), so the section itself is transparent. */
+  .bf-mega {
+    background: transparent;
+  }
+  /* Header left-aligned (sits in the left column above the grid). */
+  .bf-mega__header {
+    text-align: left;
+    max-width: 640px;
+    margin-left: 0;
+    margin-right: auto;
+    margin-bottom: 40px;
+  }
+
+  /* 6-column grid, three rows of distinct emphasis:
+       Row 1 (taller)  Masterclass (w4 hero) + Community (w2 tall)
+       Row 2           Watchlist (w2) + Webinar (w2) + YouTube (w2)
+       Row 3           Reviews (w6, full-width marquee)
+     Width is set per tile via the w2 / w4 / w6 classes; the row heights give the
+     hero its presence. */
+  .bf-mega__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    /* Rows sized so the tall YouTube tile (w2 × 2 rows) lands on a 9:16 mobile
+       ratio at desktop. (Trade-off: the single-row w2 tiles are then a touch
+       wider than tall rather than perfectly square.) */
+    grid-template-rows: repeat(3, 386px);
+    gap: 16px;
+  }
+  .bf-mega__tile--w2 { grid-column: span 2; }
+  .bf-mega__tile--w4 { grid-column: span 4; }
+  .bf-mega__tile--w6 { grid-column: span 6; }
+  /* Tall tile spans two rows (YouTube), so the reviews tile shares the bottom. */
+  .bf-mega__tile.is-tall { grid-row: span 2; }
+
+  .bf-mega__tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 28px;
+    border-radius: var(--bf-radius-lg);
+    overflow: hidden;
+    background: var(--bf-surface-strong);
+    box-shadow: var(--bf-shadow-card);
+    isolation: isolate;
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), box-shadow 250ms;
+    color: #fff;
+  }
+  .bf-mega__tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08), 0 18px 40px rgba(0, 0, 0, 0.12);
+  }
+  .bf-mega__tile.is-featured { padding: 36px; }
+
+  /* ---- Image tiles ---------------------------------------------------- */
+  .bf-mega__img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 500ms cubic-bezier(.4,0,.2,1);
+  }
+  .bf-mega__tile:hover .bf-mega__img { transform: scale(1.04); }
+  .bf-mega__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0) 30%,
+      rgba(0, 0, 0, 0.35) 62%,
+      rgba(0, 0, 0, 0.82) 100%
+    );
+  }
+
+  /* ---- Gradient tiles ------------------------------------------------- */
+  /* CSS gradient is the fallback; the animated grainient mounts over it. */
+  .bf-mega__tile--gradient { background: var(--tile-grad); }
+
+  /* Black tile background (webinar). */
+  .bf-mega__tile.is-dark { background: #0a0a0a; }
+  /* "Tight" image: shown smaller inside the tile instead of edge-to-edge cover. */
+  .bf-mega__tile.is-tight .bf-mega__img {
+    object-fit: contain;
+    padding: 8%;
+    box-sizing: border-box;
+  }
+  /* Autoplaying video graphic (YouTube tile): a 9:16 reel scaled up so it covers
+     the square tile (overflow cropped top/bottom). */
+  .bf-mega__video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* Overscale a few px and center so the reel bleeds past the tile edges
+       (clipped by the tile's overflow:hidden) instead of leaving a thin sliver
+       of the dark tile background showing on the sides. */
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    border: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .bf-mega__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    overflow: hidden;
+  }
+  /* Bottom scrim so the title/desc stay legible over a bright grainient. */
+  .bf-mega__tile--gradient::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 48%, rgba(0, 0, 0, 0.5) 100%);
+  }
+
+  /* ---- Watchlist tile: the homepage watchlist picks visual floated over a
+     blue grainient, as if the watchlist section were dropped into the bento. */
+  .bf-mega__pick {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    width: 92%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    transition: transform 500ms cubic-bezier(.4, 0, .2, 1);
+  }
+  .bf-mega__tile:hover .bf-mega__pick {
+    transform: translate(-50%, -50%) scale(1.03);
+  }
+
+  /* ---- Community tile: the Discord phone anchored to the bottom of the grainient. */
+  .bf-mega__device {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    /* Cover-crop into the phone (the source image has wide empty margins), so
+       the device reads large; the grainient shows on the sides. */
+    width: 62%;
+    height: 96%;
+    object-fit: cover;
+    object-position: center bottom;
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.4));
+  }
+
+  /* ---- Reviews tile: black w/ a written-testimonial slideshow (mirrors the
+     footer Closing slider): crossfading quote slides + Read-all link + dots. -- */
+  .bf-mega__tile--reviews { background: #0a0a0a; padding: 0; cursor: pointer; }
+  /* Hover lift (inherits the base tile hover) + the bottom-right CTA animates as
+     the tile's "button" (no separate arrow chip). */
+  .bf-mega__tile--reviews:hover .bf-mega__more { gap: 12px; opacity: 1; }
+  .bf-mega__slides { position: absolute; inset: 0; }
+  .bf-mega__slide {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 40px 44px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity .5s ease, transform .5s ease, visibility .5s ease;
+  }
+  .bf-mega__slide.is-active { opacity: 1; visibility: visible; transform: translateY(0); }
+  .bf-mega__quote { margin: 0; font-size: 20px; line-height: 1.45; font-weight: 500; color: #fff; max-width: 62ch; }
+  .bf-mega__rauthor { display: flex; align-items: center; gap: 12px; }
+  .bf-mega__ravatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: 0 0 auto; }
+  .bf-mega__rmeta { display: flex; flex-direction: column; }
+  .bf-mega__rname { font-weight: 600; color: #fff; }
+  .bf-mega__rtitle { font-size: 14px; color: rgba(255, 255, 255, 0.6); }
+  .bf-mega__slider-foot {
+    position: absolute; bottom: 30px; right: 36px;
+    display: flex; align-items: center; gap: 18px; z-index: 3;
+  }
+  .bf-mega__more { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #fff; text-decoration: none; opacity: .9; transition: opacity .2s, gap .2s; }
+  .bf-mega__more:hover { opacity: 1; gap: 10px; }
+  .bf-mega__dots { display: flex; gap: 8px; }
+  .bf-mega__dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; background: rgba(255, 255, 255, 0.28); cursor: pointer; transition: background .2s, transform .2s; }
+  .bf-mega__dot:hover { background: rgba(255, 255, 255, 0.5); }
+  .bf-mega__dot.is-active { background: #fff; transform: scale(1.15); }
+
+  /* On mobile, drop the animated grainients (the CSS gradient fallback shows
+     instead) so phones aren't running extra WebGL canvases — lighter + smoother
+     with no visual change at tile size. The mount script skips 0-size elements. */
+  @media (max-width: 768px) {
+    .bf-mega__grain { display: none; }
+  }
+  .bf-mega__icon {
+    position: absolute;
+    top: 28px;
+    left: 28px;
+    z-index: 2;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+  }
+  .bf-mega__icon svg { width: 24px; height: 24px; }
+
+  /* ---- Shared text block ---------------------------------------------- */
+  .bf-mega__body {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 90%;
+  }
+  .bf-mega__title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .bf-mega__desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #fff;
+  }
+  /* All tile titles share one size (incl. the featured tile) for a consistent
+     bento — matches the reviews-tile quote size below. */
+  .bf-mega__tile.is-featured .bf-mega__title { font-size: 20px; }
+  .bf-mega__tile.is-featured .bf-mega__desc {
+    font-size: 16px;
+    max-width: 420px;
+  }
+
+  /* ---- Up-right arrow chip -------------------------------------------- */
+  .bf-mega__arrow {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 3;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    transition: background 200ms, transform 200ms;
+  }
+  .bf-mega__tile:hover .bf-mega__arrow {
+    background: rgba(255, 255, 255, 0.95);
+    color: #0a0a0a;
+    transform: translate(2px, -2px);
+  }
+
+  /* ===== Responsive ===================================================== */
+  /* Tablet: 2 columns. Featured tile drops its 2-col span but keeps 2 rows so
+     it still reads as the hero of the grid. */
+  /* Tablet: 2 columns. Masterclass + Reviews go full-width; the three small
+     tiles pair up (Community+Watchlist, Webinar+YouTube). */
+  @media (max-width: 900px) {
+    .bf-mega__grid {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: none;
+      grid-auto-rows: 300px;
+    }
+    .bf-mega__tile--w4,
+    .bf-mega__tile--w6 { grid-column: span 2; }
+    .bf-mega__tile--w2 { grid-column: span 1; }
+  }
+  /* Mobile: single column, every tile full-width. */
+  @media (max-width: 560px) {
+    .bf-mega__grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      grid-auto-rows: 260px;
+    }
+    .bf-mega__tile--w2,
+    .bf-mega__tile--w4,
+    .bf-mega__tile--w6 { grid-column: span 1; padding: 28px; }
+    /* Reviews tile: keep it a single row (it was reading oversized at two rows),
+       shrink + line-clamp the quote, and center the foot below the author so
+       nothing overflows or overlaps (mirrors the footer slider's mobile fix). */
+    .bf-mega__tile--reviews { padding: 0; }
+    .bf-mega__slide { padding: 24px 22px 56px; }
+    .bf-mega__quote {
+      font-size: 15px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .bf-mega__slider-foot { left: 0; right: 0; bottom: 18px; justify-content: center; }
+  }
+</style>
+
+<script>
+  // Reviews tile: auto-advancing written-testimonial slideshow (mirrors the
+  // footer Closing slider) — 6s auto-advance, pause on hover, jump on dot click.
+  function initMegaReviews() {
+    document.querySelectorAll('[data-mega-reviews]').forEach((slider) => {
+      if (slider.dataset.mrInit === '1') return;
+      const slides = Array.from(slider.querySelectorAll('.bf-mega__slide'));
+      const dots = Array.from(slider.querySelectorAll('.bf-mega__dot'));
+      if (slides.length <= 1) return;
+      slider.dataset.mrInit = '1';
+      let idx = 0;
+      let timer;
+      const show = (i) => {
+        idx = (i + slides.length) % slides.length;
+        slides.forEach((s, n) => s.classList.toggle('is-active', n === idx));
+        dots.forEach((d, n) => d.classList.toggle('is-active', n === idx));
+      };
+      const start = () => { timer = window.setInterval(() => show(idx + 1), 6000); };
+      const stop = () => window.clearInterval(timer);
+      dots.forEach((d, n) => d.addEventListener('click', (e) => { e.stopPropagation(); show(n); stop(); start(); }));
+      // Whole tile is clickable (like the other bento tiles) — except the dots
+      // and the inner link, which keep their own behavior.
+      const href = slider.getAttribute('data-href');
+      if (href) {
+        slider.addEventListener('click', (e) => {
+          if (e.target.closest('.bf-mega__dot') || e.target.closest('a')) return;
+          window.location.href = href;
+        });
+      }
+      slider.addEventListener('mouseenter', stop);
+      slider.addEventListener('mouseleave', start);
+      show(0);
+      start();
+    });
+  }
+  if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', initMegaReviews);
+  else initMegaReviews();
+</script>

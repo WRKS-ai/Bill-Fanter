@@ -1,0 +1,146 @@
+---
+// Free weekly watchlist — clean 50/50 SPLIT layout (Stripe / Artifact style,
+// mirroring EffortlessStrategy.astro): copy + subscribe form on the LEFT, a
+// single strong visual card on the RIGHT (the blue grainient "Weekly Stock
+// Picks" tile with the past-picks screenshot). Stacks to one column on mobile.
+//
+// All layout styling is self-contained in the scoped <style> below; only the
+// shared .bf-container comes from the design system.
+//
+// The form keeps the Webflow field names + data-wf attributes so the existing
+// Kajabi/Webflow form handler (wired in BaseLayout) still captures submissions.
+// Do NOT rename or remove the form id/name or the input name attributes.
+//
+// Decorative ticker chips (two rows, opposite directions) overlaid on the tile —
+// same marquee as the /free-watchlist closing CTA. Purely visual.
+const tickerA = [
+  ['AAPL', '+1.2%', 'up'], ['NVDA', '+2.4%', 'up'], ['SPY', '+0.4%', 'up'], ['TSLA', '-0.8%', 'down'],
+  ['QQQ', '+0.6%', 'up'], ['AMD', '+1.9%', 'up'], ['MSFT', '+0.3%', 'up'], ['META', '-0.5%', 'down'],
+];
+const tickerB = [
+  ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
+  ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
+];
+---
+<section class="bf-section" id="watchlist">
+  <div class="bf-container">
+    <div class="wl-split">
+      <div class="wl-copy">
+        <div class="bf-hero__eyebrow"><span class="bf-eyebrow">Free weekly watchlist</span></div>
+        <h2 class="wl-h2">Get a curated weekly stock options watchlist</h2>
+        <p class="wl-lead">Each week, get a short list of stocks set up for potential moves. It lands straight in your inbox. Use it to spot setups early and plan your options trades before the market opens.</p>
+
+        <form
+          id="wf-form-Watchlist-form"
+          name="wf-form-Watchlist-form"
+          method="get"
+          class="wl-form"
+          data-wf-page-id="664a5b263659c7265be280e3"
+          data-wf-element-id="bf-2026-watchlist-v2"
+        >
+          <input class="wl-input" maxlength="256" name="Watchlist-name" placeholder="Name" type="text" required />
+          <input class="wl-input" maxlength="256" name="Watchlist-email" placeholder="Email" type="email" required />
+          <input class="wl-submit" type="submit" data-wait="Please wait..." value="Subscribe" />
+        </form>
+      </div>
+
+      <div class="wl-media">
+        <div class="wl-square wl-square--image wl-square--cutout">
+          <img class="wl-square__img" src="/assets/664a5b263659c7265be280ad/bf-watchlist-locked.png" alt="Preview of the weekly stock options watchlist, with the full list locked" />
+          <div class="fw-ticker" aria-hidden="true">
+            <div class="fw-ticker__row">
+              <div class="fw-ticker__track fw-ticker__track--ltr">
+                {[...tickerA, ...tickerA].map(([sym, chg, dir]) => (
+                  <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                ))}
+              </div>
+            </div>
+            <div class="fw-ticker__row">
+              <div class="fw-ticker__track fw-ticker__track--rtl">
+                {[...tickerB, ...tickerB].map(([sym, chg, dir]) => (
+                  <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Background is supplied by the .bf-bento-fade wrapper (one continuous fade
+     across the bento + this section), so the section itself is transparent. The
+     fade ends at #f6f8fc here, hard-cutting into the white Community below. */
+  #watchlist.bf-section {
+    background: transparent;
+  }
+  /* Float the ORIGINAL watchlist render (full image, with its own light bg — the
+     bg-removed cutout produced jagged artifacts, so we use the source photo). No
+     rounded-square frame/crop: object-fit:contain shows the whole image, with a
+     soft card drop-shadow. */
+  .wl-square--cutout {
+    position: relative;
+    overflow: visible;
+    background: none;
+    border-radius: 0;
+    /* Kill the base .wl-square framing shadow so only the image's own shadow shows. */
+    box-shadow: none;
+  }
+
+  /* ── Ticker marquee overlaid on the tile (same as the /free-watchlist closing
+     CTA): two rows of chips scrolling opposite ways across the middle. ───────── */
+  .fw-ticker {
+    position: absolute;
+    /* Confined to the BOTTOM third of the tile. */
+    top: 67%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+  }
+  .fw-ticker__row { display: flex; overflow: hidden; }
+  .fw-ticker__track { display: inline-flex; flex: 0 0 auto; white-space: nowrap; will-change: transform; }
+  .fw-ticker__track--ltr { animation: fw-ticker-ltr 26s linear infinite; }
+  .fw-ticker__track--rtl { animation: fw-ticker-rtl 26s linear infinite; }
+  @keyframes fw-ticker-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes fw-ticker-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .fw-ticker__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-right: 8px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(10, 12, 20, 0.34);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .fw-ticker__sym { font-weight: 700; letter-spacing: 0.01em; }
+  .fw-ticker__chg--up { color: #6ee7a0; }
+  .fw-ticker__chg--down { color: #ff9d98; }
+  @media (prefers-reduced-motion: reduce) {
+    .fw-ticker__track--ltr, .fw-ticker__track--rtl { animation: none; }
+  }
+  .wl-square--cutout .wl-square__img {
+    object-fit: contain;
+    /* Round the corners to match the rest of the site's framed images (the source
+       render is a dark square, so rounding the img clips it to a soft card). */
+    border-radius: 12px;
+    filter: drop-shadow(0 24px 50px rgba(20, 40, 80, 0.26));
+  }
+</style>

@@ -1,0 +1,781 @@
+---
+// /masterclass page body — REBUILT as a clone of the homepage design.
+// Every section now uses the homepage's bf-* section PATTERNS (Hero stage,
+// HeroSplit 50/50, AboutBill 50/50, Reviews video+wall, MegaBento-style card
+// grid, HelpGrid card grid, YoutubeCta dark-grainient device CTA, bf-faq
+// accordion) with this page's VERBATIM copy re-homed into them.
+//
+// PRESERVED EXACTLY (unchanged from the prior page):
+//   - the masterclass HERO + bento stage
+//   - BOTH PRICING blocks (#pricing / #pricing2)
+//   - all copy, images, links, the 8 written reviews, 21 screenshot reviews,
+//     6 session points, foundation/pro feature lists, the 14 FAQs.
+//
+// The page wrapper (src/pages/masterclass/index.astro) supplies main.bf-page
+// + CardNav + Footer + Islands. Grainient fills mount on [data-grainient].
+import Reviews from '../sections/Reviews.astro';
+import EffortlessStrategy from '../sections/EffortlessStrategy.astro';
+import Community from '../sections/Community.astro';
+import HeroSplit from '../sections/HeroSplit.astro';
+import Spotlight from '../sections/Spotlight.astro';
+import Signature from '../Signature.astro';
+
+const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+
+// Decorative ticker chips (two rows, opposite directions) for the hero bento's
+// middle grainient tile — same marquee as the watchlist page.
+const tickerA = [
+  ['AAPL', '+1.2%', 'up'], ['NVDA', '+2.4%', 'up'], ['SPY', '+0.4%', 'up'], ['TSLA', '-0.8%', 'down'],
+  ['QQQ', '+0.6%', 'up'], ['AMD', '+1.9%', 'up'], ['MSFT', '+0.3%', 'up'], ['META', '-0.5%', 'down'],
+];
+const tickerB = [
+  ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
+  ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
+];
+
+const reviews = [
+  {
+    quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience.  Thank you, Bill, for sharing your knowledge, looking forward to your continued mentoring and friendship. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, then I highly recommend Bill’s Masterclass.",
+    img: "/assets/664a5b263659c7265be280ad/679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.png",
+    name: "Alex Pitcaithly",
+    title: "Dynamic People Leader",
+  },
+  {
+    quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. I had limited, cursory knowledge of the markets, charting, and supply & demand, but now I have the skills, albeit very green, to provide a lifetime of return. And the education doesn't stop with the class. There is a community of like-minded traders, all ready and willing to help and lend a hand. I'm super thankful for this opportunity and look forward to the journey ahead.",
+    img: "/assets/664a5b263659c7265be280ad/679c4f04407a54b6277c94f3_dan-funderburk.png",
+    name: "Dan Funderburk, MBA",
+    title: "Executive Recruiting at H-E-B",
+  },
+  {
+    quote: "Do not wait to get involved! Bill's master class is highly informative and so well presented. He is an expert with knowledge beyond what most traders have and is incredibly responsive with questions. I cannot say enough about this class nor the incredible trading community Bill has created. You will see returns in multiple forms, not just monetary. With the economy frequently in question and the many uncertainties in life, securing one's financial well being is a strong priority. Why wait? LFG!!",
+    img: "/assets/664a5b263659c7265be280ad/679c4ad9a63b20955c05a779_danielle-g.png",
+    name: "Danielle G",
+    title: "Sr. Epic Application Specialist",
+  },
+  {
+    quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!",
+    img: "/assets/664a5b263659c7265be280ad/678e77c8a0abd734e3415731_jogn-gordy.avif",
+    name: "John Gordy",
+    title: "Chief Financial Officer at DroneUp",
+  },
+  {
+    quote: "It was an absolute joy learning from Bill. The brightest people can take complex ideas and explain them with simplicity. Bill certainly exemplifies this. I'm very much looking forward to continuing to grow my knowledge alongside the great community Bill has created. Thank you for your time Bill, it's much appreciated!",
+    img: "/assets/664a5b263659c7265be280ad/678e7871274732ce809d928f_riley-h.avif",
+    name: "Riley H",
+    title: "Sales Specialist at AB Laboratories Inc.",
+  },
+  {
+    quote: "Just wrapped up the masterclass in options trading with Bill Fanter, and I have to say, I absolutely loved it! This old fox (me) picked up some new tricks, proving once again that life always has more to teach you. A big thank you to Bill Fanter for being not just a great teacher, but also a fantastic person and mentor. Your insights and approach make all the difference! Now, time to put your lessons into action 🚀",
+    img: "/assets/664a5b263659c7265be280ad/678e78e0ad106cbe59c5e816_stijn-ceelen.avif",
+    name: "Stijn Ceelen",
+    title: "Seasoned C-level leader in Banking & Wealth(Tech)",
+  },
+  {
+    quote: "Bill's Masterclass was incredibly informative and fun. He weaves in and out of topics from trading psychology to charting and makes every lesson accessible to complete beginners. Well worth it!",
+    img: "/assets/664a5b263659c7265be280ad/679c51ea7d9046f26ec04264_rob-stalkie.png",
+    name: "Rob Stalkie",
+    title: "Account Manager",
+  },
+  {
+    quote: "I just finished taking Bill Fanter's Master Class. It has been an amazing experience. Bill teaches a complex subject and presents it in a way that is easy to process and understand. I feel very grateful to come across Bill and this opportunity. He has big heart and cares about his students. I would highly recommend this course if you have an interest in trading options. Thank you very much Bill for what you have put into this, I look forward to learning and working with in the future.",
+    img: "/assets/664a5b263659c7265be280ad/678e7a667540897023632d1b_david-lawson.avif",
+    name: "David Lawson",
+    title: "Founder Icegreen - Beautiful Bags For Brands",
+  },
+];
+
+const staticReviews = [
+  "/assets/664a5b263659c7265be280ad/68762145f84c52b1d73b6639_Screenshot%202025-07-11%20at%204.35.49%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687621ada403613c0a3bf9af_Screenshot%202025-07-11%20at%204.36.25%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687621cda307f7320689063b_Screenshot%202025-07-11%20at%204.36.38%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687621e6a05e43a792e67ecb_Screenshot%202025-07-11%20at%204.36.52%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/6876224cb841f03797602362_Screenshot%202025-07-11%20at%204.37.58%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687622afa403613c0a3d2313_Screenshot%202025-07-11%20at%204.38.40%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687622c7b4b62d3a9e0a9cbb_Screenshot%202025-07-11%20at%204.38.54%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a295a9096b6352947f15_Screenshot%202025-10-05%20at%204.00.09%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/6876233d508506c496696b2d_Screenshot%202025-07-11%20at%204.39.51%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a295e9af62f951313a30_Screenshot%202025-10-05%20at%203.51.50%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/687622e9b4b62d3a9e0ac571_Screenshot%202025-07-11%20at%204.39.05%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68762304b841f0379760ecc0_Screenshot%202025-07-11%20at%204.39.24%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a2958f2a94f22caf2a25_Screenshot%202025-10-05%20at%203.53.45%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a29546cc9711d4029259_Screenshot%202025-10-05%20at%203.54.11%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a295601e158164a7660d_Screenshot%202025-10-05%20at%203.56.04%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a295afd89572b1cacf71_Screenshot%202025-10-05%20at%203.57.40%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a29501f9e5dd806d9ddc_Screenshot%202025-10-05%20at%203.58.23%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a29543247efa5797c82c_Screenshot%202025-10-05%20at%203.58.48%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68e5a295820df7997ccaedb4_Screenshot%202025-10-05%20at%203.59.48%E2%80%AFPM.png",
+  "/assets/664a5b263659c7265be280ad/68762321751e88dc018a9bbb_Screenshot%202025-07-11%20at%204.39.37%E2%80%AFPM.png",
+];
+
+const sessionPoints = [
+  "Why traders use options, and how they compare to trading stocks",
+  "How to pick the right broker and platform for support and pricing",
+  "How to read charts and candlestick patterns, and build your own trading plan",
+  "The risk management rules Bill uses to protect capital on every trade",
+  "How to join daily live calls with Bill and other traders working the market",
+  "The core knowledge to trade options with confidence from the start",
+];
+
+const foundationFeatures = [
+  "6 sessions with me on how to correctly trade stock options",
+  "6 months Discord access to trade LIVE with me on the market open ($900 value)",
+  "6 months real-time buy/sell alerts from 5 market analysts with charts and price levels",
+  "Weekly stock market watchlist with price levels to buy and sell",
+  "Lifetime access to course recordings for continuous learning",
+  "Unlimited email access to me for personal guidance",
+];
+
+const proFeatures = [
+  "6 sessions with me on how to correctly trade stock options",
+  "3 months of 1:1 personalized coaching to review your trades and refine your strategy ($3,000 value)",
+  "12 months Discord access to trade LIVE with me on the market open ($1,800 value)",
+  "12 months real-time buy/sell alerts from 5 market analysts with charts and price levels",
+  "Weekly stock market watchlist with price levels to buy and sell",
+  "Lifetime access to course recordings for continuous learning",
+  "Unlimited direct access to me via Zoom for personal guidance",
+];
+
+const faqs = [
+  {
+    q: "What's your risk to reward per trade?",
+    a: "I only take trades that have a 1:1 or 2:1 payout, meaning the potential reward is one to two times the risk I define before I enter.",
+  },
+  {
+    q: "How much do you risk per trade?",
+    a: "My average trade is 10 to 30 contracts, sized to a small, fixed share of my capital.",
+  },
+  {
+    q: "If you're only risking a small amount, how do the returns add up?",
+    a: "Options are leveraged. One contract controls 100 shares of stock, so a move in the underlying stock can produce a much larger percentage move in the option. That leverage works in both directions, up and down, which is why defined risk matters on every trade.",
+  },
+  {
+    q: "Your returns look too good to be true, so what's the catch?",
+    a: "The catch is risk. The same leverage that can move an option sharply in your favor can move just as sharply against you. An option can lose value fast, and you can lose the full premium on a trade. That is why the class focuses on defined risk and position sizing.",
+  },
+  {
+    q: "How do you minimize losses?",
+    a: "I use a stop loss of 20%-30% to stop out of a trade once it invalidates from my entry point.",
+  },
+  {
+    q: "How much can I make?",
+    a: "No one can promise a number. Trading options carries real risk and results vary. What the class gives you is the skill and discipline to trade with a plan. Your results depend on you and the market.",
+  },
+  {
+    q: "How long did it take you to learn this?",
+    a: "It took time and a lot of screen hours. That is why students start in a simulator with practice money, so they build skill with no capital at risk until they know what they are doing.",
+  },
+  {
+    q: "What will I learn in your class?",
+    a: "A lot. It is 12 hours of training across 6 sessions, covering options basics, reading charts, building a trading plan, and risk management, so you understand how the strategies work from the start.",
+  },
+  {
+    q: "How do I know what to buy and when?",
+    a: "The Masterclass comes with access to a Discord Community with buy/sell signals which are called out live while the market is open.",
+  },
+  {
+    q: "What happens after the class ends?",
+    a: "With the \"Learn on your own\" or Foundations Masterclass, you can reach out to me any time via email and I will be there for you every step of the way. For students in the Masterclass Pro (Mastery), I am here for you in perpetuity for 1:1 coaching.",
+  },
+  {
+    q: "Do I need prior experience?",
+    a: "No! In fact, I'd prefer you didn't. That way I don't have to break any bad habits you might already have.",
+  },
+  {
+    q: "How much time is required to be successful?",
+    a: "At a minimum, you need to invest a couple of hours a week to become proficient in learning this new skill.",
+  },
+  {
+    q: "How much do I need to get started?",
+    a: "You'll need a brokerage account and $100-$200 a month for the software and indicators.",
+  },
+  {
+    q: "How long does your Masterclass take to complete?",
+    a: "It's 6 individual sessions which last approximately 2 hours a piece. All sessions are recorded for you to replay.",
+  },
+];
+
+// "What you'll learn" highlight cards — re-homes the LEARN section's H3 +
+// taster paragraph and the Simple / Effective / Easy trio into a homepage
+// MegaBento-style card grid (one featured gradient lead tile + 3 cards).
+const learnCards = [
+  {
+    title: 'Simple',
+    body: 'Bill teaches options trading in plain language, so the strategies make sense from day one.',
+    icon: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
+  },
+  {
+    title: 'Effective',
+    body: 'Learn the setups and risk rules Bill uses in his own trading every day.',
+    icon: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/>',
+  },
+  {
+    title: 'Easy to follow',
+    body: 'Run a clear, repeatable routine you can use on your own.',
+    icon: '<path d="M9 6h11"/><path d="M9 12h11"/><path d="M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/>',
+  },
+];
+---
+<!-- ============================================================
+     HERO + BENTO STAGE — dark dot-grid zone (mirrors the other subpage
+     heroes); the DotGrid spans the hero + bento behind the content.
+     ============================================================ -->
+<div class="bf-stage mc-stage">
+  <div class="mc-stage__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+  <section class="bf-section bf-hero">
+    <div class="bf-container">
+      <div class="bf-hero__inner">
+        <div class="bf-hero__eyebrow"><span class="bf-eyebrow">Attention professionals, entrepreneurs and those seeking wealth</span></div>
+        <h1 class="bf-h1 bf-hero__h1">Learn the easiest options strategies for everyone in 6 live sessions</h1>
+        <p class="bf-lead bf-hero__lead">Join Bill Fanter's 6-session options trading Masterclass and learn the core strategies he uses in the market. Every session is live and hands-on, built so new traders and experienced traders can follow along and trade with a plan.</p>
+        <div class="bf-hero__cta">
+          <a class="bf-btn bf-btn--primary is-on-dark" href="#pricing">Reserve your seat today</a>
+        </div>
+        <div class="bf-hero__trust">
+          <span class="bf-hero__trust-source">Recommended by</span>
+          <span class="bf-hero__trust-stars">
+            {Array.from({ length: 5 }).map(() => (
+              <svg class="bf-star" viewBox="0 0 24 24" set:html={star} />
+            ))}
+          </span>
+          <span>500+ Students</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bf-bento">
+    <div class="bf-bento__grid">
+      <div class="bf-bento__tile bf-bento__tile--portrait mc-bento-photo">
+        <img src="/assets/664a5b263659c7265be280ad/664a67e526974fa9873cf4b0_home%20images-6.webp" alt="Image of bill fanter" style="width:100%;height:100%;object-fit:cover;object-position:right" />
+        <div class="mc-bento-tags" aria-hidden="true">
+          <span class="mc-bento-tag">35-year finance pro; $10B+ overseen</span>
+          <span class="mc-bento-tag">1,200+ students taught</span>
+          <span class="mc-bento-tag">1,000+ traders in our community</span>
+        </div>
+        <Signature class="mc-bento-sig" />
+      </div>
+      <div class="bf-bento__tile bf-bento__tile--product bf-grainient-host mc-bento-grain">
+        <div class="bf-grainient-mount" data-grainient="masterclass-bento" data-color1="#1754d8" data-color2="#3b82f6" data-color3="#0b1f5c"></div>
+        <div class="fw-ticker" aria-hidden="true">
+          <div class="fw-ticker__row">
+            <div class="fw-ticker__track fw-ticker__track--ltr">
+              {[...tickerA, ...tickerA].map(([sym, chg, dir]) => (
+                <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+              ))}
+            </div>
+          </div>
+          <div class="fw-ticker__row">
+            <div class="fw-ticker__track fw-ticker__track--rtl">
+              {[...tickerB, ...tickerB].map(([sym, chg, dir]) => (
+                <span class="fw-ticker__chip"><span class="fw-ticker__sym">{sym}</span><span class={`fw-ticker__chg fw-ticker__chg--${dir}`}>{chg}</span></span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <img class="mc-bento-device" src="/assets/664a5b263659c7265be280ad/664c28d718c7d550c67838bb_masterclass%20image-2.webp" alt="" aria-hidden="true" loading="lazy" />
+      </div>
+      <div class="bf-bento__tile bf-bento__tile--quote">
+        <p class="bf-bento__quote-text">&ldquo;Bill teaches a complex subject and presents it in a way that is easy to process and understand. He has big heart and cares about his students.&rdquo;</p>
+        <div class="bf-bento__quote-footer">
+          <div class="bf-bento__quote-author">
+            <div class="bf-bento__quote-name">David Lawson</div>
+            Founder Icegreen
+          </div>
+          <a class="bf-bento__quote-link" href="/student-comments">Read more reviews <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- /STAGE -->
+
+{/* "Options trading strategies that make sense to anyone" — the HeroSplit media
+    bento carrying the masterclass copy, with the Simple / Effective / Easy tiles
+    right below it. */}
+<HeroSplit
+  eyebrow={null}
+  heading="Options trading strategies that make sense to anyone"
+  lead="You do not need a finance background to trade options with a plan. Bill breaks the market into clear, repeatable steps and shows you how he reads setups, defines risk, and places trades. New traders get a starting point. Experienced traders sharpen what they already do."
+  ctaLabel="Join the masterclass"
+  ctaHref="#pricing"
+>
+  {/* Simple / Effective / Easy trio as icon cards, rendered inside the HeroSplit
+      section/container right below the media+copy (identical to the shared
+      HelpGrid: black icon chip, no hover). */}
+  <div class="mc-learn-grid bf-help-grid--three">
+    {learnCards.map((c) => (
+      <div class="bf-help-card">
+        <div class="bf-help-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={c.icon} />
+        </div>
+        <div class="bf-help-card__title">{c.title}</div>
+        <p class="bf-body">{c.body}</p>
+      </div>
+    ))}
+  </div>
+</HeroSplit>
+
+{/* Homepage Spotlight (webinar grid-distortion card) — before the reviews, with
+    a "Join the masterclass" CTA. Wrapped so it fits the container (not full-bleed)
+    on the masterclass page only. */}
+<div class="mc-spotlight-fit">
+  <Spotlight ctaLabel="Join the masterclass" ctaHref="#pricing" ctaIcon={false} />
+</div>
+
+{/* REVIEWS — on a neutral-grey fade band. */}
+<div class="mc-reviews-band">
+  <Reviews showCta={false} />
+</div>
+
+{/* Effortless trading + Discord community — moved to right after the reviews,
+    on white backgrounds. */}
+<EffortlessStrategy />
+<Community ctaHref="/contact" />
+
+<!-- ============================================================
+     PRICING #1
+     ============================================================ -->
+<section class="bf-section mc-band mc-band--pricing" id="pricing">
+  <div class="bf-container">
+    <div class="bf-pricing__intro">
+      <span class="bf-eyebrow">Join our masterclass</span>
+      <h2 class="bf-h2" style="margin-top:20px">Choose your path to trading mastery</h2>
+    </div>
+    <div class="bf-blueprint-grid">
+      <div class="bf-price-card">
+        <div>
+          <div class="bf-price-card__name">Masterclass (Foundation)</div>
+        </div>
+        <div>
+          <div class="bf-price-card__included-label">What's included?</div>
+          <ul class="bf-price-card__list" style="margin-top:14px">
+            {foundationFeatures.map((f) => <li>{f}</li>)}
+          </ul>
+        </div>
+        <a class="bf-btn bf-btn--primary bf-price-card__cta" href="/contact">Contact us</a>
+      </div>
+      <div class="bf-price-card bf-price-card--featured">
+        <div>
+          <div class="bf-price-card__name">Masterclass Pro (Mastery)</div>
+        </div>
+        <div>
+          <div class="bf-price-card__included-label">What's included?</div>
+          <ul class="bf-price-card__list" style="margin-top:14px">
+            {proFeatures.map((f) => <li>{f}</li>)}
+          </ul>
+        </div>
+        <a class="bf-btn bf-price-card__cta" href="/contact">Contact us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     6 SESSIONS — homepage module-list pattern (numbered rows).
+     ============================================================ -->
+<section class="bf-section mc-band mc-band--soft">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Here's what you'll learn over 6 live training sessions</h2>
+    </div>
+    <div class="bf-module-list">
+      {sessionPoints.map((p, i) => (
+        <div class="bf-module-list__item">
+          <div class="bf-module-list__num">{String(i + 1).padStart(2, '0')}</div>
+          <div>
+            <p class="bf-module-list__desc">{p}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ — bf-* accordion (homepage-quality), 14 questions.
+     ============================================================ -->
+<section class="bf-section mc-band mc-band--soft" id="FAQ">
+  <div class="bf-container">
+    <div class="bf-section-header is-center">
+      <h2 class="bf-h2">Frequently asked questions</h2>
+    </div>
+    <div class="bf-faq">
+      {faqs.map((item) => (
+        <details class="bf-faq__item">
+          <summary>{item.q}</summary>
+          <div class="bf-faq__answer" set:html={item.a}></div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MEMBERSHIP CTA — the homepage's black YoutubeCta variant
+     (.bf-darkcta--black): black panel, copy left, a contained
+     grainient square with the image floated over it on the right.
+     Copy + image + #pricing2 link preserved.
+     ============================================================ -->
+<section class="bf-section is-tight">
+  <div class="bf-container">
+    <div class="bf-darkcta bf-darkcta--black">
+      <div class="bf-darkcta__grid">
+        <div>
+          <h2 class="bf-darkcta__h2">Ready to explore options trading?</h2>
+          <p class="bf-darkcta__lead">Take the next step and learn the strategies Bill uses in the market. Join the Masterclass and trade with a plan, real risk rules, and a community behind you.</p>
+          <div class="bf-darkcta__buttons">
+            <a class="bf-darkcta__btn" href="#pricing2">Join the masterclass</a>
+          </div>
+        </div>
+        <div class="bf-darkcta__media" aria-hidden="true">
+          <div class="bf-darkcta__grain-card">
+            <div class="bf-grainient-mount" data-grainient="masterclass-darkcta" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
+            <div class="bf-darkcta__reel">
+              <img src="/assets/664a5b263659c7265be280ad/664c28d76c354e4acb60d3d4_masterclass%20image.webp" alt="" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style is:global>
+  /* ============================================================
+     MASTERCLASS — homepage-clone polish layer.
+     Adds the homepage's alternating white / off-white background
+     bands + a handful of homepage-pattern helpers (50/50 split,
+     learn-card grid, framed media, masonry review wall) on top of
+     the shared bf-* design system. No copy / images / links /
+     pricing / forms are touched. bf-design-system.css is untouched.
+     ============================================================ */
+
+  /* --- Dark dot-grid hero stage (mirrors /community, /webinar, etc.). The
+     DotGrid island mounts on [data-dotgrid] and sits behind the hero + bento;
+     hero text flips to white and the CTA uses the on-dark (white) button. */
+  .bf-page .mc-stage {
+    position: relative;
+    background: #07080c;
+    isolation: isolate;
+  }
+  .bf-page .mc-stage > .mc-stage__dots {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .bf-page .mc-stage > * { position: relative; z-index: 1; }
+  .bf-page .mc-stage .bf-hero__h1,
+  .bf-page .mc-stage .bf-hero__lead { color: #fff; }
+  .bf-page .mc-stage .bf-hero__eyebrow .bf-eyebrow { color: rgba(255, 255, 255, 0.7); }
+  /* "Recommended by … 500+ Students" trust row — white on the dark hero. */
+  .bf-page .mc-stage .bf-hero__trust,
+  .bf-page .mc-stage .bf-hero__trust .bf-hero__trust-source { color: #fff; }
+
+  /* The HeroSplit section is built to sit flush below the homepage spotlight
+     (it zeroes its own top padding). Re-home it on the masterclass page with a
+     proper section pad top + bottom. Scoped to non-split pages so the homepage
+     HeroSplit is untouched. */
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split-wrap { padding-top: var(--bf-section-pad); }
+  /* Drop the HeroSplit's "Recommended by … 500+ Students" trust row on the
+     masterclass page only (the homepage keeps it). */
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__copy .bf-hero__trust { display: none; }
+  /* Make the HeroSplit review tile black instead of the red grainient — masterclass
+     only (homepage keeps the grainient). */
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--quote-on-gradient { background: #0a0a0a; }
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--quote-on-gradient .bf-grainient-mount { display: none; }
+  /* Flip the two right tiles so the PHOTO is on top and the REVIEW is on the
+     bottom (masterclass only), and drop the "Read more reviews" link. */
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--quote-on-gradient { order: 1; }
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile-link { display: none; }
+
+  /* Desktop: even ~100px visual top/bottom on the dot-grid stage (hero heading at
+     100px below the nav; 100px below the bento before the next section). */
+  @media (min-width: 768px) {
+    .bf-page .mc-stage .bf-hero { padding-top: 100px; }
+    .bf-page .mc-stage .bf-bento { padding-bottom: 100px; }
+  }
+  /* Mobile: tighten the gap below the hero CTA so the bento sits ~48px below it
+     (matching the community hero's CTA → video spacing); the bento keeps its
+     40px top pad, so the hero only needs ~8px below. */
+  @media (max-width: 767px) {
+    .bf-page .mc-stage .bf-hero { padding-bottom: 8px; }
+  }
+
+  /* --- Hero bento left photo tile: the Bill Fanter signature overlaid in the
+     bottom-right corner of the portrait (replaces the play button). */
+  .bf-page .mc-bento-photo { position: relative; }
+  /* No hover lift/zoom on the photo tile. */
+  .bf-page .mc-bento-photo,
+  .bf-page .mc-bento-photo:hover { transform: none; }
+  .bf-page .mc-bento-photo img,
+  .bf-page .mc-bento-photo:hover img { transform: none; transition: none; }
+  .bf-page .mc-bento-photo :global(.mc-bento-sig) {
+    position: absolute;
+    right: 18px;
+    bottom: 16px;
+    z-index: 2;
+    width: 150px;
+    max-width: 46%;
+    color: #0a0a0a;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.6));
+  }
+  /* Rotating trust tags (top-right), cross-fading one at a time — same as the
+     webinar hero image. */
+  .bf-page .mc-bento-photo .mc-bento-tags {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    height: 38px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .bf-page .mc-bento-photo .mc-bento-tag {
+    position: absolute;
+    top: 0;
+    right: 0;
+    white-space: nowrap;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 22px -8px rgba(20, 60, 120, 0.35);
+    font-size: 13px;
+    font-weight: 600;
+    color: #0a0a0a;
+    opacity: 0;
+    animation: mc-tag-cycle 9s infinite;
+  }
+  .bf-page .mc-bento-photo .mc-bento-tag:nth-child(2) { animation-delay: 3s; }
+  .bf-page .mc-bento-photo .mc-bento-tag:nth-child(3) { animation-delay: 6s; }
+  @keyframes mc-tag-cycle {
+    0%   { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    4%   { opacity: 1; transform: translateY(0) scale(1); }
+    29%  { opacity: 1; transform: translateY(0) scale(1); }
+    33%  { opacity: 0; transform: translateY(8px) scale(0.96); }
+    100% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  }
+
+  /* --- Hero bento middle grainient tile: scrolling ticker chips + a floating
+     devices mockup layered over the grainient (experimental visual). */
+  .bf-page .mc-bento-grain { position: relative; overflow: hidden; }
+  /* Blue grainient (fallback shown until the WebGL grainient island mounts). */
+  .bf-page .mc-bento-grain .bf-grainient-mount {
+    background: linear-gradient(135deg, #1754d8 0%, #3b82f6 55%, #0b1f5c 100%);
+  }
+  .bf-page .mc-bento-grain .fw-ticker {
+    position: absolute;
+    /* Float the chips in the TOP two-thirds of the tile (the device sits in the
+       bottom third). */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 34%;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  }
+  .bf-page .mc-bento-grain .fw-ticker__row { display: flex; overflow: hidden; }
+  .bf-page .mc-bento-grain .fw-ticker__track { display: inline-flex; flex: 0 0 auto; white-space: nowrap; will-change: transform; }
+  .bf-page .mc-bento-grain .fw-ticker__track--ltr { animation: mc-ticker-ltr 26s linear infinite; }
+  .bf-page .mc-bento-grain .fw-ticker__track--rtl { animation: mc-ticker-rtl 26s linear infinite; }
+  @keyframes mc-ticker-ltr { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes mc-ticker-rtl { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  .bf-page .mc-bento-grain .fw-ticker__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+    margin-right: 8px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: rgba(10, 12, 20, 0.34);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+  }
+  .bf-page .mc-bento-grain .fw-ticker__sym { font-weight: 700; }
+  .bf-page .mc-bento-grain .fw-ticker__chg--up { color: #6ee7a0; }
+  .bf-page .mc-bento-grain .fw-ticker__chg--down { color: #ff9d98; }
+  /* Devices mockup anchored flush to the BOTTOM of the tile. */
+  .bf-page .mc-bento-grain .mc-bento-device {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    width: 94%;
+    height: auto;
+    max-height: 74%;
+    object-fit: contain;
+    object-position: bottom;
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.38));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bf-page .mc-bento-grain .fw-ticker__track--ltr,
+    .bf-page .mc-bento-grain .fw-ticker__track--rtl { animation: none; }
+  }
+
+  /* --- Section background rhythm (mirrors the homepage's alternating
+     white / off-white bands). Each band paints a full-bleed background
+     behind the centered .bf-container. */
+  .bf-page .mc-band { position: relative; }
+
+  /* Soft off-white band — for lighter content sections (6 sessions, FAQ). */
+  .bf-page .mc-band--soft {
+    background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+  }
+
+  /* Media-showcase bands (Winning Trades, Devices) — faint cool fade so the
+     full-width screenshots sit on a surface, not raw white. */
+  .bf-page .mc-band--media {
+    background: linear-gradient(180deg, #f7f9fc 0%, #ffffff 100%);
+  }
+
+  /* Reviews band — subtle blue fade matching the homepage Reviews section. */
+  .bf-page .mc-band--reviews {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 55%, #eef4fc 100%);
+  }
+  /* The masterclass Reviews uses a NEUTRAL grey fade (not the shared blue one). */
+  .bf-page .mc-reviews-band .bf-reviews {
+    background: linear-gradient(180deg, #ffffff 0%, #f4f4f7 100%);
+  }
+
+  /* Masterclass-only: constrain the full-bleed Spotlight card to the container
+     content width so its edges line up with the other sections (homepage keeps
+     it full-bleed). */
+  .bf-page .mc-spotlight-fit .bf-spotlight { padding-left: 32px; padding-right: 32px; }
+  .bf-page .mc-spotlight-fit .bf-spotlight__card {
+    max-width: calc(var(--bf-container) - 64px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (max-width: 767px) {
+    .bf-page .mc-spotlight-fit .bf-spotlight { padding-left: 20px; padding-right: 20px; }
+  }
+
+  /* Pricing bands — polished blue-tinted surface so pricing reads as a
+     deliberate, premium block (the featured dark card pops against it). */
+  .bf-page .mc-band--pricing {
+    background: linear-gradient(180deg, #f4f8fd 0%, #eaf1fb 100%);
+  }
+
+  /* Pricing polish — equal-height cards, lift the featured one, pin CTAs to
+     the bottom so the two cards line up. */
+  .bf-page .mc-band--pricing .bf-blueprint-grid { align-items: stretch; }
+  .bf-page .mc-band--pricing .bf-price-card {
+    height: 100%;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px rgba(20, 60, 120, 0.05), 0 18px 40px -24px rgba(20, 60, 120, 0.22);
+  }
+  .bf-page .mc-band--pricing .bf-price-card--featured {
+    box-shadow: 0 24px 60px -22px rgba(10, 10, 10, 0.5);
+  }
+  @media (min-width: 881px) {
+    .bf-page .mc-band--pricing .bf-price-card--featured { transform: scale(1.02); }
+  }
+  .bf-page .mc-band--pricing .bf-price-card__cta { margin-top: auto; }
+
+  /* --- 50/50 media+copy split (homepage HeroSplit / AboutBill proportions:
+     grid 1fr 1fr, 48px gap, copy column padding-left 48px, vertically
+     centered). Used for the "It's not magic. It's strategy." value-prop. */
+  .bf-page .mc-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .bf-page .mc-split__media img {
+    width: 100%;
+    border-radius: var(--bf-radius-lg);
+    box-shadow: var(--bf-shadow-card);
+    border: 1px solid var(--bf-border);
+  }
+  .bf-page .mc-split__copy { padding-left: 48px; }
+  .bf-page .mc-split__copy p {
+    color: var(--bf-text-muted);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  @media (max-width: 980px) {
+    .bf-page .mc-split { grid-template-columns: 1fr; gap: 32px; }
+    .bf-page .mc-split__copy { padding-left: 0; }
+  }
+
+  /* --- "What you'll learn" card grid (homepage HelpGrid card style). */
+  .bf-page .mc-learn-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  @media (max-width: 880px) { .bf-page .mc-learn-grid { grid-template-columns: 1fr; } }
+  .bf-page .mc-learn-card {
+    padding: 36px 32px;
+    background: var(--bf-surface);
+    border: 1px solid var(--bf-border);
+    border-radius: 12px;
+    transition: transform 250ms cubic-bezier(.4,0,.2,1), border-color 250ms, box-shadow 250ms;
+  }
+  .bf-page .mc-learn-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--bf-border-strong);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+  }
+  .bf-page .mc-learn-card__title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--bf-text);
+    margin-bottom: 12px;
+  }
+
+  /* --- Framed full-width media showcase (rounded, soft card shadow) so the
+     screenshots read as elevated surfaces, matching homepage media cards. */
+  .bf-page .mc-shot-frame {
+    margin-top: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 18px 40px -20px rgba(20,60,120,.22);
+  }
+  .bf-page .mc-shot-frame img { width: 100%; display: block; }
+
+  /* --- Reviews screenshot wall — masonry like the homepage (.bf-reviews__wall):
+     2 columns desktop, 1 mobile, natural aspect ratios preserved. */
+  .bf-page .mc-reviews-wall {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  .bf-page .mc-reviews-wall__shot {
+    width: 100%;
+    margin: 0 0 20px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 26px rgba(20, 60, 120, 0.07);
+    break-inside: avoid;
+    display: block;
+    background: #fff;
+  }
+  @media (max-width: 767px) { .bf-page .mc-reviews-wall { column-count: 1; } }
+
+  /* Written-review cards — touch of depth against the tinted reviews band. */
+  .bf-page .mc-band--reviews .bf-review-card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 12px 30px rgba(20, 60, 120, 0.06);
+  }
+
+  /* --- Membership CTA spacing — same breathing room as the homepage's
+     YoutubeCta / Closing dark blocks. */
+  .bf-page .bf-section.is-tight .bf-darkcta { margin: 8px 0; }
+</style>

@@ -1,18 +1,26 @@
 ---
-// Production /webinar — classic markup with modernization layer.
-// New UI preview at /2026/webinar, original at /classic.
+// /webinar — componentized 2026 redesign (clean bf-* sections + shared
+// CardNav / Footer / Islands chrome). Replaced the classic-modernized page.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import bodyHtml from './_body.html?raw';
-import extraHeadHtml from './_head.html?raw';
-import modernizationCSS from '../../styles/modernization.css?raw';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import WebinarContent from '../../components/pages/WebinarContent.astro';
 ---
 <BaseLayout
-  title={`Free Webinar | Bill Fanter`}
-  description={`Free webinar with Bill Fanter — the 3-step system he uses to find, manage, and close winning options trades.`}
-  ogImage={`/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp`}
-  wfPageId={`664c1c1ece7e660fcaf8ed86`}
-  extraHeadHtml={extraHeadHtml}
+  title="Free Options Trading Webinar: Trade the Opening Hour | Bill Fanter"
+  description="Learn how to trade the first hour of the market with a clear, rules-based options plan. Free 60-minute webinar with Bill Fanter. Register and watch."
+  ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
+  wfPageId="664c1c1ece7e660fcaf8ed86"
 >
-  <style set:html={modernizationCSS}></style>
-  <Fragment set:html={bodyHtml} />
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <WebinarContent />
+  </main>
+  <Footer />
+  <Islands />
 </BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

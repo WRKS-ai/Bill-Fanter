@@ -4,6 +4,15 @@
      Reset is scoped to .bf-page so it doesn't leak.
      ========================================================= */
 
+  /* In-page anchor CTAs (e.g. "Watch the free webinar" → the form) glide up
+     smoothly instead of jumping. Disabled when the user prefers reduced motion. */
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  /* Offset anchor targets so they land just below the fixed header, not under it. */
+  .bf-page [id="watchlist"],
+  .bf-page [id="register"],
+  .bf-page form[id^="wf-form-"] { scroll-margin-top: 96px; }
+
   .bf-page,
   .bf-page * {
     box-sizing: border-box;
@@ -43,7 +52,7 @@
     --bf-radius: 8px;
     --bf-radius-lg: 12px;
     --bf-radius-pill: 999px;
-    --bf-section-pad: 80px;
+    --bf-section-pad: 100px;
     --bf-container: 1440px;
     --bf-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.05);
 
@@ -77,6 +86,33 @@
   .bf-page ul, .bf-page ol { list-style: none; }
   .bf-page button { font-family: inherit; }
 
+  /* Interior pages use the full-width header (the homepage uses the narrow
+     "split" nav, and its Hero supplies its own large top spacing). The CardNav
+     is fixed at the top, so interior pages reserve exactly the nav's height
+     (72px) — the first section then starts flush at the nav's bottom edge (no
+     white sliver between the nav and a dark hero). */
+  /* Scope to the MAIN content area only — the footer reuses the .bf-page class
+     (for its typography resets) and must NOT inherit this nav-clearance pad,
+     which showed up as a 72px ghost gap above the footer. */
+  main.bf-page:not([data-cardnav-variant="split"]) { padding-top: 72px; }
+
+  /* Reusable newsletter / lead-capture split: copy + <SubscribeForm/> on the
+     left, one visual on the right (the homepage watchlist layout). Used on
+     /webinar and /free-watchlist so every form section looks the same. */
+  .bf-newsletter-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: center;
+  }
+  .bf-newsletter-split__copy { max-width: 560px; }
+  .bf-newsletter-split__form { margin-top: 28px; max-width: 440px; }
+  .bf-newsletter-split__media img { width: 100%; height: auto; border-radius: 12px; }
+  @media (max-width: 900px) {
+    .bf-newsletter-split { grid-template-columns: 1fr; gap: 40px; }
+    .bf-newsletter-split__copy { max-width: none; }
+  }
+
   /* ========== Containers ========== */
   .bf-container {
     width: 100%;
@@ -91,6 +127,30 @@
   /* `.is-tight` keeps the same outer padding so adjacent sections don't visually skew.
      Internal density is controlled by component-level padding inside the section. */
   .bf-section.is-tight { padding: var(--bf-section-pad) 0; }
+
+  /* Mobile spacing: scale the section rhythm + side gutters down so phones don't
+     get desktop-sized whitespace. Driving it off the token keeps every section
+     consistent; the hardcoded stage/closing values get matching mobile steps. */
+  @media (max-width: 767px) {
+    .bf-page { --bf-section-pad: 52px; }
+    .bf-page .bf-container { padding-left: 20px; padding-right: 20px; }
+    .bf-page .bf-stage + .bf-section { padding-top: 64px; }
+    .bf-page .bf-hero { padding-top: 96px; padding-bottom: 40px; }
+    .bf-page .bf-closing { padding-top: 64px; padding-bottom: 56px; }
+    /* Standalone (dot-grid) hero pages: main already adds 72px to clear the
+       floating nav, so the hero only needs a small consistent gap on top of
+       that — not another full 96px (which stacked to ~168px). One rule covers
+       every non-homepage dot-grid hero (webinar, about, watchlist, etc.). */
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero {
+      padding-top: 52px;
+      padding-bottom: 52px;
+    }
+    /* Consistent below-headline gap on mobile site-wide: match the homepage
+       MegaBento (40px header margin, no extra content top-margin). Components
+       that add their own content margin-top zero it on mobile (below) so the
+       gap is always this single 40px, never a doubled 56 + 36/48. */
+    .bf-page .bf-section-header { margin-bottom: 40px; }
+  }
 
   /* Soft cream fade — borrowed from the Artifact templates.
      A `.bf-stage` wrapper drapes ONE gradient across the sections it contains,
@@ -135,6 +195,14 @@
   }
   .bf-eyebrow .bf-dot { display: none; }
 
+  /* Eyebrows (small label above headings) removed site-wide per request. Hides
+     the label itself, the hero/hero-split eyebrow WRAPPER (which carries a
+     margin that would otherwise leave a gap), and the roundtable-showcase
+     eyebrow variant. */
+  .bf-eyebrow,
+  .bf-hero__eyebrow,
+  .bf-vs-eyebrow { display: none !important; }
+
   /* ========== Typography ramp ==========
      Strict hierarchy: H1 (hero) is largest, then H2 < H1, H3 < H2, H4 < H3.
      Body minimum 16px. Tiny is reserved for legal fineprint. */
@@ -155,26 +223,26 @@
     font-feature-settings: 'ss01', 'ss02';
   }
   .bf-h3 {
-    font-size: clamp(16px, 1.2vw, 19px);
+    font-size: 16px;
     line-height: 1.3;
     font-weight: 600;
     letter-spacing: -0.012em;
     color: var(--bf-text);
   }
   .bf-h4 {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.35;
     font-weight: 600;
     letter-spacing: -0.008em;
     color: var(--bf-text);
   }
   .bf-lead {
-    font-size: clamp(17px, 1.25vw, 20px);
-    line-height: 1.55;
+    font-size: 16px;
+    line-height: 1.6;
     color: var(--bf-text-muted);
   }
   .bf-body {
-    font-size: clamp(16px, 1vw, 17px);
+    font-size: 16px;
     line-height: 1.6;
     color: var(--bf-text-muted);
   }
@@ -192,7 +260,7 @@
     gap: 8px;
     padding: 14px 24px;
     border-radius: var(--bf-radius-pill);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.005em;
     border: 1px solid transparent;
@@ -256,7 +324,7 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 0 rgba(255, 255, 255, 0.7) inset;
   }
   .bf-nav__logo {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--bf-text);
@@ -301,7 +369,7 @@
   /* ========== Hero ========== */
   .bf-hero {
     padding-top: 120px;
-    padding-bottom: 56px;
+    padding-bottom: 100px;
   }
   .bf-hero__inner {
     max-width: 1080px;
@@ -334,7 +402,7 @@
     flex-wrap: wrap;
     margin-top: 40px;
   }
-  .bf-hero__cta .bf-btn { min-width: 180px; padding: 16px 28px; font-size: 15px; }
+  .bf-hero__cta .bf-btn { min-width: 180px; padding: 16px 28px; font-size: 16px; }
   .bf-hero__trust {
     display: inline-flex;
     align-items: center;
@@ -371,7 +439,7 @@
     position: relative;
     border-radius: var(--bf-radius);
     overflow: hidden;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
     background: var(--bf-bg-2);
     box-shadow: var(--bf-shadow-card);
   }
@@ -419,7 +487,7 @@
     align-items: center;
     gap: 10px;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     color: #0a0a0a;
   }
   .bf-bento__product-pill {
@@ -497,7 +565,7 @@
     letter-spacing: -0.015em;
     color: #fff;
   }
-  .bf-bento__quote-author { color: rgba(255, 255, 255, 0.6); font-size: 14px; }
+  .bf-bento__quote-author { color: #fff; font-size: 14px; }
   .bf-bento__quote-name { color: #fff; font-weight: 600; margin-bottom: 2px; }
 
   /* ========== Marquee / trust strip ========== */
@@ -554,7 +622,7 @@
     position: relative;
     background: #f5f4f1;
     border: 1px solid var(--bf-border);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 56px 64px;
     overflow: hidden;
   }
@@ -577,7 +645,7 @@
     border: 1px solid var(--bf-border);
     border-radius: 10px;
     color: var(--bf-text);
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
     transition: border-color 150ms, box-shadow 150ms;
   }
@@ -587,7 +655,7 @@
     border-color: #0a0a0a;
     box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
   }
-  .bf-form__submit { width: 100%; margin-top: 4px; padding: 16px 24px; font-size: 15px; }
+  .bf-form__submit { width: 100%; margin-top: 4px; padding: 16px 24px; font-size: 16px; }
   @media (max-width: 540px) { .bf-form__row { grid-template-columns: 1fr; } }
 
   /* ========== Split feature row — text left, gradient placeholder right ========== */
@@ -619,7 +687,7 @@
   .bf-split__lead {
     margin-top: 40px;
     color: var(--bf-text-muted);
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.6;
   }
   .bf-split__btn {
@@ -630,7 +698,7 @@
     background: #0a0a0a;
     color: #fff;
     border-radius: 999px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
   }
   .bf-split__btn:hover { transform: translateY(-1px); }
@@ -676,7 +744,7 @@
   .bf-split__media {
     position: relative;
     aspect-ratio: 5 / 4;
-    border-radius: 14px;
+    border-radius: 12px;
     overflow: hidden;
     background: #0a0a0a;
   }
@@ -720,7 +788,7 @@
   }
   @media (max-width: 880px) { .bf-feature-row__grid { grid-template-columns: 1fr; gap: 32px; } }
   .bf-feature-row__item p {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--bf-text-muted);
   }
@@ -737,7 +805,15 @@
     margin-top: 64px;
   }
   @media (max-width: 980px) { .bf-help-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 540px) { .bf-help-grid { grid-template-columns: 1fr; } }
+  /* Mobile: the gap below the heading is just the shared 40px header margin
+     (drop the 64px grid top-margin so it doesn't double up). */
+  @media (max-width: 767px) { .bf-help-grid { margin-top: 0; } }
+  /* Single column: cards fit their content (the 260px min-height that keeps the
+     4-up row even just left dead space below the text when stacked). */
+  @media (max-width: 540px) {
+    .bf-help-grid { grid-template-columns: 1fr; }
+    .bf-help-card { min-height: 0; }
+  }
   .bf-help-card {
     position: relative;
     padding: 36px 32px 32px;
@@ -750,7 +826,10 @@
     gap: 16px;
     min-height: 260px;
   }
-  .bf-help-card:hover {
+  /* Hover lift only for cards that are actually links (<a>). The same component
+     is rendered as a non-clickable <div> in places (e.g. the homepage value-prop
+     grid), and those shouldn't react to hover. */
+  a.bf-help-card:hover {
     transform: translateY(-3px);
     border-color: var(--bf-border-strong);
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
@@ -766,8 +845,8 @@
     justify-content: center;
   }
   .bf-help-card__icon svg { width: 22px; height: 22px; }
-  .bf-help-card__title { font-size: 17px; font-weight: 600; color: var(--bf-text); letter-spacing: -0.01em; }
-  .bf-help-card .bf-body { font-size: 14px; }
+  .bf-help-card__title { font-size: 16px; font-weight: 600; color: var(--bf-text); letter-spacing: -0.01em; }
+  .bf-help-card .bf-body { font-size: 16px; }
   .bf-help-card__link {
     margin-top: auto;
     color: var(--bf-text);
@@ -809,7 +888,7 @@
   }
   .bf-path-card__icon img { width: 24px; height: 24px; filter: brightness(0) invert(1); opacity: 1; }
   .bf-path-card .bf-h3 { font-size: 20px; letter-spacing: -0.01em; }
-  .bf-path-card .bf-body { font-size: 14px; }
+  .bf-path-card .bf-body { font-size: 16px; }
   .bf-path-cta { text-align: center; margin-top: 56px; }
 
   /* ========== Blueprint pricing ========== */
@@ -838,7 +917,7 @@
     position: relative;
     background: #fff;
     border: 1px solid var(--bf-border);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 48px 44px;
     display: flex;
     flex-direction: column;
@@ -880,11 +959,11 @@
   }
   .bf-price-card--featured .bf-price-card__price { color: rgba(255, 255, 255, 0.4); }
   .bf-price-card__desc {
-    font-size: 15px;
+    font-size: 16px;
     color: var(--bf-text-muted);
     line-height: 1.55;
   }
-  .bf-price-card--featured .bf-price-card__desc { color: rgba(255, 255, 255, 0.68); }
+  .bf-price-card--featured .bf-price-card__desc { color: #fff; }
   .bf-price-card__cta { width: 100%; padding: 16px 24px; }
   .bf-price-card--featured .bf-price-card__cta {
     background:
@@ -912,11 +991,11 @@
     display: flex;
     gap: 10px;
     align-items: flex-start;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--bf-text);
     line-height: 1.5;
   }
-  .bf-price-card--featured .bf-price-card__list li { color: rgba(255, 255, 255, 0.88); }
+  .bf-price-card--featured .bf-price-card__list li { color: #fff; }
   .bf-price-card__list li::before {
     content: '';
     width: 6px;
@@ -937,14 +1016,19 @@
   /* ========== Community section ========== */
   .bf-community-grid {
     display: grid;
-    grid-template-columns: 1fr 1.1fr;
-    gap: 72px;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
     align-items: center;
     margin-top: 64px;
   }
-  @media (max-width: 980px) { .bf-community-grid { grid-template-columns: 1fr; gap: 40px; } }
+  /* Media LEFT, benefits RIGHT → inset the benefits on their left (gap side). */
+  .bf-community-grid .bf-community__benefits { padding-left: 48px; }
+  @media (max-width: 980px) {
+    .bf-community-grid { grid-template-columns: 1fr; gap: 40px; }
+    .bf-community-grid .bf-community__benefits { padding-left: 0; }
+  }
   .bf-community__media {
-    border-radius: 14px;
+    border-radius: 12px;
     overflow: hidden;
     border: 1px solid var(--bf-border);
     box-shadow: 0 12px 32px rgba(0,0,0,0.06);
@@ -969,8 +1053,8 @@
     color: #fff;
     background: #0a0a0a;
   }
-  .bf-benefit__title { font-size: 17px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; color: var(--bf-text); }
-  .bf-benefit .bf-body { font-size: 14px; line-height: 1.55; }
+  .bf-benefit__title { font-size: 16px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; color: var(--bf-text); }
+  .bf-benefit .bf-body { font-size: 16px; line-height: 1.55; }
 
   /* ========== Dark CTA — text left, device mockup right ========== */
   .bf-darkcta {
@@ -988,8 +1072,8 @@
   }
   .bf-darkcta__grid {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 64px;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
     align-items: center;
   }
   @media (max-width: 980px) {
@@ -1010,8 +1094,9 @@
   }
   .bf-darkcta__lead {
     margin-top: 36px;
-    color: rgba(255, 255, 255, 0.65);
-    font-size: 17px;
+    /* Pure white body text on the dark CTA — max contrast (site standard). */
+    color: #fff;
+    font-size: 16px;
     line-height: 1.6;
     max-width: 520px;
   }
@@ -1029,7 +1114,7 @@
     background: #fff;
     color: #0a0a0a;
     border-radius: 999px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     transition: transform 200ms, box-shadow 200ms;
   }
@@ -1065,6 +1150,46 @@
   /* When the whole CTA already has the gradient, the media slot no longer
      needs its own Grainient — hide it so the image floats on the parent bg. */
   .bf-darkcta__media .bf-grainient-mount { display: none; }
+
+  /* ===== Black YouTube-CTA variant (app-store-style) =====
+     Black card; the grainient becomes a CONTAINED gradient card behind the
+     vertical reel (which overflows it top/bottom like a device on a panel). */
+  .bf-darkcta.bf-darkcta--black { background: #0a0a0a; padding: 48px; }
+  @media (max-width: 980px) { .bf-darkcta.bf-darkcta--black { padding: 32px 24px; } }
+  .bf-darkcta--black .bf-darkcta__grid { align-items: center; gap: 48px; }
+  .bf-darkcta--black .bf-darkcta__lead { margin-top: 18px; }
+  .bf-darkcta--black .bf-darkcta__buttons { margin-top: 26px; }
+  .bf-darkcta--black .bf-darkcta__media { position: relative; aspect-ratio: 1 / 1; overflow: visible; width: 100%; max-width: 380px; margin-left: auto; margin-right: 0; }
+  /* The gradient square fills the media slot; overflow:hidden lets it crop the
+     device at the bottom (so the device reads as sitting BEHIND the square). */
+  .bf-darkcta--black .bf-darkcta__grain-card {
+    position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
+  }
+  .bf-darkcta--black .bf-darkcta__media .bf-grainient-mount {
+    display: block; position: absolute; inset: 0; border-radius: inherit; overflow: hidden;
+  }
+  /* Device: smaller, fits inside the square with a gap above; its bottom runs
+     just past the square's bottom edge so it's subtly cropped (sits behind it). */
+  .bf-darkcta--black .bf-darkcta__reel {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    top: 16%; height: 88%; aspect-ratio: 9 / 16; max-width: 56%;
+    /* Smaller top-corner radius so the YouTube screenshot's top chrome (back
+       arrow + search) isn't clipped by the rounded corner. */
+    border-radius: 8px 8px 0 0; overflow: hidden; background: #000; z-index: 1;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+  }
+  .bf-darkcta--black .bf-darkcta__reel iframe,
+  .bf-darkcta--black .bf-darkcta__reel img {
+    position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block;
+    object-fit: cover;
+  }
+  @media (max-width: 980px) {
+    /* Stacked: center the gradient card instead of right-aligning it (the desktop
+       margin-right:0 left it hanging off the right edge under the copy). */
+    .bf-darkcta--black .bf-darkcta__media { aspect-ratio: 16 / 11; margin-left: auto; margin-right: auto; }
+    .bf-darkcta--black .bf-darkcta__reel { top: 12%; height: 92%; max-width: 42%; }
+  }
+
   /* When the dark CTA has a mockup image layered over the Grainient, the image
      sits centered, doesn't fill the frame, and gets a soft drop shadow so it
      reads as floating on the gradient rather than pasted on flat. */
@@ -1098,7 +1223,7 @@
     width: 78%;
     max-width: 360px;
     background: #0a0a0a;
-    border-radius: 28px 28px 0 0;
+    border-radius: 12px 12px 0 0;
     border: 8px solid #1a1a1a;
     border-bottom: 0;
     overflow: hidden;
@@ -1135,7 +1260,7 @@
     margin-bottom: 16px;
   }
   .bf-darkcta__device-title {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
   }
   .bf-darkcta__device-crumbs {
@@ -1144,7 +1269,7 @@
     margin-bottom: 6px;
   }
   .bf-darkcta__device-h {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
     margin-bottom: 16px;
   }
@@ -1211,7 +1336,9 @@
   .bf-closing {
     background: #000;
     color: #fff;
-    padding: 120px 0 96px;
+    /* Match the standard section rhythm so the gap into the closing block is
+       consistent with every other section (was 120/96 → an oversized 200 gap). */
+    padding: var(--bf-section-pad) 0;
     position: relative;
   }
   .bf-closing__intro {
@@ -1229,8 +1356,8 @@
   }
   .bf-closing__lead {
     margin-top: 24px;
-    color: rgba(255, 255, 255, 0.62);
-    font-size: 17px;
+    color: #fff;
+    font-size: 16px;
     line-height: 1.6;
   }
   .bf-closing__rating {
@@ -1238,7 +1365,7 @@
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    color: rgba(255, 255, 255, 0.62);
+    color: #fff;
     font-size: 14px;
   }
   .bf-closing__rating-stars { display: inline-flex; gap: 2px; color: var(--bf-gold); }
@@ -1253,7 +1380,7 @@
   }
   @media (max-width: 880px) { .bf-closing__grid { grid-template-columns: 1fr; } }
   .bf-closing__tile {
-    border-radius: 14px;
+    border-radius: 12px;
     aspect-ratio: 4 / 3;
     padding: 40px 44px;
     display: flex;
@@ -1289,7 +1416,7 @@
   }
   .bf-closing__tile-author-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .bf-closing__tile-author-name {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     color: #fff;
   }
@@ -1311,7 +1438,7 @@
     background: #fff;
     color: #0a0a0a;
     border-radius: 999px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     transition: transform 200ms, box-shadow 200ms;
   }
@@ -1325,14 +1452,26 @@
   }
   .bf-footer-dark__grid {
     display: grid;
-    grid-template-columns: 1.4fr repeat(3, 1fr);
-    gap: 56px;
+    /* Brand fills the left; the 4 link columns cluster on the RIGHT side of the
+       container (last column flush to the right edge). */
+    grid-template-columns: minmax(0, 1fr) repeat(4, max-content);
+    gap: 80px;
     max-width: var(--bf-container);
     margin: 0 auto;
     padding: 0 32px;
   }
-  @media (max-width: 880px) {
-    .bf-footer-dark__grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  @media (max-width: 1100px) {
+    .bf-footer-dark__grid { grid-template-columns: 1fr 1fr 1fr; gap: 36px 28px; }
+    /* Brand spans the full row so its tagline isn't squeezed into one column. */
+    .bf-footer-dark__grid > div:first-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 700px) {
+    .bf-footer-dark__grid { grid-template-columns: 1fr 1fr; gap: 30px 24px; }
+  }
+  /* Phones: collapse the nav columns into a single column. (After the 700px rule
+     so it wins at this width.) */
+  @media (max-width: 560px) {
+    .bf-footer-dark__grid { grid-template-columns: 1fr; gap: 28px; }
   }
   .bf-footer-dark__col-title {
     font-size: 13px;
@@ -1361,12 +1500,11 @@
     max-width: 320px;
   }
   .bf-footer-dark__bottom {
-    margin-top: 64px;
-    padding: 32px;
+    margin-top: 20px;
+    padding: 0 32px;
     max-width: var(--bf-container);
     margin-left: auto;
     margin-right: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1388,21 +1526,34 @@
   /* ========== About Bill ========== */
   .bf-about-grid {
     display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: 64px;
+    /* CANONICAL text+image split (matches .bf-hero-split): 50/50 columns, 48px
+       gap, and the copy gets a 48px inset toward the gap so the text-to-media
+       spacing reads identical across every side-by-side section on the site. */
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
     align-items: center;
   }
-  @media (max-width: 980px) { .bf-about-grid { grid-template-columns: 1fr; } }
+  /* Media LEFT, copy RIGHT (default) → inset the copy on its left (gap side). */
+  .bf-about__copy { padding-left: 48px; max-width: 588px; }
+  @media (max-width: 980px) {
+    /* Stack with a consistent gap so the image sits the same distance from the
+       heading as the heading is from the body. */
+    .bf-about-grid { grid-template-columns: 1fr; gap: 28px; }
+    .bf-about__copy { padding-left: 0; max-width: none; }
+  }
   .bf-about__media img {
     width: 100%;
     border-radius: var(--bf-radius-lg);
     box-shadow: var(--bf-shadow-card);
     border: 1px solid var(--bf-border);
   }
+  /* Match the site's de-facto body text (.bf-body / .bf-lead render at full
+     --bf-text via the .bf-page p reset) so the About bio doesn't read as a
+     lighter/looser outlier next to the lead + cards on the same page. */
   .bf-about__copy p {
-    color: var(--bf-text-muted);
-    font-size: 17px;
-    line-height: 1.7;
+    color: var(--bf-text);
+    font-size: 16px;
+    line-height: 1.6;
   }
   .bf-about__copy p + p { margin-top: 18px; }
 
@@ -1412,6 +1563,17 @@
   .bf-section-header .bf-eyebrow { margin-bottom: 24px; display: inline-block; }
   .bf-section-header h2 + p,
   .bf-section-header h2 + .bf-lead { margin-top: 22px; }
+
+  /* Canonical headline → body gap. The `.bf-page p` reset above (specificity
+     0,1,1) zeroes the margin-top of any single-class lead paragraph, which left
+     these leads flush against their headline. Re-assert the canonical 22px
+     rhythm with a `.bf-page`-qualified selector so they match the section
+     headers site-wide. (.bf-hero__lead / .bf-darkcta--black / .bf-hero-split
+     leads are already two-class and unaffected.) */
+  .bf-page .wl-lead,
+  .bf-page .bf-closing__lead,
+  .bf-page .bf-split__lead,
+  .bf-page .bf-youtube__lead { margin-top: 22px; }
 
   /* ========== Footer ========== */
   .bf-footer {
@@ -1439,10 +1601,9 @@
   .bf-bento__tile--product { padding: 0 !important; background: none !important; }
   .bf-bento__product-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  /* All 3 bento tiles share a phone-ish vertical aspect — fits the Vimeo
-     vertical reel naturally and gives the row a deliberate phone-card feel. */
-  .bf-bento__tile { aspect-ratio: 9 / 16; }
-  @media (max-width: 880px) { .bf-bento__tile { aspect-ratio: 9 / 16; } }
+  /* All 3 bento tiles share a square aspect for a clean, even bento row. */
+  .bf-bento__tile { aspect-ratio: 1 / 1; }
+  @media (max-width: 880px) { .bf-bento__tile { aspect-ratio: 1 / 1; } }
 
   /* Community image - strip the frame/background around the Discord composite */
   .bf-community__media {
@@ -1481,7 +1642,7 @@
     border: 1px solid var(--bf-border);
     border-radius: 999px;
     color: var(--bf-text);
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
   }
   .bf-watchlist-v2__input:focus { outline: none; border-color: #0a0a0a; }
@@ -1492,12 +1653,12 @@
     border-radius: 999px;
     border: 0;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
     cursor: pointer;
     white-space: nowrap;
   }
   .bf-watchlist-v2__props { margin-top: 36px; display: grid; gap: 18px; max-width: 480px; }
-  .bf-watchlist-v2__prop { font-size: 15px; line-height: 1.55; color: var(--bf-text-muted); }
+  .bf-watchlist-v2__prop { font-size: 16px; line-height: 1.55; color: var(--bf-text-muted); }
   .bf-watchlist-v2__prop strong { color: var(--bf-text); font-weight: 600; }
   .bf-watchlist-v2__bento {
     /* 3 equal square tiles in one row. */
@@ -1580,7 +1741,7 @@
     padding: 0 32px;
   }
   @media (max-width: 880px) { .bf-youtube { grid-template-columns: 1fr; gap: 40px; } }
-  .bf-youtube__media { border-radius: 14px; overflow: hidden; border: 1px solid var(--bf-border); }
+  .bf-youtube__media { border-radius: 12px; overflow: hidden; border: 1px solid var(--bf-border); }
   .bf-youtube__media img { width: 100%; display: block; }
   .bf-youtube__h2 {
     font-size: clamp(24px, 2.6vw, 36px);
@@ -1589,7 +1750,7 @@
     font-weight: 500;
     color: var(--bf-text);
   }
-  .bf-youtube__lead { margin-top: 22px; color: var(--bf-text-muted); font-size: 17px; line-height: 1.6; max-width: 460px; }
+  .bf-youtube__lead { margin-top: 22px; color: var(--bf-text-muted); font-size: 16px; line-height: 1.6; max-width: 460px; }
   .bf-youtube__btn {
     display: inline-flex;
     align-items: center;
@@ -1598,7 +1759,7 @@
     background: #0a0a0a;
     color: #fff;
     border-radius: 999px;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
     margin-top: 32px;
   }
@@ -1619,11 +1780,18 @@
   .bf-spotlight {
     padding: var(--bf-section-pad) 24px;
   }
+  /* Spotlight is a full-bleed card, so its own top padding stacks with the
+     preceding section's bottom padding and reads as a doubled gap above the
+     card. Collapse the top padding when it directly follows a normal section so
+     the boundary keeps a single section rhythm. */
+  .bf-page .bf-section + .bf-spotlight {
+    padding-top: 0;
+  }
   .bf-spotlight__card {
     position: relative;
     width: 100%;
     margin: 0;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
     aspect-ratio: 16 / 5;
     background: #0a0a0a;
@@ -1632,7 +1800,10 @@
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
   }
   @media (max-width: 980px) {
-    .bf-spotlight__card { aspect-ratio: 4 / 5; max-height: none; }
+    /* Drop the fixed aspect-ratio below 980px — at tablet widths a 4/5 ratio
+       forced a ~1100px-tall card (huge empty band above/below the copy). Let the
+       content drive the height instead, with a sensible floor for presence. */
+    .bf-spotlight__card { aspect-ratio: auto; min-height: 420px; max-height: none; }
   }
   .bf-spotlight__bg {
     position: absolute;
@@ -1684,7 +1855,7 @@
     flex-wrap: wrap;
   }
   .bf-spotlight__author { color: rgba(255,255,255,0.95); }
-  .bf-spotlight__author-name { font-weight: 600; font-size: 15px; color: #fff; margin-bottom: 2px; }
+  .bf-spotlight__author-name { font-weight: 600; font-size: 16px; color: #fff; margin-bottom: 2px; }
   .bf-spotlight__author-title { font-size: 13px; color: rgba(255,255,255,0.62); }
   .bf-spotlight__actions { display: flex; align-items: center; gap: 10px; }
   .bf-spotlight__video-btn {
@@ -1904,7 +2075,7 @@
   padding: 6px 0;
   border-radius: 0;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: -0.005em;
   display: inline-flex;
   align-items: center;
@@ -1956,6 +2127,7 @@
   align-items: center;
   margin-top: 64px;
 }
+.bf-page .bf-community-grid .bf-community__benefits { padding-left: 48px; }
 .bf-page .bf-community__media {
   border-radius: 0;
   overflow: visible;
@@ -2012,6 +2184,7 @@
 }
 @media (max-width: 900px) {
   .bf-page .bf-community-grid { grid-template-columns: 1fr; gap: 32px; }
+  .bf-page .bf-community-grid .bf-community__benefits { padding-left: 0; }
 }
 
 /* ===== Free Watchlist v2 — copy + bento split ===== */
@@ -2137,7 +2310,7 @@
   width: 100%;
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.12);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 16px 18px;
   font-family: 'Geist', sans-serif;
   font-size: 16px;
@@ -2221,7 +2394,7 @@
 }
 .bf-page .bf-webinar__form-card {
   position: relative;
-  border-radius: 24px;
+  border-radius: 12px;
   overflow: hidden;
   padding: 32px;
   min-height: 460px;
@@ -2232,7 +2405,7 @@
   z-index: 2;
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(8px);
-  border-radius: 16px;
+  border-radius: 12px;
   padding: 28px;
   color: #0a0a0a;
 }
@@ -2261,7 +2434,7 @@
   border-radius: 12px;
   padding: 14px 16px;
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   color: #0a0a0a;
   outline: 0;
 }
@@ -2274,7 +2447,7 @@
   padding: 14px 24px;
   font-family: 'Geist', sans-serif;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
   margin-top: 4px;
 }
@@ -2302,7 +2475,7 @@
 .bf-page .bf-contact__form-card {
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 24px;
+  border-radius: 12px;
   padding: 36px;
 }
 .bf-page .bf-contact__form { display: flex; flex-direction: column; gap: 18px; }
@@ -2323,7 +2496,7 @@
   border-radius: 12px;
   padding: 14px 16px;
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   color: #0a0a0a;
   outline: 0;
   font-weight: 400;
@@ -2339,7 +2512,7 @@
   padding: 14px 28px;
   font-family: 'Geist', sans-serif;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
   align-self: flex-start;
   margin-top: 4px;
@@ -2347,7 +2520,7 @@
 .bf-page .bf-contact__success {
   padding: 24px;
   background: #f0fdf4;
-  border-radius: 16px;
+  border-radius: 12px;
   color: #166534;
 }
 .bf-page .bf-contact__success-h3 {
@@ -2358,7 +2531,7 @@
 }
 .bf-page .bf-contact__sidebar {
   position: relative;
-  border-radius: 24px;
+  border-radius: 12px;
   overflow: hidden;
   min-height: 360px;
   isolation: isolate;
@@ -2393,7 +2566,7 @@
 }
 .bf-page .bf-contact__sidebar-text {
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.92);
   margin: 0;
@@ -2411,7 +2584,7 @@
 .bf-page .bf-review-card {
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -2478,7 +2651,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 24px;
+  border-radius: 12px;
   overflow: hidden;
   background: #0a0a0a;
   box-shadow: 0 18px 40px -18px rgba(10, 10, 10, 0.25);
@@ -2492,6 +2665,12 @@
 }
 
 /* ===== Legal pages — long-form content ===== */
+/* Legal pages (terms / refund / privacy): the title hero AND the body section
+   each carry a full section pad, doubling the gap (~200px) below the headline.
+   Zero the body section's TOP pad so the gap into the copy is a single ~100px —
+   the canonical headline-to-content spacing used on the contact / company pages. */
+.bf-page .bf-section:has(.bf-legal) { padding-top: 0; }
+
 .bf-page .bf-legal {
   max-width: 720px;
   margin: 0 auto;
@@ -2548,7 +2727,7 @@
   font-family: 'Geist', sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  color: rgba(10, 10, 10, 0.7);
+  color: #0a0a0a;
 }
 
 /* ===== Winning Trades — image grid for screenshots ===== */
@@ -2561,7 +2740,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 12px;
   background: #0a0a0a;
   aspect-ratio: 1 / 1;
 }
@@ -2576,7 +2755,7 @@
 .bf-page .bf-six-grid__card {
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 18px;
+  border-radius: 12px;
   padding: 26px;
   display: flex;
   flex-direction: column;
@@ -2601,7 +2780,7 @@
 }
 .bf-page .bf-six-grid__body {
   font-family: 'Geist', sans-serif;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.55;
   color: rgba(10, 10, 10, 0.65);
   margin: 0;
@@ -2632,7 +2811,7 @@
 .bf-page .bf-module-list__item {
   background: #fff;
   border: 1px solid rgba(10, 10, 10, 0.08);
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 22px 24px;
   display: grid;
   grid-template-columns: 48px 1fr;
@@ -2663,15 +2842,16 @@
 
 /* ===== Disclaimer footer block ===== */
 .bf-page .bf-disclaimer {
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 28px 24px;
+  /* Full-width dark band (text held to ~920px via padding) so it blends the
+     dark closing block into the dark footer instead of leaving a white gap. */
+  background: #000;
+  padding: 28px max(24px, calc((100% - 920px) / 2));
   font-family: 'Geist', sans-serif;
   font-size: 13px;
   line-height: 1.6;
-  color: rgba(10, 10, 10, 0.5);
+  color: rgba(255, 255, 255, 0.42);
   text-align: center;
-  border-top: 1px solid rgba(10, 10, 10, 0.06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* ===== bf-vreel — autoplaying inline reel + click-to-open Vimeo modal.
@@ -2793,42 +2973,93 @@
   width: auto;
   max-width: 96vw;
   border: 0;
-  border-radius: 18px;
+  border-radius: 12px;
   background: #000;
   box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
 }
+/* Widescreen videos (roundtables + testimonials) — 16:9, sized off width so the
+   landscape video fills the frame with no pillarboxing. */
+.bf-vreel-modal--wide iframe {
+  aspect-ratio: 16 / 9;
+  width: min(94vw, 1200px);
+  height: auto;
+  max-width: 94vw;
+  max-height: 88vh;
+}
+/* Phones: the vertical (reel) player fills the whole screen — full width with no
+   side borders and full height, so it reads like a native phone video. */
+@media (max-width: 600px) {
+  .bf-vreel-modal:not(.bf-vreel-modal--wide) iframe {
+    width: 100vw;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    aspect-ratio: auto;
+    border-radius: 0;
+  }
+}
+/* Minimal, Apple-style close affordance: a clean frosted circle with a crisp
+   stroked ✕, higher contrast so it's easy to spot over dark video. */
 .bf-vreel-modal__close {
   position: absolute;
-  top: 18px;
-  right: 22px;
-  width: 44px;
-  height: 44px;
+  top: 20px;
+  right: 24px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: 28px;
-  line-height: 1;
+  background: rgba(28, 28, 30, 0.55);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  color: rgba(255, 255, 255, 0.92);
+  border: 0;
+  padding: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Geist', sans-serif;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  transition: background 180ms ease, transform 180ms ease, color 180ms ease;
 }
-.bf-vreel-modal__close:hover { background: rgba(255, 255, 255, 0.2); }
+.bf-vreel-modal__close svg { display: block; }
+.bf-vreel-modal__close:hover {
+  background: rgba(255, 255, 255, 0.96);
+  color: #0a0a0a;
+  transform: scale(1.06);
+}
 
 /* ===== LinkedIn-style screenshot masonry — pulled from the original /student-comments.
    CSS-columns approach: rows flow naturally with varied screenshot heights, no JS. */
 .bf-page .bf-screenshots {
-  column-count: 4;
-  column-gap: 16px;
+  column-count: 2;
+  column-gap: 20px;
   max-width: var(--bf-container, 1280px);
   margin: 0 auto;
   padding: 0 24px;
 }
-@media (max-width: 1100px) { .bf-page .bf-screenshots { column-count: 3; } }
-@media (max-width: 760px)  { .bf-page .bf-screenshots { column-count: 2; } }
-@media (max-width: 480px)  { .bf-page .bf-screenshots { column-count: 1; } }
+@media (max-width: 768px) {
+  /* Ditch CSS columns entirely on phones — a plain flex column can't compute a
+     wider-than-viewport column box, which was shoving the cards to the right.
+     Also drop the wall's own max-width / auto margins / 24px padding (it already
+     sits inside the padded .bf-container). */
+  .bf-page .bf-screenshots {
+    column-count: auto;
+    columns: auto;
+    column-gap: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .bf-page .bf-screenshots__item {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 16px;
+  }
+}
 .bf-page .bf-screenshots__item {
   display: block;
   width: 100%;
@@ -2877,6 +3108,9 @@
   .bf-hero-split__grid {
     grid-template-columns: 1fr;
     gap: 32px;
+    /* This grid already sits inside .bf-container; drop its own 24px side padding
+       on mobile so the tiles span the full container width (no double inset). */
+    padding: 0;
   }
 }
 
@@ -2895,12 +3129,21 @@
     gap: 12px;
   }
 }
+/* Phones: the 2-column bento is too cramped (overflowing quote tile), so stack
+   everything into one column — video, then quote tile, then photo. */
+@media (max-width: 560px) {
+  .bf-hero-split__bento {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+  .bf-hero-split__video { grid-row: auto; max-width: 260px; }
+}
 
 /* LEFT cell of bento — video pillar. 9:16 aspect so the Vimeo background
    iframe fills the frame with zero black border. */
 .bf-hero-split__video {
   position: relative;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   background: #0a0a0a;
   grid-row: span 2;
@@ -2940,7 +3183,7 @@
 }
 .bf-hero-split__copy .bf-hero__trust { margin-top: 28px; }
 .bf-hero-split__tile {
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
   isolation: isolate;
@@ -3023,7 +3266,9 @@
 }
 
 /* ===== Simple spotlight variant — single CTA, headline + lead together ===== */
-.bf-page .bf-spotlight__card--simple { position: relative; }
+/* Flex so the content box stretches to the card's full (aspect-ratio) height
+   instead of sitting at the top and leaving a gap below the copy. */
+.bf-page .bf-spotlight__card--simple { position: relative; display: flex; }
 .bf-page .bf-spotlight__content--simple {
   position: relative;
   z-index: 2;
@@ -3033,6 +3278,9 @@
   flex-direction: column;
   gap: 20px;
   align-items: flex-start;
+  /* Center the copy vertically so the space above the heading and below the
+     last button read even. */
+  justify-content: center;
 }
 .bf-page .bf-spotlight__h2 {
   font-size: clamp(28px, 3.4vw, 44px);
@@ -3043,7 +3291,7 @@
   margin: 0;
 }
 .bf-page .bf-spotlight__lead {
-  font-size: clamp(15px, 1.1vw, 17px);
+  font-size: 16px;
   line-height: 1.55;
   color: rgba(255, 255, 255, 0.85);
   margin: 0;
@@ -3059,7 +3307,7 @@
   border-radius: 999px;
   font-family: 'Geist', sans-serif;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: -0.005em;
   transition: transform 200ms;
   margin-top: 6px;
@@ -3146,8 +3394,151 @@
 .bf-page .bf-spotlight__card--simple .bf-spotlight__content--simple {
   max-width: var(--bf-container);
   margin: 0 auto;
-  padding-left: max(24px, calc((100% - var(--bf-container)) / 2 + 24px));
-  padding-right: 24px;
+  /* max-width + margin:auto already centers this block on the same rail as
+     .bf-container, so the padding is just the flat container gutter (32px).
+     The old calc((100% - container)/2 + 24) compounded with the centering and
+     shoved the copy rightward on viewports wider than --bf-container. */
+  padding-left: 32px;
+  padding-right: 32px;
   box-sizing: border-box;
   width: 100%;
 }
+
+/* ===== Homepage newsletter (Watchlist) — moved from scoped styles so they always load ===== */
+  /* Subtle white → off-white fade behind the section, echoing the 2026 stage. */
+  #watchlist.bf-section {
+    background: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+  }
+
+  /* ---- 50/50 split: copy + form left, visual card right ------------------ */
+  .wl-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+  }
+
+  .wl-copy {
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Match the site-standard .bf-h2 (size/weight/line-height) + .bf-lead so the
+     newsletter headline/body rhythm matches every other section. */
+  .wl-h2 {
+    margin: 0;
+    font-family: 'Geist', sans-serif;
+    font-size: clamp(24px, 2.6vw, 36px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    font-weight: 500;
+    color: var(--bf-text, #0a0a0a);
+  }
+
+  .wl-lead {
+    margin: 28px 0 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--bf-text-muted, #565656);
+  }
+
+  /* ---- Premium newsletter form (stacked + inline email row) -------------- */
+  .wl-form {
+    margin: 32px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .wl-input {
+    width: 100%;
+    background: #fff;
+    border: 1px solid rgba(10, 10, 10, 0.12);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-family: 'Geist', sans-serif;
+    font-size: 16px;
+    color: #0a0a0a;
+    outline: 0;
+    transition: border-color 200ms, box-shadow 200ms;
+  }
+  .wl-input::placeholder { color: rgba(10, 10, 10, 0.42); }
+  .wl-input:focus {
+    border-color: #0a0a0a;
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.06);
+  }
+
+  .wl-submit {
+    width: 100%;
+    background: #0a0a0a;
+    color: #fff;
+    border: 0;
+    border-radius: 999px;
+    padding: 16px 28px;
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 200ms, background-color 200ms;
+  }
+  .wl-submit:hover { transform: translateY(-1px); background: #1a1a1a; }
+
+  .wl-trust {
+    margin: 24px 0 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: rgba(10, 10, 10, 0.5);
+  }
+
+  /* ---- Right column: the past-picks screenshot floated on a grainient square
+     (the same square treatment as the YouTube CTA). --------------------------- */
+  .wl-media {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* Hug the right edge of the column so the visual touches the container's
+       right edge — mirroring the copy hugging the left edge (was centered,
+       which left an uneven gap on the right). */
+    justify-content: flex-end;
+  }
+  .wl-square {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    /* CSS gradient fallback; the animated grainient mounts over it. */
+    background: linear-gradient(135deg, #FF8308 0%, #EF4444 52%, #6B3BD5 100%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 30px 60px -28px rgba(20, 60, 120, 0.4);
+  }
+  .wl-square .bf-grainient-mount { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
+  .wl-square__picks {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 88%;
+    border-radius: 8px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+  }
+  /* Image variant: a single generated mockup fills the square (no grainient). */
+  .wl-square--image { background: none; }
+  .wl-square__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---- Responsive: stack to one column, form full-width ------------------ */
+  @media (max-width: 900px) {
+    .wl-split { grid-template-columns: 1fr; gap: 40px; }
+    .wl-copy { max-width: none; }
+    .wl-square { margin: 0 auto; }
+  }
