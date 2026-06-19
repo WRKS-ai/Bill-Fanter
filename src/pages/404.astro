@@ -16,7 +16,7 @@ import Footer from '../components/Footer.astro';
   <ReactReady client:only="react" />
   <main class="bf-page" data-cardnav-host>
     <section class="bf-section bf-hero bf-404-hero">
-      <div class="bf-404-hero__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+      <div class="bf-404-hero__dots"></div>
       <div class="bf-container">
         <div class="bf-hero__inner">
           <span class="bf-eyebrow bf-404-hero__code">Error 404</span>
@@ -48,7 +48,14 @@ import Footer from '../components/Footer.astro';
   @media (max-width: 767px) {
     .bf-404-hero { padding-top: 96px; padding-bottom: 96px; }
   }
-  .bf-404-hero__dots { position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+  /* Static grey dots (no interactive WebGL on an error page) — matches the
+     homepage dot-grid at rest, no blue cursor highlight. */
+  .bf-404-hero__dots {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none;
+    background-image: radial-gradient(circle, #454545 1.1px, transparent 1.6px);
+    background-size: 12px 12px;
+    background-position: center;
+  }
   .bf-404-hero .bf-container { position: relative; z-index: 1; }
   .bf-404-hero :global(.bf-h1),
   .bf-404-hero :global(.bf-hero__lead) { color: #fff; }
@@ -57,6 +64,7 @@ import Footer from '../components/Footer.astro';
     margin-top: 28px;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
   }
 </style>

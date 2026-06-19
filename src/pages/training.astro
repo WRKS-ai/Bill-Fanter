@@ -28,7 +28,11 @@ import Reviews from '../components/sections/Reviews.astro';
   /* Define here too so the Reviews .bf-container constrains on this non-.bf-page page. */
   --bf-container:1440px;
 }
-body{background:var(--bg);color:var(--t0)}
+/* !important overrides BaseLayout's scoped body reset (#fff), which otherwise wins
+   on specificity and turns this dark VSL page white (hiding all the white text). */
+body{background:var(--bg) !important;color:var(--t0)}
+/* Reviews on this funnel page: pull up close to the video, 100px breathing room below. */
+.vsl-reviews .bf-reviews{padding-top:0;padding-bottom:100px}
 
 /* ── Layout ─────────────────────────────────────────────── */
 .vsl-page{min-height:100vh;display:flex;flex-direction:column}
@@ -175,7 +179,9 @@ body.vsl-locked{overflow:hidden}
 </div><!-- /.vsl-page (hero fills the first screen) -->
 
 <!-- Primary social-proof review section, shown below the VSL + CTA. -->
+<div class="vsl-reviews">
 <Reviews showCta={false} />
+</div>
 
 <!-- ══ MODAL ═══════════════════════════════════════════════════ -->
 <div class="vsl-modal" id="vsl-modal" role="dialog" aria-modal="true" aria-labelledby="vsl-modal-title">
