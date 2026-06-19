@@ -4,6 +4,11 @@
 // grainient fill is mounted by the [data-grainient] island script, and the
 // .bf-vreel click-to-expand is wired by BaseLayout's global Vimeo handler.
 const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>';
+// Density srcset: this photo tile renders small here, so serve a 720px variant
+// to DPR-1 screens and the full-res original only to retina (the original file
+// stays the hero on other pages, untouched).
+const dsrc = (p) => `${p.replace(/\.webp$/, '-720.webp')} 1x, ${p} 2x`;
+const photoSrc = '/assets/664a5b263659c7265be280ad/664a67e595a23dde11b862af_home%20images-5.webp';
 // Copy is configurable so the same media bento can be reused with different copy
 // (e.g. the masterclass page). Defaults reproduce the homepage version. Pass
 // eyebrow={null} to drop the eyebrow.
@@ -63,7 +68,7 @@ const {
             </div>
           </div>
           <div class="bf-hero-split__tile bf-hero-split__tile--photo">
-            <img src="/assets/664a5b263659c7265be280ad/664a67e595a23dde11b862af_home%20images-5.webp" alt="Bill Fanter at his trading desk" />
+            <img src={photoSrc} srcset={dsrc(photoSrc)} alt="Bill Fanter at his trading desk" />
           </div>
         </div>
       </div>

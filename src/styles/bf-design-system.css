@@ -3197,10 +3197,14 @@
   text-align: inherit;
 }
 .bf-hero-split__copy .bf-hero__cta { margin-top: 32px; justify-content: flex-start; }
+.bf-hero-split__copy .bf-hero__trust { margin-top: 28px; }
+/* On mobile this copy column is center-aligned, so the trust row (rating +
+   count) should center to match the heading / lead / button above it. The
+   homepage hero proper stays left-aligned and is untouched. */
 @media (max-width: 980px) {
   .bf-hero-split__copy .bf-hero__cta { justify-content: center; }
+  .bf-hero-split__copy .bf-hero__trust { justify-content: center; align-self: center; }
 }
-.bf-hero-split__copy .bf-hero__trust { margin-top: 28px; }
 .bf-hero-split__tile {
   border-radius: 12px;
   overflow: hidden;

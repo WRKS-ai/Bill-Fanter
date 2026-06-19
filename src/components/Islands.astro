@@ -28,28 +28,26 @@
 
   /* React Bits GridDistortion — WebGL distorted abstract image. Mounts on
      [data-griddistortion]; image source comes from data-image. */
-  const mountGridDistortion = () => {
+  const mountGridDistortionEl = (el) => {
     // Phones: skip the three.js WebGL distortion (barely perceptible, CPU-heavy)
     // and drop the source image in as a static background instead.
     const phone = window.matchMedia('(max-width: 767px)').matches;
-    for (const el of document.querySelectorAll('[data-griddistortion]')) {
-      if (el.dataset.gdMounted === '1') continue;
-      el.dataset.gdMounted = '1';
-      if (phone || !GridDistortion) {
-        if (el.dataset.image) {
-          el.style.backgroundImage = `url("${el.dataset.image}")`;
-          el.style.backgroundSize = 'cover';
-          el.style.backgroundPosition = 'center';
-        }
-        continue;
+    if (el.dataset.gdMounted === '1') return;
+    el.dataset.gdMounted = '1';
+    if (phone || !GridDistortion) {
+      if (el.dataset.image) {
+        el.style.backgroundImage = `url("${el.dataset.image}")`;
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
       }
-      try {
-        createRoot(el).render(React.createElement(GridDistortion, {
-          imageSrc: el.dataset.image,
-          grid: 15, mouse: 0.12, strength: 0.15, relaxation: 0.9,
-        }));
-      } catch (e) { console.error('[bf-griddistortion] render error', e); }
+      return;
     }
+    try {
+      createRoot(el).render(React.createElement(GridDistortion, {
+        imageSrc: el.dataset.image,
+        grid: 15, mouse: 0.12, strength: 0.15, relaxation: 0.9,
+      }));
+    } catch (e) { console.error('[bf-griddistortion] render error', e); }
   };
 
   /* React Bits CardNav — the site nav. Content maps the real nav into three
@@ -144,31 +142,47 @@
   /* Sandbox-tuned Grainient props — softer warp + lower speed than BaseLayout's
      default. The dataset.gMounted guard means whichever mount runs first wins;
      the other no-ops. */
-  const mountGrainients = async () => {
-    const targets = document.querySelectorAll('[data-grainient]');
-    for (const el of targets) {
-      if (el.dataset.gMounted === '1') continue;
-      // Skip hidden mounts (e.g. mobile-disabled via display:none). Leaving the
-      // guard unset + not awaiting dimensions avoids hanging the loop on a
-      // 0-size element (which would block every later grainient from mounting).
-      const r0 = el.getBoundingClientRect();
-      if (r0.width === 0 || r0.height === 0) continue;
-      el.dataset.gMounted = '1';
-      await waitForDimensions(el);
-      try {
-        createRoot(el).render(React.createElement(Grainient, {
-          color1: el.dataset.color1 || '#FF8308',
-          color2: el.dataset.color2 || '#EF4444',
-          color3: el.dataset.color3 || '#6B3BD5',
-          timeSpeed: 0.18, warpStrength: 1, warpFrequency: 4, warpAmplitude: 60,
-          blendSoftness: 0.08, noiseScale: 1.6, grainAmount: 0.08,
-          contrast: 1.4, saturation: 1.05, zoom: 0.85,
-        }));
-      } catch (e) { console.error('[bf-grainient] render error for', el, e); }
-    }
+  const mountGrainientEl = async (el) => {
+    if (el.dataset.gMounted === '1') return;
+    // Skip hidden mounts (e.g. mobile-disabled via display:none).
+    const r0 = el.getBoundingClientRect();
+    if (r0.width === 0 || r0.height === 0) return;
+    el.dataset.gMounted = '1';
+    await waitForDimensions(el);
+    try {
+      createRoot(el).render(React.createElement(Grainient, {
+        color1: el.dataset.color1 || '#FF8308',
+        color2: el.dataset.color2 || '#EF4444',
+        color3: el.dataset.color3 || '#6B3BD5',
+        timeSpeed: 0.18, warpStrength: 1, warpFrequency: 4, warpAmplitude: 60,
+        blendSoftness: 0.08, noiseScale: 1.6, grainAmount: 0.08,
+        contrast: 1.4, saturation: 1.05, zoom: 0.85,
+      }));
+    } catch (e) { console.error('[bf-grainient] render error for', el, e); }
   };
 
-  const runMounts = () => { mountGrainients(); mountBenefits(); mountCardNav(); mountGridDistortion(); };
+  // Lazy-mount: only spin up a WebGL canvas (grainient / GridDistortion) when its
+  // host scrolls within 300px of the viewport. Mounting them all on load was the
+  // main Total-Blocking-Time driver; above-the-fold canvases still mount right
+  // away (already intersecting). Falls back to eager mount with no IO support.
+  const lazyMount = (selector, mountOne) => {
+    const targets = document.querySelectorAll(selector);
+    if (!targets.length) return;
+    if (!('IntersectionObserver' in window)) { targets.forEach(mountOne); return; }
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { obs.unobserve(e.target); mountOne(e.target); }
+      });
+    }, { rootMargin: '300px 0px' });
+    targets.forEach((el) => io.observe(el));
+  };
+
+  const runMounts = () => {
+    lazyMount('[data-grainient]', mountGrainientEl);
+    mountBenefits();
+    mountCardNav();
+    lazyMount('[data-griddistortion]', mountGridDistortionEl);
+  };
 
   // The .jsx components carry @vitejs/plugin-react's preamble guard. In dev we
   // install the Fast-Refresh preamble OURSELVES rather than polling for the flag

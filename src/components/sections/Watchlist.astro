@@ -21,6 +21,9 @@ const tickerB = [
   ['AMZN', '+0.9%', 'up'], ['GOOGL', '+0.7%', 'up'], ['NFLX', '-1.1%', 'down'], ['AVGO', '+1.4%', 'up'],
   ['COIN', '+3.2%', 'up'], ['PLTR', '+2.1%', 'up'], ['SMCI', '-2.3%', 'down'], ['ARM', '+1.6%', 'up'],
 ];
+// Density srcset: serve a 720px variant to DPR-1 screens, full-res to retina.
+const lockedSrc = '/assets/664a5b263659c7265be280ad/bf-watchlist-locked.webp';
+const lockedSrcset = `${lockedSrc.replace(/\.webp$/, '-720.webp')} 1x, ${lockedSrc} 2x`;
 ---
 <section class="bf-section" id="watchlist">
   <div class="bf-container">
@@ -46,7 +49,7 @@ const tickerB = [
 
       <div class="wl-media">
         <div class="wl-square wl-square--image wl-square--cutout">
-          <img class="wl-square__img" src="/assets/664a5b263659c7265be280ad/bf-watchlist-locked.webp" alt="Preview of the weekly stock options watchlist, with the full list locked" />
+          <img class="wl-square__img" src={lockedSrc} srcset={lockedSrcset} alt="Preview of the weekly stock options watchlist, with the full list locked" />
           <div class="fw-ticker" aria-hidden="true">
             <div class="fw-ticker__row">
               <div class="fw-ticker__track fw-ticker__track--ltr">

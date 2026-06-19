@@ -257,69 +257,83 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
           check();
         });
 
-      const mountAllGrainients = async () => {
-        const targets = document.querySelectorAll('[data-grainient]');
-        if (!targets.length) return;
-        for (const el of targets) {
-          if (el.dataset.gMounted === '1') continue;
-          // Skip hidden mounts (mobile-disabled via display:none) so a 0-size
-          // element can't hang the loop and block every later grainient.
-          const r0 = el.getBoundingClientRect();
-          if (r0.width === 0 || r0.height === 0) continue;
-          el.dataset.gMounted = '1';
-          await waitForDimensions(el);
-          const props = {
-            color1: el.dataset.color1 || '#FF8308',
-            color2: el.dataset.color2 || '#EF4444',
-            color3: el.dataset.color3 || '#6B3BD5',
-            timeSpeed: 0.65,
-            warpStrength: 2.4,
-            warpFrequency: 1.1,
-            warpAmplitude: 130,
-            blendSoftness: 0.38,
-            noiseScale: 1.6,
-            grainAmount: 0.12,
-            contrast: 1.28,
-            saturation: 1.18,
-            zoom: 0.75,
-          };
-          try {
-            createRoot(el).render(React.createElement(Grainient, props));
-          } catch (e) { console.error('[bf-grainient] render error', e); }
-        }
+      // Mount ONE grainient (a WebGL canvas: context + shader compile). Heavy,
+      // so it's deferred until the host is near the viewport (see lazyMount).
+      const mountGrainientEl = async (el) => {
+        if (el.dataset.gMounted === '1') return;
+        // Skip hidden mounts (mobile-disabled via display:none).
+        const r0 = el.getBoundingClientRect();
+        if (r0.width === 0 || r0.height === 0) return;
+        el.dataset.gMounted = '1';
+        await waitForDimensions(el);
+        const props = {
+          color1: el.dataset.color1 || '#FF8308',
+          color2: el.dataset.color2 || '#EF4444',
+          color3: el.dataset.color3 || '#6B3BD5',
+          timeSpeed: 0.65,
+          warpStrength: 2.4,
+          warpFrequency: 1.1,
+          warpAmplitude: 130,
+          blendSoftness: 0.38,
+          noiseScale: 1.6,
+          grainAmount: 0.12,
+          contrast: 1.28,
+          saturation: 1.18,
+          zoom: 0.75,
+        };
+        try {
+          createRoot(el).render(React.createElement(Grainient, props));
+        } catch (e) { console.error('[bf-grainient] render error', e); }
       };
 
-      const mountAllDotGrids = async () => {
+      const mountDotGridEl = async (el) => {
         if (!DotGrid) return; // skipped on phones; static CSS dots show instead
-        const targets = document.querySelectorAll('[data-dotgrid]');
-        if (!targets.length) return;
-        for (const el of targets) {
-          if (el.dataset.dgMounted === '1') continue;
-          el.dataset.dgMounted = '1';
-          await waitForDimensions(el);
-          const num = (k, d) => {
-            const v = el.dataset[k];
-            return v != null && v !== '' ? Number(v) : d;
-          };
-          const str = (k, d) => el.dataset[k] || d;
-          const props = {
-            dotSize: num('dotSize', 4),
-            gap: num('gap', 18),
-            baseColor: str('baseColor', '#2a3441'),
-            activeColor: str('activeColor', '#75B5FF'),
-            proximity: num('proximity', 140),
-            shockRadius: num('shockRadius', 220),
-            shockStrength: num('shockStrength', 5),
-            resistance: num('resistance', 750),
-            returnDuration: num('returnDuration', 1.5),
-          };
-          try {
-            createRoot(el).render(React.createElement(DotGrid, props));
-          } catch (e) { console.error('[bf-dotgrid] render error', e); }
-        }
+        if (el.dataset.dgMounted === '1') return;
+        el.dataset.dgMounted = '1';
+        await waitForDimensions(el);
+        const num = (k, d) => {
+          const v = el.dataset[k];
+          return v != null && v !== '' ? Number(v) : d;
+        };
+        const str = (k, d) => el.dataset[k] || d;
+        const props = {
+          dotSize: num('dotSize', 4),
+          gap: num('gap', 18),
+          baseColor: str('baseColor', '#2a3441'),
+          activeColor: str('activeColor', '#75B5FF'),
+          proximity: num('proximity', 140),
+          shockRadius: num('shockRadius', 220),
+          shockStrength: num('shockStrength', 5),
+          resistance: num('resistance', 750),
+          returnDuration: num('returnDuration', 1.5),
+        };
+        try {
+          createRoot(el).render(React.createElement(DotGrid, props));
+        } catch (e) { console.error('[bf-dotgrid] render error', e); }
       };
 
-      const mountAll = () => { mountAllGrainients(); mountAllDotGrids(); };
+      // Lazy-mount: only spin up a WebGL canvas when its host scrolls within
+      // 300px of the viewport. Above-the-fold canvases mount right away (already
+      // intersecting); below-the-fold ones wait. Mounting every grainient on
+      // DOMContentLoaded was the main Total-Blocking-Time driver on long pages
+      // (each canvas = a synchronous context + shader compile). Falls back to
+      // eager mount where IntersectionObserver is unavailable.
+      const lazyMount = (selector, mountOne) => {
+        const targets = document.querySelectorAll(selector);
+        if (!targets.length) return;
+        if (!('IntersectionObserver' in window)) { targets.forEach(mountOne); return; }
+        const io = new IntersectionObserver((entries, obs) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) { obs.unobserve(e.target); mountOne(e.target); }
+          });
+        }, { rootMargin: '300px 0px' });
+        targets.forEach((el) => io.observe(el));
+      };
+
+      const mountAll = () => {
+        lazyMount('[data-grainient]', mountGrainientEl);
+        if (DotGrid) lazyMount('[data-dotgrid]', mountDotGridEl);
+      };
 
       // The .jsx components carry @vitejs/plugin-react's preamble guard. In dev we
       // install the Fast-Refresh preamble OURSELVES rather than polling for the

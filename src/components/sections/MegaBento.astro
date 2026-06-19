@@ -5,6 +5,13 @@
 // arrow, and a visual (real photo/screenshot with a dark scrim, or a tasteful
 // gradient + stroked SVG icon). Self-contained: all styles scoped below.
 const ASSET = '/assets/664a5b263659c7265be280ad';
+// These tile visuals are decorative (aria-hidden, behind a scrim/grain) and never
+// render larger than ~600px here, yet the shared source files are ~1.4k wide for
+// their hero use on other pages. Serve a 720px variant to DPR-1 screens and the
+// full-res original only to retina screens (density descriptors) — banks the
+// image bytes without softening the heroes (separate <img> tags) elsewhere.
+const v720 = (p) => p.replace(/\.webp$/, '-720.webp');
+const dsrc = (p) => `${v720(p)} 1x, ${p} 2x`;
 
 // Tiles, in 3 rows on a 6-col grid (`span` = column width class):
 //   Row 1  Masterclass (w4) + Community (w2)
@@ -128,7 +135,7 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
           style={t.kind === 'gradient' ? `--tile-grad:${t.grad}` : undefined}
         >
           {t.kind === 'image' && (
-            <img class="bf-mega__img" src={t.img} alt="" aria-hidden="true" loading="lazy" />
+            <img class="bf-mega__img" src={t.img} srcset={dsrc(t.img)} alt="" aria-hidden="true" loading="lazy" />
           )}
           {t.kind === 'image' && <span class="bf-mega__scrim" aria-hidden="true"></span>}
 
@@ -140,10 +147,10 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
           )}
           {t.kind === 'gradient' && (t.video || t.device) && <span class="bf-mega__scrim" aria-hidden="true"></span>}
           {t.kind === 'gradient' && t.device && (
-            <img class="bf-mega__device" src={t.device} alt="" aria-hidden="true" loading="lazy" />
+            <img class="bf-mega__device" src={t.device} srcset={dsrc(t.device)} alt="" aria-hidden="true" loading="lazy" />
           )}
           {t.kind === 'gradient' && t.pick && (
-            <img class="bf-mega__pick" src={t.pick} alt="" aria-hidden="true" loading="lazy" />
+            <img class="bf-mega__pick" src={t.pick} srcset={dsrc(t.pick)} alt="" aria-hidden="true" loading="lazy" />
           )}
           {t.kind === 'gradient' && t.icon && (
             <span class="bf-mega__icon" aria-hidden="true">
@@ -356,13 +363,32 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
   }
   .bf-mega__more { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #fff; text-decoration: none; opacity: .9; transition: opacity .2s, gap .2s; }
   .bf-mega__more:hover { opacity: 1; gap: 10px; }
-  .bf-mega__dots { display: flex; gap: 8px; }
-  /* <span> indicators (not <button>) so they're never tap targets; JS upgrades
-     them to clickable buttons on desktop only. */
-  .bf-mega__dot { display: block; width: 8px; height: 8px; border-radius: 50%; background: rgba(255, 255, 255, 0.28); transition: background .2s, transform .2s; }
-  .bf-mega__dot[role="button"] { cursor: pointer; }
-  .bf-mega__dot[role="button"]:hover { background: rgba(255, 255, 255, 0.5); }
-  .bf-mega__dot.is-active { background: #fff; transform: scale(1.15); }
+  .bf-mega__dots { display: flex; gap: 8px; align-items: center; }
+  /* <span> indicators (not <button>) so they're never tap targets on mobile; JS
+     upgrades them to clickable buttons on desktop only. */
+  .bf-mega__dot { display: block; width: 8px; height: 8px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.28); transition: background-color .2s, transform .2s; }
+  .bf-mega__dot.is-active { background-color: #fff; transform: scale(1.15); }
+  /* Desktop interactive dots need a 24px+ tap target to pass Lighthouse's
+     touch-target audit. Grow the element box to 24px (what Lighthouse measures)
+     and draw the visible 8px dot with a centered pseudo, so the look is
+     unchanged but the hit area is compliant. */
+  .bf-mega__dot[role="button"] {
+    cursor: pointer;
+    width: 24px; height: 24px;
+    border-radius: 0;
+    background-color: transparent;
+    transform: none;
+    position: relative;
+  }
+  .bf-mega__dot[role="button"]::after {
+    content: '';
+    position: absolute; inset: 0; margin: auto;
+    width: 8px; height: 8px; border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.28);
+    transition: background-color .2s, transform .2s;
+  }
+  .bf-mega__dot[role="button"]:hover::after { background-color: rgba(255, 255, 255, 0.5); }
+  .bf-mega__dot[role="button"].is-active::after { background-color: #fff; transform: scale(1.15); }
 
   /* On mobile, drop the animated grainients (the CSS gradient fallback shows
      instead) so phones aren't running extra WebGL canvases — lighter + smoother

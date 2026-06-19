@@ -162,20 +162,45 @@ const reviews = [
   .bf-closing__dots {
     display: flex;
     gap: 8px;
+    align-items: center;
   }
-  /* <span> indicators (not <button>) so they're never tap targets; JS upgrades
-     them to clickable buttons on desktop only. */
+  /* <span> indicators (not <button>) so they're never tap targets on mobile; JS
+     upgrades them to clickable buttons on desktop only. */
   .bf-closing__dot {
     display: block;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.28);
-    transition: background 0.2s ease, transform 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.28);
+    transition: background-color 0.2s ease, transform 0.2s ease;
   }
-  .bf-closing__dot[role="button"] { cursor: pointer; }
-  .bf-closing__dot[role="button"]:hover { background: rgba(255, 255, 255, 0.5); }
-  .bf-closing__dot.is-active { background: #fff; transform: scale(1.15); }
+  .bf-closing__dot.is-active { background-color: #fff; transform: scale(1.15); }
+  /* Desktop interactive dots need a 24px+ tap target to pass Lighthouse's
+     touch-target audit. Grow the element box to 24px (what Lighthouse measures)
+     and draw the visible 8px dot with a centered pseudo, so the look is
+     unchanged but the hit area is compliant. */
+  .bf-closing__dot[role="button"] {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    border-radius: 0;
+    background-color: transparent;
+    transform: none;
+    position: relative;
+  }
+  .bf-closing__dot[role="button"]::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.28);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .bf-closing__dot[role="button"]:hover::after { background-color: rgba(255, 255, 255, 0.5); }
+  .bf-closing__dot[role="button"].is-active::after { background-color: #fff; transform: scale(1.15); }
 
   /* CTA tile: a few relevant glassy pills side by side over the blue grainient. */
   .bf-closing__cta-pills {

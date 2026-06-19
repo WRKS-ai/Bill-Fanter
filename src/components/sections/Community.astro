@@ -10,6 +10,9 @@ const benefits = [
   { num: '04', title: 'Trade in a focused community', body: 'Share setups, wins, and lessons with traders working the same strategies.' },
   { num: '05', title: 'Reach Bill directly', body: 'Ask questions and get answers straight from Bill.' },
 ];
+// Density srcset: serve a 720px variant to DPR-1 screens, full-res to retina.
+const ssSrc = '/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.webp';
+const ssSrcset = `${ssSrc.replace(/\.webp$/, '-720.webp')} 1x, ${ssSrc} 2x`;
 // CTA target + label default to the community join; pages that reuse this block
 // can point it elsewhere (e.g. the masterclass page routes its CTA to #pricing
 // with a "Reserve Your Seat" label, since the community is part of that offer).
@@ -28,7 +31,7 @@ const {
     </div>
     <div class="bf-community-grid">
       <div class="bf-community__media">
-        <img src="/assets/664a5b263659c7265be280ad/68540f8f0903fae1504f6a44_SS.webp" alt="Bill Fanter's Discord community" />
+        <img src={ssSrc} srcset={ssSrcset} alt="Bill Fanter's Discord community" />
       </div>
       <div class="bf-community__benefits">
         <div data-benefits-list style="display:contents">
