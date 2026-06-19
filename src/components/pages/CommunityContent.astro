@@ -47,24 +47,12 @@ const reviews = [
     name: 'Clevumbinnati', initial: 'C',
   },
   {
-    quote: "I made 15% profit in just 3 days thanks to Bill's clear trade alerts and support.",
-    name: 'Jamie', initial: 'J',
-  },
-  {
     quote: "It's not just about the money. It's about learning the skill and controlling emotions. Bill's community made that possible for me.",
     name: 'Dana', initial: 'D',
   },
   {
-    quote: "It was another great day trading with you and the crew. All of these were opened last week during our morning calls. Closed them today for some nice returns. 86% win rate for the year at nearly 100 trades. Before your class and joining our morning calls, I had a 48% rate with options trading. Thanks again, it's all credit to you.",
-    name: 'Scott McDowell', initial: 'S',
-  },
-  {
-    quote: "Bill Fanter, I can only confirm what others are saying in the Discord. This trading community is incredibly powerful for learning a skill that's become a real passion for me. I've only had one red day in June, and yesterday was another banger.",
+    quote: "Bill Fanter, I can only confirm what others are saying in the Discord. This trading community is incredibly powerful for learning a skill that's become a real passion for me.",
     name: 'Stijn Ceelen', initial: 'S',
-  },
-  {
-    quote: "Just wanted to say your discord is awesome ive had success in other servers and built a skill but your style is exactly what I needed. This week I followed a few of your trades but also charted and leveraged your approach and entered/exited with more confidence than I had prior. I never thought I would have close to a $10k week but this week I accomplished that. Just wanted to say thank you for what you do, it means more to me and my family than you will ever know.",
-    name: 'Landon Stanfield', initial: 'L',
   },
   {
     quote: "Great community that is always willing to help one another out. I love that Bill is constantly interacting with the members and answering questions!",
@@ -89,8 +77,8 @@ const reviewShots = [
 // rows match the homepage rhythm and feed the AnimatedList island.
 const memberBenefits = [
   { num: '01', title: 'Instant Discord access connect and learn daily', body: 'Join a community of like-minded individuals who are there to educate, support, and help you succeed from the start.' },
-  { num: '02', title: 'Live buy/sell signals with an 80%+ win rate', body: 'Get live buy/sell signals with an 80%+ daily win rate from professional market analysts.' },
-  { num: '03', title: 'Advanced AI-driven trade alerts', body: 'Learn how to use advanced technology for smarter, faster trading decisions.' },
+  { num: '02', title: 'Live buy and sell signals', body: 'Get live buy and sell signals from professional market analysts as setups form.' },
+  { num: '03', title: 'AI trade signals', body: 'Use the community AI signals to spot setups faster, alongside the live alerts from Bill and his analysts.' },
   { num: '04', title: 'One-on-one coaching options', body: 'Go deeper with personal coaching tailored to where you are in your trading journey.' },
   { num: '05', title: 'Access to exclusive trading tools and layouts', body: 'Trade with the same tools, layouts, and daily market intel the pros use.' },
   { num: '06', title: 'Monthly giveaways and member-only events', body: 'Stay engaged with member-only events and monthly giveaways for the community.' },
@@ -140,7 +128,7 @@ const tickerB = [
     <div class="bf-hero__inner">
       <div class="bf-hero__eyebrow"><span class="bf-eyebrow">Trades you can bank on, every day!</span></div>
       <h1 class="bf-h1 bf-hero__h1">Trade options every day with Bill and a community of 1,000+ serious traders</h1>
-      <p class="bf-lead bf-hero__lead">Get live trade alerts, AI-built signals, and daily mentorship from Bill Fanter, a former banker with 35+ years in the markets. Trade alongside 1,000+ members who share setups, manage risk, and sharpen their options trading every day.</p>
+      <p class="bf-lead bf-hero__lead">Get live trade alerts, daily market analysis, and mentorship from Bill Fanter, a former banker with 35+ years in the markets. Trade alongside 1,000+ members who share setups, manage risk, and sharpen their options trading every day.</p>
       <div class="bf-hero__cta">
         <a class="bf-btn bf-btn--primary is-on-dark" href={joinUrl} target="_blank" rel="noopener" data-pricing-modal>Join the community now</a>
       </div>
@@ -161,7 +149,7 @@ const tickerB = [
     <div class="bf-comm-testi-wrap">
       <article class="bf-comm-testi">
         <button class="bf-comm-testi__thumb" type="button" data-bf-vimeo="1114053984" data-bf-wide aria-label="Play testimonial video">
-          <img src="/assets/664a5b263659c7265be280ad/664a67e526974fa9873cf4b0_home%20images-6.webp" loading="lazy" alt="Community testimonial video cover" />
+          <img src="/assets/664a5b263659c7265be280ad/664a67e526974fa9873cf4b0_home%20images-6.webp" fetchpriority="high" alt="Community testimonial video cover" />
           <span class="bf-comm-testi__play" aria-hidden="true">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
           </span>
@@ -259,12 +247,12 @@ const tickerB = [
     <div class="bf-howit">
       <div class="bf-howit__step">
         <div class="bf-howit__copy">
-          <h3 class="bf-h3 bf-howit__title">Learn from live trade alerts and AI signals</h3>
+          <h3 class="bf-h3 bf-howit__title">Learn from live trade alerts and daily analysis</h3>
           <p class="bf-body bf-howit__body">Every morning, Bill and his analysts share what they are watching and when they plan to buy or sell.</p>
         </div>
         <div class="bf-howit__media">
           <div class="bf-grainient-mount" data-grainient="howit-1" data-color1="#FF8308" data-color2="#EF4444" data-color3="#6B3BD5"></div>
-          <img src="/assets/664a5b263659c7265be280ad/68554a2036b038d602bb26ec_Learn-from-Real-Time-Trade-Alerts-and-AI-Signals-(3).png" alt="Learn from Real-Time Trade Alerts and AI Signals" loading="lazy" />
+          <img src="/assets/664a5b263659c7265be280ad/68554a2036b038d602bb26ec_Learn-from-Real-Time-Trade-Alerts-and-AI-Signals-(3).png" alt="Bill Fanter's live trade alerts inside the community" loading="lazy" />
         </div>
       </div>
       <div class="bf-howit__step">

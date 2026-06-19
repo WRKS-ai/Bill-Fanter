@@ -35,8 +35,8 @@ const {
   data-wf-element-id={wfElementId}
   data-turnstile-sitekey={turnstileSitekey}
 >
-  <input class="bf-subform__input" maxlength="256" name={nameField} data-name={nameDataName} placeholder="Name" type="text" required={nameRequired} />
-  <input class="bf-subform__input" maxlength="256" name={emailField} data-name={emailDataName} placeholder="Email" type="email" required />
+  <input class="bf-subform__input" maxlength="256" name={nameField} data-name={nameDataName} placeholder="Name" aria-label="Name" type="text" required={nameRequired} />
+  <input class="bf-subform__input" maxlength="256" name={emailField} data-name={emailDataName} placeholder="Email" aria-label="Email" type="email" required />
   <input class="bf-subform__submit" type="submit" data-wait={submitWait} value={submitLabel} />
 </form>
 

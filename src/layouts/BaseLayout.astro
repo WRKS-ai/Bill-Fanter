@@ -2,6 +2,8 @@
 import headBoilerplate from './_head-boilerplate.html?raw';
 import footerBoilerplate from './_footer-boilerplate.html?raw';
 import designSystemCSS from '../styles/bf-design-system.css?raw';
+import { SITE } from '../data/site';
+import { entityGraph, breadcrumbList } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -9,17 +11,35 @@ interface Props {
   ogImage?: string;
   wfPageId: string;
   extraHeadHtml?: string;
+  /** Keep this page out of the search index (funnel / confirmation pages). */
+  noindex?: boolean;
+  /** Open Graph type. Defaults to 'website'. */
+  ogType?: string;
+  /** Per-page JSON-LD node(s) merged into the sitewide @graph (Course, FAQPage, etc). */
+  jsonLd?: object | object[];
 }
 
 const {
   title,
   description,
-  ogImage = '/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp',
+  ogImage = SITE.ogImage,
   wfPageId,
   extraHeadHtml,
+  noindex = false,
+  ogType = 'website',
+  jsonLd,
 } = Astro.props;
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href.replace(/\/$/, '') || (Astro.site ?? Astro.url.origin).toString().replace(/\/$/, '');
+const ogImageAbs = /^https?:\/\//i.test(ogImage) ? ogImage : SITE.url.replace(/\/$/, '') + ogImage;
+
+// Build the JSON-LD graph: sitewide entities + auto breadcrumb + any per-page
+// nodes the page passed in. Serialized once into a single script tag.
+const crumb = breadcrumbList(Astro.url.pathname);
+const pageNodes = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const graph = [...entityGraph(), ...(crumb ? [crumb] : []), ...pageNodes];
+const jsonLdString = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Great+Vibes&display=swap';
 ---
 <!DOCTYPE html>
 <html
@@ -33,19 +53,31 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex
+      ? <meta name="robots" content="noindex, follow" />
+      : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
     <link rel="canonical" href={canonicalUrl} />
+    {SITE.verification.google && <meta name="google-site-verification" content={SITE.verification.google} />}
+    {SITE.verification.bing && <meta name="msvalidate.01" content={SITE.verification.bing} />}
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImageAbs} />
+    <meta property="og:image:alt" content={title} />
+    <meta property="og:type" content={ogType} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageAbs} />
     <meta name="twitter:card" content="summary_large_image" />
+    <Fragment set:html={`<script type="application/ld+json">${jsonLdString}</script>`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500&family=Great+Vibes&display=swap" />
+    {/* Load fonts without blocking first paint: apply as print, swap to all on load. */}
+    <link rel="stylesheet" href={fontHref} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={fontHref} /></noscript>
     <style>
       *, *::before, *::after { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
@@ -60,12 +92,26 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
       img, svg, video { display: block; max-width: 100%; }
       a { color: inherit; text-decoration: none; }
       button, input, textarea, select { font: inherit; color: inherit; }
+      .bf-skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        z-index: 100000;
+        padding: 12px 18px;
+        background: #0a0a0a;
+        color: #fff;
+        font-weight: 600;
+        border-radius: 0 0 12px 0;
+      }
+      .bf-skip-link:focus { left: 0; }
     </style>
     <Fragment set:html={headBoilerplate} />
     {extraHeadHtml && <Fragment set:html={extraHeadHtml} />}
     <style set:html={designSystemCSS}></style>
   </head>
   <body>
+    <a href="#bf-main" class="bf-skip-link">Skip to content</a>
+    <span id="bf-main" tabindex="-1"></span>
     <slot />
 
     <!-- bf-vreel modal — Vimeo iframe activated when a .bf-vreel button is clicked.

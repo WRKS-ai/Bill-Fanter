@@ -6,12 +6,17 @@ import ReactReady from '../../components/ReactReady.jsx';
 import Islands from '../../components/Islands.astro';
 import Footer from '../../components/Footer.astro';
 import MasterclassContent from '../../components/pages/MasterclassContent.astro';
+import { MASTERCLASS_FAQS, MASTERCLASS_COURSE } from '../../data/masterclass';
+import { courseSchema, faqSchema } from '../../lib/seo';
+
+const pageSchema = [courseSchema(MASTERCLASS_COURSE), faqSchema(MASTERCLASS_FAQS)];
 ---
 <BaseLayout
   title="Options Trading Masterclass: 6 Live Sessions with Bill Fanter"
   description="Learn options trading in 6 live sessions with Bill Fanter, a trader with 35+ years in the markets. Real setups, risk management, daily alerts, and lifetime recordings."
   ogImage="/assets/664a5b263659c7265be280ad/664d79eba5d00231744cc9dd_opengraph.webp"
   wfPageId="664c2004b0e73bd9b6158f9f"
+  jsonLd={pageSchema}
 >
   <ReactReady client:only="react" />
   <main class="bf-page" data-cardnav-host>

@@ -1,0 +1,66 @@
+---
+// Branded 404. Uses the shared page chrome (CardNav + Footer + Islands) and the
+// dark dot-grid hero pattern from /about and /contact. noindex so the error
+// page never enters the index.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ReactReady from '../components/ReactReady.jsx';
+import Islands from '../components/Islands.astro';
+import Footer from '../components/Footer.astro';
+---
+<BaseLayout
+  title="Page not found | Bill Fanter"
+  description="This page moved or no longer exists. Find the Masterclass, the free webinar, and more from here."
+  wfPageId="404"
+  noindex
+>
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <section class="bf-section bf-hero bf-404-hero">
+      <div class="bf-404-hero__dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
+      <div class="bf-container">
+        <div class="bf-hero__inner">
+          <span class="bf-eyebrow bf-404-hero__code">Error 404</span>
+          <h1 class="bf-h1 bf-hero__h1">Page not found</h1>
+          <p class="bf-lead bf-hero__lead">This page moved or never existed. Pick a link below to get back on track.</p>
+          <div class="bf-404-actions">
+            <a class="bf-btn bf-btn--primary is-on-dark" href="/">Go home</a>
+            <a class="bf-btn is-on-dark" href="/masterclass">See the Masterclass</a>
+            <a class="bf-btn is-on-dark" href="/webinar">Watch the free webinar</a>
+            <a class="bf-btn is-on-dark" href="/contact">Contact us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+  <Islands />
+</BaseLayout>
+
+<style>
+  .bf-404-hero {
+    position: relative;
+    overflow: hidden;
+    background: #07080c;
+    isolation: isolate;
+    padding-top: 180px;
+    padding-bottom: 180px;
+  }
+  @media (max-width: 767px) {
+    .bf-404-hero { padding-top: 96px; padding-bottom: 96px; }
+  }
+  .bf-404-hero__dots { position: absolute; inset: 0; z-index: 0; opacity: 0.55; pointer-events: none; }
+  .bf-404-hero .bf-container { position: relative; z-index: 1; }
+  .bf-404-hero :global(.bf-h1),
+  .bf-404-hero :global(.bf-hero__lead) { color: #fff; }
+  .bf-404-hero__code { color: rgba(255, 255, 255, 0.7); }
+  .bf-404-actions {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+</style>

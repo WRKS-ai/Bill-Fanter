@@ -2884,11 +2884,7 @@
        </span>
      </button>
 
-   Modal goes once at end of <body>:
-     <div class="bf-vreel-modal" id="bf-vreel-modal" aria-hidden="true">
-       <button class="bf-vreel-modal__close" id="bf-vreel-modal-close" aria-label="Close">×</button>
-       <iframe id="bf-vreel-modal-iframe" src="about:blank" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-     </div>
+   Modal markup lives once in BaseLayout.astro, at the end of <body>.
    ========================================================================== */
 .bf-page .bf-vreel {
   display: block;
