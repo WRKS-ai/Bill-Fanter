@@ -960,11 +960,11 @@
   .bf-price-card__price {
     font-size: 36px;
     font-weight: 400;
-    color: rgba(10, 10, 10, 0.35);
+    color: rgba(10, 10, 10, 0.7);
     line-height: 1.05;
     letter-spacing: -0.015em;
   }
-  .bf-price-card--featured .bf-price-card__price { color: rgba(255, 255, 255, 0.4); }
+  .bf-price-card--featured .bf-price-card__price { color: rgba(255, 255, 255, 0.75); }
   .bf-price-card__desc {
     font-size: 16px;
     color: var(--bf-text-muted);

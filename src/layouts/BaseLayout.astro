@@ -400,6 +400,26 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
             lazyVideos.forEach(promote);
           }
         }
+        /* Lazy-load decorative background <iframe> reels (Vimeo) only when near
+           the viewport, so the player JS + third-party cookies stay off the
+           initial load. The reels autoplay as soon as the user scrolls near. */
+        var lazyFrames = document.querySelectorAll('iframe[data-bf-lazysrc]');
+        function promoteFrame(f) {
+          var s = f.getAttribute('data-bf-lazysrc');
+          if (s) { f.src = s; f.removeAttribute('data-bf-lazysrc'); }
+        }
+        if (lazyFrames.length) {
+          if ('IntersectionObserver' in window) {
+            var ifIO = new IntersectionObserver(function (entries) {
+              entries.forEach(function (e) {
+                if (e.isIntersecting) { promoteFrame(e.target); ifIO.unobserve(e.target); }
+              });
+            }, { rootMargin: '300px 0px' });
+            lazyFrames.forEach(function (f) { ifIO.observe(f); });
+          } else {
+            lazyFrames.forEach(promoteFrame);
+          }
+        }
         var modal = document.getElementById('bf-vreel-modal');
         var modalIframe = document.getElementById('bf-vreel-modal-iframe');
         var modalClose = document.getElementById('bf-vreel-modal-close');

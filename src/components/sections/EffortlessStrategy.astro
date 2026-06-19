@@ -42,7 +42,7 @@ const {
 
         {review && (
           <figure class="es-review">
-            <div class="es-review__stars" aria-label="5 out of 5 stars">
+            <div class="es-review__stars" role="img" aria-label="5 out of 5 stars">
               {Array.from({ length: 5 }).map(() => (
                 <svg class="es-star" viewBox="0 0 24 24" set:html={star} />
               ))}

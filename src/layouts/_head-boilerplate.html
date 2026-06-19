@@ -1,10 +1,35 @@
 <link href="/assets/664a5b263659c7265be280ad/664a5e3130bb515d5424b78e_favicon.jpg" rel="shortcut icon" type="image/x-icon" />
 <link href="/assets/664a5b263659c7265be280ad/664a5e3329fdb2d59df709e3_Webclip.jpg" rel="apple-touch-icon" />
-<script type="text/javascript">!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.agent='plwebflow';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '435533385524046');fbq('track', 'PageView');</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CTHH3V1WN4"></script>
+<!-- Tracking (Meta Pixel + GA4) deferred off the critical path: loads on first
+     interaction, or 2s after load, whichever comes first. Keeps attribution while
+     keeping ~310KB of third-party JS out of the initial render / TBT window. -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-CTHH3V1WN4');
+  (function () {
+    var loaded = false;
+    function loadTracking() {
+      if (loaded) return;
+      loaded = true;
+      /* Meta Pixel */
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.agent='plwebflow';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '435533385524046');
+      fbq('track', 'PageView');
+      /* GA4 (gtag) */
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag('js', new Date());
+      gtag('config', 'G-CTHH3V1WN4');
+      var g = document.createElement('script');
+      g.async = true;
+      g.src = 'https://www.googletagmanager.com/gtag/js?id=G-CTHH3V1WN4';
+      document.head.appendChild(g);
+    }
+    var evs = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
+    function trigger() {
+      evs.forEach(function (ev) { window.removeEventListener(ev, trigger); });
+      loadTracking();
+    }
+    evs.forEach(function (ev) { window.addEventListener(ev, trigger, { passive: true }); });
+    if (document.readyState === 'complete') setTimeout(loadTracking, 2000);
+    else window.addEventListener('load', function () { setTimeout(loadTracking, 2000); });
+  })();
 </script>

@@ -28,7 +28,7 @@ const tiles = [
     span: 'w2',
     grad: 'linear-gradient(135deg, #FF8308 0%, #EF4444 52%, #6B3BD5 100%)',
     g1: '#FF8308', g2: '#EF4444', g3: '#6B3BD5',
-    device: `${ASSET}/68554a4edca41e9e9ce967e7_Build-Your-Skill-and-Confidence-(1).png`,
+    device: `${ASSET}/68554a4edca41e9e9ce967e7_Build-Your-Skill-and-Confidence-(1).webp`,
     href: '/community',
     title: 'The trading community',
     desc: 'Live Discord with real-time trade alerts & 1,000+ traders.',
@@ -136,7 +136,7 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
             <span class="bf-mega__grain" data-grainient data-color1={t.g1} data-color2={t.g2} data-color3={t.g3} aria-hidden="true"></span>
           )}
           {t.kind === 'gradient' && t.video && (
-            <iframe class="bf-mega__video" src={t.video} title="" tabindex="-1" aria-hidden="true" loading="lazy" allow="autoplay; fullscreen"></iframe>
+            <iframe class="bf-mega__video" data-bf-lazysrc={t.video} title="" tabindex="-1" aria-hidden="true" loading="lazy" allow="autoplay; fullscreen"></iframe>
           )}
           {t.kind === 'gradient' && (t.video || t.device) && <span class="bf-mega__scrim" aria-hidden="true"></span>}
           {t.kind === 'gradient' && t.device && (
