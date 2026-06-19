@@ -36,12 +36,17 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
     </div>
   </div>
 
-  <div class="bf-hero2026__image" aria-hidden="true">
+  <div class="bf-hero2026__image">
     <img
-      src="/assets/664a5b263659c7265be280ad/68eeba02f9fafe342cd54b44_Gemini_Generated_Image_6ut8i56ut8i56ut8.png"
-      loading="eager"
-      alt=""
+      src="/assets/664a5b263659c7265be280ad/68eeba02f9fafe342cd54b44_Gemini_Generated_Image_6ut8i56ut8i56ut8.webp"
+      fetchpriority="high"
+      alt="Bill Fanter"
     />
+    {/* Introduces the man in the photo: name + one credential. */}
+    <div class="bf-hero2026__namecard">
+      <span class="bf-hero2026__namecard-name">Bill Fanter</span>
+      <span class="bf-hero2026__namecard-role">35-year finance pro</span>
+    </div>
   </div>
 </section>
 
@@ -154,6 +159,24 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
     object-fit: cover;
     object-position: center top;
   }
+  /* "This is Bill" intro card — static frosted pill, lower-left of the portrait. */
+  .bf-hero2026__namecard {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  .bf-hero2026__namecard-name { font-size: 16px; font-weight: 700; line-height: 1.1; color: #0a0a0a; }
+  .bf-hero2026__namecard-role { font-size: 13px; font-weight: 500; color: rgba(10, 10, 10, 0.6); }
 
   @media (max-width: 991px) {
     .bf-hero2026__inner { padding-top: 136px; padding-bottom: 64px; }

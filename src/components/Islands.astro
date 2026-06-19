@@ -174,12 +174,21 @@
   }
   (async () => {
     await ensureReactPreamble();
-    [Grainient, AnimatedList, CardNav, GridDistortion] = (await Promise.all([
-      import('./Grainient/Grainient.jsx'),
-      import('./AnimatedList/AnimatedList.jsx'),
+    // Only download an island bundle if the page actually has its mount target.
+    // GridDistortion (three.js, ~128KB) and AnimatedList are NOT in BaseLayout's
+    // loader, so skipping them where unused is a real per-page JS saving. CardNav
+    // is on every page; Grainient is also covered by BaseLayout's own mount.
+    const need = (sel) => !!document.querySelector(sel);
+    const [gr, al, cn, gd] = await Promise.all([
+      need('[data-grainient]') ? import('./Grainient/Grainient.jsx') : Promise.resolve(null),
+      need('[data-benefits-list]') ? import('./AnimatedList/AnimatedList.jsx') : Promise.resolve(null),
       import('./CardNav/CardNav.jsx'),
-      import('./GridDistortion/GridDistortion.jsx'),
-    ])).map((m) => m.default);
+      need('[data-griddistortion]') ? import('./GridDistortion/GridDistortion.jsx') : Promise.resolve(null),
+    ]);
+    Grainient = gr && gr.default;
+    AnimatedList = al && al.default;
+    CardNav = cn && cn.default;
+    GridDistortion = gd && gd.default;
     // Mount as soon as the DOM is parsed — NOT on `load` (which waits for all
     // images/fonts and delayed the islands by seconds on heavy pages).
     if (document.readyState !== 'loading') runMounts();

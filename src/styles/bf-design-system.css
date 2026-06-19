@@ -1503,7 +1503,7 @@
   .bf-footer-dark__brand-text {
     font-size: 14px;
     line-height: 1.55;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.66);
     max-width: 320px;
   }
   .bf-footer-dark__bottom {
@@ -1518,7 +1518,7 @@
     flex-wrap: wrap;
     gap: 20px;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.7);
   }
   .bf-footer-dark__socials {
     display: flex;

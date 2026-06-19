@@ -167,15 +167,18 @@ const reviews = [
   .bf-closing__more svg { display: block; }
   .bf-closing__dots {
     display: flex;
-    gap: 8px;
+    gap: 0;
   }
+  /* 8px visual dot, 24px tap target (transparent padding, bg clipped to content). */
   .bf-closing__dot {
+    box-sizing: content-box;
     width: 8px;
     height: 8px;
+    padding: 8px;
     border-radius: 50%;
     border: 0;
-    padding: 0;
     background: rgba(255, 255, 255, 0.28);
+    background-clip: content-box;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
   }

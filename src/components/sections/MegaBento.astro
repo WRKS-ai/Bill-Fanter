@@ -356,8 +356,9 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
   }
   .bf-mega__more { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #fff; text-decoration: none; opacity: .9; transition: opacity .2s, gap .2s; }
   .bf-mega__more:hover { opacity: 1; gap: 10px; }
-  .bf-mega__dots { display: flex; gap: 8px; }
-  .bf-mega__dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; background: rgba(255, 255, 255, 0.28); cursor: pointer; transition: background .2s, transform .2s; }
+  .bf-mega__dots { display: flex; gap: 0; }
+  /* 8px visual dot, 24px tap target (transparent padding, bg clipped to content). */
+  .bf-mega__dot { box-sizing: content-box; width: 8px; height: 8px; padding: 8px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.28); background-clip: content-box; cursor: pointer; transition: background .2s, transform .2s; }
   .bf-mega__dot:hover { background: rgba(255, 255, 255, 0.5); }
   .bf-mega__dot.is-active { background: #fff; transform: scale(1.15); }
 
