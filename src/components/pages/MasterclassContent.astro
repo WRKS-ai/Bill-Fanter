@@ -227,7 +227,7 @@ const learnCards = [
         <h1 class="bf-h1 bf-hero__h1">Learn the easiest options strategies for everyone in 6 live sessions</h1>
         <p class="bf-lead bf-hero__lead">Join Bill Fanter's 6-session options trading Masterclass and learn the core strategies he uses in the market. Every session is live and hands-on, built so new traders and experienced traders can follow along and trade with a plan.</p>
         <div class="bf-hero__cta">
-          <a class="bf-btn bf-btn--primary is-on-dark" href="#pricing">Reserve your seat today</a>
+          <a class="bf-btn bf-btn--primary is-on-dark" href="/contact">Get the masterclass</a>
         </div>
         <div class="bf-hero__trust">
           <span class="bf-hero__trust-source">Recommended by</span>
@@ -274,11 +274,11 @@ const learnCards = [
         <img class="mc-bento-device" src="/assets/664a5b263659c7265be280ad/664c28d718c7d550c67838bb_masterclass%20image-2.webp" alt="" aria-hidden="true" loading="lazy" />
       </div>
       <div class="bf-bento__tile bf-bento__tile--quote">
-        <p class="bf-bento__quote-text">&ldquo;Thank you Bill for your mentorship! I'm a huge advocate of your patient &amp; disciplined approach to trading. Learning the correct way to identify &amp; trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!&rdquo;</p>
+        <p class="bf-bento__quote-text">&ldquo;I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor, I learned things in Bill's class that I never had before &mdash; and now I have the skills to provide a lifetime of return.&rdquo;</p>
         <div class="bf-bento__quote-footer">
           <div class="bf-bento__quote-author">
-            <div class="bf-bento__quote-name">John Gordy</div>
-            Chief Financial Officer at DroneUp
+            <div class="bf-bento__quote-name">Dan Funderburk, MBA</div>
+            Executive Recruiting at H-E-B
           </div>
           <a class="bf-bento__quote-link" href="/student-comments">Read more reviews <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
@@ -295,8 +295,8 @@ const learnCards = [
   eyebrow={null}
   heading="Options trading strategies that make sense to anyone"
   lead="You do not need a finance background to trade options with a plan. Bill breaks the market into clear, repeatable steps and shows you how he reads setups, defines risk, and places trades. New traders get a starting point. Experienced traders sharpen what they already do."
-  ctaLabel="Reserve Your Seat"
-  ctaHref="#pricing"
+  ctaLabel="Get the masterclass"
+  ctaHref="/contact"
 >
   {/* Simple / Effective / Easy trio as icon cards, rendered inside the HeroSplit
       section/container right below the media+copy (identical to the shared
@@ -348,8 +348,8 @@ const learnCards = [
   <EffortlessStrategy
     heading="A simple routine, built on real strategy"
     lead="Bill keeps the routine simple so you can stay consistent. You learn what to watch, how to size each trade, and when to step back. The strategy underneath is the same one he runs in the market every day, drawn from 35+ years in banking and the markets."
-    ctaHref="#pricing"
-    ctaLabel="Reserve Your Seat"
+    ctaHref="/contact"
+    ctaLabel="Get the masterclass"
     features={[
       { lead: 'Keep the routine simple', rest: ': trade a focused window, then step away and get on with your day.' },
       { lead: 'Trade with a plan', rest: ': know your entry, exit, and risk before you place a trade.' },
@@ -361,8 +361,8 @@ const learnCards = [
 {/* COMMUNITY — the Discord community included with the Masterclass. CTA routes
     to the Masterclass pricing (not /community), since the room is part of this offer. */}
 <Community
-  ctaHref="#pricing"
-  ctaLabel="Reserve Your Seat"
+  ctaHref="/contact"
+  ctaLabel="Get the masterclass"
   heading="The Masterclass includes access to my daily trading community"
   lead="Your sessions teach the strategy. The community keeps you in the market every day, with live alerts, shared setups, and direct access to Bill. Here's what's included:"
 />
@@ -438,9 +438,9 @@ const learnCards = [
       <div class="bf-darkcta__grid">
         <div>
           <h2 class="bf-darkcta__h2">Ready to explore options trading?</h2>
-          <p class="bf-darkcta__lead">Take the next step and learn the strategies Bill uses in the market. Reserve your seat in the Masterclass and trade with a plan, real risk rules, and a community behind you.</p>
+          <p class="bf-darkcta__lead">Take the next step and learn the strategies Bill uses in the market. Get the Masterclass and trade with a plan, real risk rules, and a community behind you.</p>
           <div class="bf-darkcta__buttons">
-            <a class="bf-darkcta__btn" href="#pricing">Reserve Your Seat</a>
+            <a class="bf-darkcta__btn" href="/contact">Get the masterclass</a>
           </div>
         </div>
         <div class="bf-darkcta__media" aria-hidden="true">
@@ -759,11 +759,9 @@ const learnCards = [
     align-items: start;
     padding: 20px 22px;
     border-radius: 12px;
-    /* Barely-darker, more frosted glass over the blue distortion. */
-    background: rgba(8, 12, 24, 0.30);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    -webkit-backdrop-filter: blur(14px) saturate(120%);
-    backdrop-filter: blur(14px) saturate(120%);
+    /* Tiles removed — text sits directly on the distortion (exploration). */
+    background: none;
+    border: 0;
   }
   .bf-page .mc-learn-spotlight__num {
     font-family: 'Geist Mono', ui-monospace, monospace;

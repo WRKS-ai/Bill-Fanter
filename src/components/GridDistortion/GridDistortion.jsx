@@ -23,7 +23,11 @@ uniform vec4 resolution;
 varying vec2 vUv;
 
 void main() {
-  vec2 uv = vUv;
+  // Cover-fit: scale UVs by resolution.zw (computed from container/image aspect)
+  // so the texture fills the plane like background-size: cover — cropping the
+  // overflow instead of stretching when the container aspect differs (e.g. tall
+  // mobile cards).
+  vec2 uv = (vUv - 0.5) * resolution.zw + 0.5;
   vec4 offset = texture2D(uDataTexture, vUv);
   gl_FragColor = texture2D(uTexture, uv - 0.02 * offset.rg);
 }`;
@@ -129,7 +133,14 @@ const GridDistortion = ({ grid = 15, mouse = 0.1, strength = 0.15, relaxation = 
       camera.bottom = -frustumHeight / 2;
       camera.updateProjectionMatrix();
 
-      uniforms.resolution.value.set(width, height, 1, 1);
+      // Cover-fit ratios (resolution.zw): crop the axis that overflows so the
+      // texture never stretches, whatever the container aspect.
+      const imageAspect = imageAspectRef.current || 1;
+      const viewAspect = width / height;
+      let a1, a2;
+      if (viewAspect > imageAspect) { a1 = 1; a2 = imageAspect / viewAspect; }
+      else { a1 = viewAspect / imageAspect; a2 = 1; }
+      uniforms.resolution.value.set(width, height, a1, a2);
     };
 
     if (window.ResizeObserver) {
