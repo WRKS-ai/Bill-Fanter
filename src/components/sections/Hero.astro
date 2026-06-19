@@ -118,8 +118,9 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
   }
   .bf-hero2026__trust {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 6px 10px;
     margin-top: 28px;
     /* Nudge slightly right to correct the optical-alignment illusion against the
        pill CTAs above (their text sits inset from the pill edge). */
@@ -127,6 +128,10 @@ const star = '<path d="M12 2l3 7 7 .8-5 5 1.5 7-6.5-3.5L5 22l1.5-7-5-5L8.5 9z"/>
     font-size: 14px;
     font-weight: 500;
   }
+  /* Keep each text unit on one line so the row reads naturally (one line, or
+     wrapping as whole units) instead of squeezing into stacked columns. */
+  .bf-hero2026__trust-label,
+  .bf-hero2026__trust-count { white-space: nowrap; }
   .bf-hero2026__trust-stars {
     display: inline-flex;
     gap: 2px;

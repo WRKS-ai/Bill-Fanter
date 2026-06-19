@@ -29,9 +29,20 @@
   /* React Bits GridDistortion — WebGL distorted abstract image. Mounts on
      [data-griddistortion]; image source comes from data-image. */
   const mountGridDistortion = () => {
+    // Phones: skip the three.js WebGL distortion (barely perceptible, CPU-heavy)
+    // and drop the source image in as a static background instead.
+    const phone = window.matchMedia('(max-width: 767px)').matches;
     for (const el of document.querySelectorAll('[data-griddistortion]')) {
       if (el.dataset.gdMounted === '1') continue;
       el.dataset.gdMounted = '1';
+      if (phone || !GridDistortion) {
+        if (el.dataset.image) {
+          el.style.backgroundImage = `url("${el.dataset.image}")`;
+          el.style.backgroundSize = 'cover';
+          el.style.backgroundPosition = 'center';
+        }
+        continue;
+      }
       try {
         createRoot(el).render(React.createElement(GridDistortion, {
           imageSrc: el.dataset.image,
@@ -179,11 +190,12 @@
     // loader, so skipping them where unused is a real per-page JS saving. CardNav
     // is on every page; Grainient is also covered by BaseLayout's own mount.
     const need = (sel) => !!document.querySelector(sel);
+    const phone = window.matchMedia('(max-width: 767px)').matches;
     const [gr, al, cn, gd] = await Promise.all([
       need('[data-grainient]') ? import('./Grainient/Grainient.jsx') : Promise.resolve(null),
       need('[data-benefits-list]') ? import('./AnimatedList/AnimatedList.jsx') : Promise.resolve(null),
       import('./CardNav/CardNav.jsx'),
-      need('[data-griddistortion]') ? import('./GridDistortion/GridDistortion.jsx') : Promise.resolve(null),
+      (need('[data-griddistortion]') && !phone) ? import('./GridDistortion/GridDistortion.jsx') : Promise.resolve(null),
     ]);
     Grainient = gr && gr.default;
     AnimatedList = al && al.default;

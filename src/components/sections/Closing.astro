@@ -71,15 +71,9 @@ const reviews = [
           Read all reviews
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
-        <div class="bf-closing__dots" role="tablist" aria-label="Reviews">
+        <div class="bf-closing__dots">
           {reviews.map((_, i) => (
-            <button
-              class={`bf-closing__dot ${i === 0 ? 'is-active' : ''}`}
-              data-dot={i}
-              type="button"
-              role="tab"
-              aria-label={`Show review ${i + 1}`}
-            ></button>
+            <span class={`bf-closing__dot ${i === 0 ? 'is-active' : ''}`} data-dot={i}></span>
           ))}
         </div>
       </div>
@@ -169,21 +163,19 @@ const reviews = [
     display: flex;
     gap: 8px;
   }
+  /* <span> indicators (not <button>) so they're never tap targets; JS upgrades
+     them to clickable buttons on desktop only. */
   .bf-closing__dot {
+    display: block;
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    border: 0;
-    padding: 0;
     background: rgba(255, 255, 255, 0.28);
-    cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
   }
-  .bf-closing__dot:hover { background: rgba(255, 255, 255, 0.5); }
+  .bf-closing__dot[role="button"] { cursor: pointer; }
+  .bf-closing__dot[role="button"]:hover { background: rgba(255, 255, 255, 0.5); }
   .bf-closing__dot.is-active { background: #fff; transform: scale(1.15); }
-  /* Mobile: dots are a position indicator only (swipe to change slides), so they
-     stay small + tight and are NOT tap targets (passes the touch-target audit). */
-  @media (max-width: 767px) { .bf-closing__dots { pointer-events: none; } }
 
   /* CTA tile: a few relevant glassy pills side by side over the blue grainient. */
   .bf-closing__cta-pills {
@@ -257,10 +249,18 @@ const reviews = [
       };
       const start = () => { timer = window.setInterval(() => show(idx + 1), 6000); };
       const stop = () => window.clearInterval(timer);
-      // Desktop: dots are clickable jump targets. Mobile: dots are a counter
-      // (pointer-events:none via CSS) and the user swipes instead.
+      // Desktop: upgrade the <span> indicators to clickable buttons (jump on
+      // click/Enter). Mobile: they stay plain spans (not tap targets) and the
+      // user swipes instead.
       const desktop = !window.matchMedia('(max-width: 767px)').matches;
-      if (desktop) dots.forEach((d, n) => d.addEventListener('click', () => { show(n); stop(); start(); }));
+      if (desktop) dots.forEach((d, n) => {
+        d.setAttribute('role', 'button');
+        d.setAttribute('tabindex', '0');
+        d.setAttribute('aria-label', `Show review ${n + 1}`);
+        const go = () => { show(n); stop(); start(); };
+        d.addEventListener('click', go);
+        d.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      });
       // Swipe to change slides (mobile/touch).
       let sx = null;
       slider.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });

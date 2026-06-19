@@ -104,6 +104,15 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
         border-radius: 0 0 12px 0;
       }
       .bf-skip-link:focus { left: 0; }
+      /* Phones: DotGrid (WebGL) is skipped for performance; show a lightweight
+         static CSS dot pattern in its place so the dot-grid look is preserved. */
+      @media (max-width: 767px) {
+        :global([data-dotgrid]) {
+          background-image: radial-gradient(circle, #454545 1.1px, transparent 1.6px);
+          background-size: 12px 12px;
+          background-position: center;
+        }
+      }
     </style>
     <Fragment set:html={headBoilerplate} />
     {extraHeadHtml && <Fragment set:html={extraHeadHtml} />}
@@ -281,6 +290,7 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
       };
 
       const mountAllDotGrids = async () => {
+        if (!DotGrid) return; // skipped on phones; static CSS dots show instead
         const targets = document.querySelectorAll('[data-dotgrid]');
         if (!targets.length) return;
         for (const el of targets) {
@@ -330,10 +340,16 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
       }
       (async () => {
         await ensureReactPreamble();
-        [Grainient, DotGrid] = (await Promise.all([
+        // DotGrid (WebGL) is CPU-heavy and its cursor interaction is imperceptible
+        // on touch, so skip it on phones — static CSS dots ([data-dotgrid]
+        // background, below) show instead. Grainient still mounts everywhere.
+        const isPhone = window.matchMedia('(max-width: 767px)').matches;
+        const [grMod, dgMod] = await Promise.all([
           import('../components/Grainient/Grainient.jsx'),
-          import('../components/DotGrid/DotGrid.jsx'),
-        ])).map((m) => m.default);
+          isPhone ? Promise.resolve(null) : import('../components/DotGrid/DotGrid.jsx'),
+        ]);
+        Grainient = grMod.default;
+        DotGrid = dgMod && dgMod.default;
         // Mount as soon as the DOM is parsed — NOT on `load` (which waits for all
         // images/fonts and delayed the islands by seconds on heavy pages).
         if (document.readyState !== 'loading') mountAll();
