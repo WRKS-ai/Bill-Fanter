@@ -30,7 +30,8 @@ const plans = [
   },
 ];
 ---
-<section class="bf-section" id="pricing">
+<section class="bf-section comm-pricing-band" id="pricing">
+  <div class="comm-pricing-dots" data-dotgrid data-dot-size="2" data-gap="10" data-base-color="#454545" data-active-color="#75B5FF" data-proximity="140" data-return-duration="0.6"></div>
   <div class="bf-container">
     <div class="bf-pricing__intro">
       <span class="bf-eyebrow">Membership</span>
@@ -58,3 +59,29 @@ const plans = [
     </div>
   </div>
 </section>
+
+<style>
+  /* Dark dot-grid stage (matches the masterclass pricing). DotGrid island mounts
+     on [data-dotgrid]; intro copy flips white; the featured (black) card gets a
+     hairline so it separates from the dark stage. */
+  .comm-pricing-band {
+    position: relative;
+    background: #07080c;
+    isolation: isolate;
+  }
+  .comm-pricing-band > .comm-pricing-dots {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .comm-pricing-band > .bf-container { position: relative; z-index: 1; }
+  .comm-pricing-band .bf-pricing__intro .bf-eyebrow { color: rgba(255, 255, 255, 0.7); }
+  .comm-pricing-band .bf-pricing__intro .bf-h2,
+  .comm-pricing-band .bf-pricing__intro .bf-lead { color: #fff; }
+  .comm-pricing-band .bf-price-card--featured {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 60px -22px rgba(0, 0, 0, 0.7);
+  }
+</style>

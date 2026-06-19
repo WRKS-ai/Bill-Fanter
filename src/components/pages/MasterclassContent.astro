@@ -602,12 +602,12 @@ const learnCards = [
   }
   .bf-page .mc-bento-grain .fw-ticker {
     position: absolute;
-    /* Float the chips in the TOP two-thirds of the tile (the device sits in the
-       bottom third). */
+    /* Float the chips in the top ~half of the tile, centered at ~26% — kept in
+       sync with the /community howit ticker so both scroll on the same plane. */
     top: 0;
     left: 0;
     right: 0;
-    bottom: 34%;
+    bottom: 48%;
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -725,7 +725,11 @@ const learnCards = [
     inset: auto;
     z-index: 2;
     width: 100%;
-    padding: clamp(40px, 5vw, 64px) clamp(24px, 4vw, 56px);
+    /* Card stays full-bleed, but the heading + tiles stay railed to the site
+       container so they line up with every other section's content. */
+    max-width: var(--bf-container, 1280px);
+    margin-inline: auto;
+    padding: clamp(40px, 5vw, 64px) 24px;
     display: flex;
     flex-direction: column;
     gap: 32px;

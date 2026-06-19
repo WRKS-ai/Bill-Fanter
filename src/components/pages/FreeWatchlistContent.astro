@@ -214,11 +214,16 @@ const whyJoin = [
   .bf-fw-inside-media img {
     filter: drop-shadow(0 18px 40px rgba(20, 40, 80, 0.22));
   }
-  /* The cutout PNG has empty (transparent) space above AND below the device, so
-     on mobile it left big gaps around it. Pull the image in on both ends to crop
-     that dead space (transparent, so it just tightens the spacing). Tunable. */
+  /* The cutout PNG has a lot of empty (transparent) space above AND below the
+     device. On mobile, crop it via an object-fit cover box (tighter aspect-ratio)
+     so the frame hugs the device — consistent spacing, no negative-margin overlap. */
   @media (max-width: 767px) {
-    .bf-fw-inside-section .bf-fw-inside-media img { margin-top: -56px; margin-bottom: -56px; }
+    .bf-fw-inside-section .bf-fw-inside-media img {
+      width: 100%;
+      aspect-ratio: 427 / 420;
+      object-fit: cover;
+      object-position: center;
+    }
   }
 
   /* ---------- Dark dot-grid hero (mirrors the homepage Hero stage) ----------
