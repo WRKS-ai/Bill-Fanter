@@ -3150,7 +3150,8 @@
     grid-template-columns: 1fr;
     grid-template-rows: auto;
   }
-  .bf-hero-split__video { grid-row: auto; max-width: 260px; }
+  /* Match the review + photo tiles: the reel spans the full container width. */
+  .bf-hero-split__video { grid-row: auto; max-width: none; }
 }
 
 /* LEFT cell of bento — video pillar. 9:16 aspect so the Vimeo background

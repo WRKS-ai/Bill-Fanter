@@ -76,8 +76,8 @@ const tiles = [
     testimonials: [
       { quote: "Thank you Bill for your mentorship! I'm a huge advocate of your patient & disciplined approach to trading. Learning the correct way to identify & trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!", name: 'John Gordy', title: 'Chief Financial Officer at DroneUp', img: `${ASSET}/678e77c8a0abd734e3415731_jogn-gordy.avif` },
       { quote: "It was an absolute joy learning from Bill. The brightest people can take complex ideas and explain them with simplicity. Bill certainly exemplifies this. I'm very much looking forward to continuing to grow my knowledge alongside the great community Bill has created.", name: 'Riley H', title: 'Sales Specialist at AB Laboratories Inc.', img: `${ASSET}/678e7871274732ce809d928f_riley-h.avif` },
-      { quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, I highly recommend Bill's Masterclass.", name: 'Alex Pitcaithly', title: 'Dynamic People Leader', img: `${ASSET}/679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.png` },
-      { quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. And the education doesn't stop with the class; there is a community of like-minded traders, all ready and willing to help.", name: 'Dan Funderburk', title: 'Executive Recruiting at H-E-B', img: `${ASSET}/679c4f04407a54b6277c94f3_dan-funderburk.png` },
+      { quote: "I just completed Bill Fanter's Options Masterclass; it was a great introduction to trading options and an overall enjoyable experience. If you want to learn about the options market from someone who is a successful trader and passionate to share his skills, I highly recommend Bill's Masterclass.", name: 'Alex Pitcaithly', title: 'Dynamic People Leader', img: `${ASSET}/679c4c1c4e9c2e629f9dabd4_alex-pitcaithly.webp` },
+      { quote: "I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor in a previous life, I learned things in Bill's class that I never had before. And the education doesn't stop with the class; there is a community of like-minded traders, all ready and willing to help.", name: 'Dan Funderburk', title: 'Executive Recruiting at H-E-B', img: `${ASSET}/679c4f04407a54b6277c94f3_dan-funderburk.webp` },
     ],
     aria: 'Read student reviews: real results from 500+ students',
   },
@@ -356,11 +356,13 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
   }
   .bf-mega__more { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #fff; text-decoration: none; opacity: .9; transition: opacity .2s, gap .2s; }
   .bf-mega__more:hover { opacity: 1; gap: 10px; }
-  .bf-mega__dots { display: flex; gap: 0; }
-  /* 8px visual dot, 24px tap target (transparent padding, bg clipped to content). */
-  .bf-mega__dot { box-sizing: content-box; width: 8px; height: 8px; padding: 8px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, 0.28); background-clip: content-box; cursor: pointer; transition: background .2s, transform .2s; }
+  .bf-mega__dots { display: flex; gap: 8px; }
+  .bf-mega__dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; background: rgba(255, 255, 255, 0.28); cursor: pointer; transition: background .2s, transform .2s; }
   .bf-mega__dot:hover { background: rgba(255, 255, 255, 0.5); }
   .bf-mega__dot.is-active { background: #fff; transform: scale(1.15); }
+  /* Mobile: dots are a position indicator only (swipe to change slides), so they
+     stay small + tight and are NOT tap targets (passes the touch-target audit). */
+  @media (max-width: 767px) { .bf-mega__dots { pointer-events: none; } }
 
   /* On mobile, drop the animated grainients (the CSS gradient fallback shows
      instead) so phones aren't running extra WebGL canvases — lighter + smoother
@@ -505,7 +507,19 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
       };
       const start = () => { timer = window.setInterval(() => show(idx + 1), 6000); };
       const stop = () => window.clearInterval(timer);
-      dots.forEach((d, n) => d.addEventListener('click', (e) => { e.stopPropagation(); show(n); stop(); start(); }));
+      // Desktop: dots are clickable jump targets. Mobile: dots are a counter
+      // (pointer-events:none via CSS) and the user swipes instead.
+      const desktop = !window.matchMedia('(max-width: 767px)').matches;
+      if (desktop) dots.forEach((d, n) => d.addEventListener('click', (e) => { e.stopPropagation(); show(n); stop(); start(); }));
+      // Swipe to change slides (mobile/touch).
+      let sx = null;
+      slider.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+      slider.addEventListener('touchend', (e) => {
+        if (sx === null) return;
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) { show(idx + (dx < 0 ? 1 : -1)); stop(); start(); }
+        sx = null;
+      }, { passive: true });
       // Whole tile is clickable (like the other bento tiles) — except the dots
       // and the inner link, which keep their own behavior.
       const href = slider.getAttribute('data-href');
