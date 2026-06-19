@@ -123,6 +123,9 @@ const {
      — video, quote, then photo — from 980px down. Scoped to this instance so the
      shared bento layout elsewhere is untouched. */
   @media (max-width: 980px) {
+    /* Stacked: copy + CTA read first, then the bento (video / quote / photo). */
+    .bf-hero-split__copy { order: 1; }
+    .bf-hero-split__bento { order: 2; }
     .bf-hero-split__bento {
       grid-template-columns: 1fr;
       grid-template-rows: auto;
@@ -146,6 +149,8 @@ const {
   /* Phones: let the quote + photo tiles run the full container width (matching the
      other bento cards site-wide); only the vertical video reel stays capped. */
   @media (max-width: 560px) {
+    /* Phones: the bento + the video reel both span the full container width. */
     .bf-hero-split__bento { max-width: none; }
+    .bf-hero-split__video { max-width: none; }
   }
 </style>

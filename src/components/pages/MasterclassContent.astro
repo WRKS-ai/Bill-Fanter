@@ -509,13 +509,10 @@ const learnCards = [
      cut his head (worst on the narrower mobile tile). Anchor the crop top-left
      and make the mobile tile a bit squarer so more of him stays in frame. */
   main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo img { object-position: left top; }
+  /* (copy-first ordering + full-width mobile video now live in the shared
+     HeroSplit component, so the homepage gets them too.) */
   @media (max-width: 980px) {
     main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo { aspect-ratio: 4 / 3; }
-    /* Mobile: copy + CTA come BEFORE the bento tiles, and the video reel spans
-       the full container width (no centered 320px cap). */
-    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__copy { order: 1; }
-    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__bento { order: 2; max-width: none; }
-    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__video { max-width: none; }
   }
 
   /* Desktop: even 150px visual top/bottom on the dot-grid stage, matching the
@@ -720,6 +717,11 @@ const learnCards = [
   .bf-page .mc-learn-spotlight .bf-spotlight__overlay { background: none; }
   .bf-page .mc-learn-spotlight .bf-spotlight__overlay,
   .bf-page .mc-learn-spotlight .bf-spotlight__content { pointer-events: none; }
+  /* ...but keep the heading + tiles interactive so their text is selectable
+     (the content wrapper stays transparent to pointer events so the distortion
+     still reacts in the gaps around them). */
+  .bf-page .mc-learn-spotlight__h2,
+  .bf-page .mc-learn-spotlight__item { pointer-events: auto; }
   .bf-page .mc-learn-spotlight__content {
     position: relative;
     inset: auto;
@@ -740,12 +742,15 @@ const learnCards = [
   .bf-page .mc-learn-spotlight__h2 { max-width: 720px; margin: 0; }
   .bf-page .mc-learn-spotlight__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Two rows of three, stretched across the full container. */
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     width: 100%;
-    max-width: 920px;
     margin: 0;
     text-align: left;
+  }
+  @media (max-width: 900px) {
+    .bf-page .mc-learn-spotlight__grid { grid-template-columns: repeat(2, 1fr); }
   }
   .bf-page .mc-learn-spotlight__item {
     display: grid;

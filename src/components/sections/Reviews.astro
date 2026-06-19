@@ -82,8 +82,9 @@ const { showCta = true } = Astro.props;
 <style>
   .bf-reviews {
     padding: var(--bf-section-pad) 0;
-    /* Flipped: starts white at the top, fades to off-white at the bottom. */
-    background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 55%, #eef4fc 100%);
+    /* Flat neutral grey (matches the community FAQ "is-soft" band) instead of the
+       blue gradient fade. (Masterclass overrides this to white via .mc-reviews-band.) */
+    background: var(--bf-bg-2);
   }
   .bf-reviews__carousel { margin-top: 48px; }
 
