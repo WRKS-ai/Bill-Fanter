@@ -409,6 +409,12 @@ const tickerB = [
     .bf-webinar-tag { animation: none; }
     .bf-webinar-tag:nth-child(1) { opacity: 1; }
   }
+  /* Mobile: the device shrinks and Bill's face rises under the top-right tags —
+     drop the tags to the bottom of the device (over the keyboard) so they never
+     cover his face. */
+  @media (max-width: 767px) {
+    .bf-webinar-tags { top: auto; bottom: 16px; }
+  }
 
   /* ---------- Dark dot-grid hero (mirrors the homepage Hero stage) ----------
      Section becomes a near-black stage with the React Bits DotGrid behind the

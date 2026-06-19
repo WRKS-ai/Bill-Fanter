@@ -1,0 +1,7 @@
+---
+import GuideLayout from '../layouts/GuideLayout.astro';
+import { GUIDES } from '../data/guides';
+// Ported funnel guide page (post-booking confirmation). Uses the 'law-firms'
+// guide data as a placeholder — reconfigure src/data/guides.ts for Bill.
+---
+<GuideLayout data={GUIDES['law-firms']} />

@@ -1,0 +1,848 @@
+---
+/**
+ * GuideLayout.astro — single template for every page in /guide/.
+ *
+ * These are POST-BOOKING confirmation pages, NOT lead-capture pages. The
+ * prospect already booked a discovery call upstream (GHL calendar) and lands
+ * here with `?name=&start=&end=&loc=&tz=`. The page renders their name + booked
+ * time and offers add-to-calendar buttons. No form, no submission to /api/*.
+ *
+ * Per-vertical data: title/description, the Claxton case-study tile stat,
+ * the "what we'll cover" bullets, the BLAS slider H3 copy, the iCal description
+ * suffix, and a single boolean for whether to fire the Meta conversion pixel
+ * (only `law-firms`, not the entry/unqualified variant).
+ *
+ * Receives: a `Guide` data entry from src/data/guides.ts.
+ */
+import DarkVeil from '../components/react/DarkVeil.jsx';
+import BaseLayout from './BaseLayout.astro';
+import type { Guide } from '../data/guides';
+
+interface Props {
+  data: Guide;
+}
+
+const { data } = Astro.props;
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  wfPageId="funnel-guide"
+  extraHeadHtml='<meta name="robots" content="noindex, nofollow">'
+>
+
+<style is:global>
+/* WRKS funnel design tokens (ported from wrksonline.com — reconfigure for Bill). */
+:root{
+  --bg:#000;--bg1:#111111;--t0:#F0EDE7;--t1:#bdbdbd;--t2:#8a8a8a;
+  --pu:#6214d9;--pu3:#9550ff;
+  --sans:'DM Sans',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
+}
+body{background:var(--bg);color:var(--t0)}
+/* Override global vid-disc-label for this funnel */
+.vid-disc-label{font-size:22px!important;letter-spacing:.16em!important;margin-bottom:24px!important}
+@media(max-width:640px){.vid-disc-label{font-size:14px!important;letter-spacing:.08em!important;margin-bottom:18px!important}}
+.vid-confirm-h1{margin:0 auto 20px!important;max-width:760px}
+.vid-confirm-sub{margin:0 auto 48px!important;max-width:540px}
+
+/* ── HERO ── */
+.guide-hero{
+  padding-top:64px;
+  display:flex;align-items:center;justify-content:center;min-height:auto;
+}
+.guide-hero-inner{
+  max-width:1200px;margin:0 auto;
+  padding:100px 56px 120px;
+  position:relative;z-index:1;
+}
+@media(max-width:1024px){.guide-hero-inner{padding:48px 32px 40px}}
+@media(max-width:760px){.guide-hero{padding-top:36px}.guide-hero-inner{padding:0 24px 20px}}
+.guide-hero-bottom{
+  max-width:720px;margin:0 auto;
+  text-align:center;
+}
+
+/* ── BLAS V3 SLIDER ── */
+.blas3-section{padding:100px 0 80px;position:relative;border-top:1px solid rgba(255,255,255,.05)}
+.blas3-header{max-width:1200px;margin:0 auto;padding:0 56px;display:grid;grid-template-columns:1fr 0.65fr;gap:48px;align-items:start;margin-bottom:52px}
+.blas3-hl .lbl{display:block;margin-bottom:20px}
+.blas3-h2{font-size:clamp(32px,4vw,56px);font-weight:800;letter-spacing:-.04em;line-height:1.06;margin:0}
+.blas3-h2 em{font-size:1.03em}
+.blas3-right{display:flex;flex-direction:column;justify-content:flex-start;gap:24px}
+.blas3-sub{font-size:18px;color:var(--t1);line-height:1.75}
+.blas3-cta{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:600;color:var(--t0);text-decoration:none;width:fit-content}
+.blas3-cta svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.blas3-cta:hover{color:var(--pu3)}
+.blas3-showcase-wrap{max-width:1200px;margin:0 auto;padding:0 56px;margin-bottom:20px}
+.blas3-showcase{border-radius:20px;overflow:hidden;position:relative;height:480px;isolation:isolate;background:#000}
+/* DarkVeil sits inside the showcase as the base background. */
+.blas3-veil{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:1}
+.blas3-veil canvas{display:block;width:100%;height:100%}
+/* Per-step gradients become HUE OVERLAYS over the DarkVeil. Each
+   step tints the same flowing motion a different color via
+   mix-blend-mode:hue. */
+.blas3-sc-bg{position:absolute;inset:0;z-index:1;opacity:0;transition:opacity .9s ease;mix-blend-mode:hue;pointer-events:none}
+.blas3-sc-bg.active{opacity:1}
+.blas3-sc-bg[data-scbg="build"] {background:linear-gradient(135deg,#1a3eff 0%,#3a5fcf 50%,#7c44e8 100%)}
+.blas3-sc-bg[data-scbg="launch"]{background:linear-gradient(135deg,#ff6b7c 0%,#ff9aa6 50%,#ffd6dc 100%)}
+.blas3-sc-bg[data-scbg="adapt"] {background:linear-gradient(135deg,#ff2d8a 0%,#c020cc 50%,#6b0ea0 100%)}
+.blas3-sc-bg[data-scbg="scale"] {background:linear-gradient(135deg,#5810c8 0%,#7c44e8 50%,#9240ff 100%)}
+.blas3-sc-grain{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.055;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px}
+.blas3-sc-vig{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 60% 50%,transparent 30%,rgba(0,0,0,.45) 100%)}
+.blas3-sc-panel{position:absolute;inset:0;z-index:2;display:flex;flex-direction:row;align-items:center;padding:40px 56px;gap:48px;opacity:0;transition:opacity .7s ease;pointer-events:none}
+.blas3-sc-panel.active{opacity:1;pointer-events:auto}
+.blas3-sc-left{flex:0 0 40%;display:flex;flex-direction:column;justify-content:center;position:relative;z-index:1}
+.blas3-sc-right{flex:1;display:flex;align-items:center;justify-content:flex-end;position:relative;z-index:1}
+.blas3-sc-num{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75);margin-bottom:14px}
+.blas3-sc-num .sc-n{color:rgba(255,255,255,.35);letter-spacing:.15em}
+.blas3-sc-name{font-size:clamp(20px,2.4vw,32px);font-weight:800;letter-spacing:-.04em;line-height:1.08;color:#fff;margin:0 0 14px}
+.blas3-sc-name em{font-size:1.04em}
+.blas3-sc-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:0;z-index:5}
+.blas3-sc-dot{width:44px;height:44px;padding:0;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative}
+.blas3-sc-dot::before{content:"";display:block;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.32);transition:all .4s ease}
+.blas3-sc-dot.active::before{width:28px;border-radius:4px;background:rgba(255,255,255,.9)}
+.blas3-sc-dot:focus-visible{outline:none}
+.blas3-sc-dot:focus-visible::before{box-shadow:0 0 0 2px rgba(149,80,255,.7)}
+.blas3-sc-pbar{display:none}
+.bm-card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:16px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:22px 26px;width:100%;max-width:340px;box-shadow:0 4px 32px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.12)}
+.bm-svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.bm-svc{display:flex;align-items:center;gap:9px;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
+.bm-svc.in{opacity:1;transform:translateY(0)}
+.bm-svc span{font-size:11.5px;color:rgba(255,255,255,.82);font-weight:500;letter-spacing:-.01em}
+.bm-svc-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bm-svc-icon svg{width:12px;height:12px}
+.bm-deploy-wrap{width:100%;max-width:340px}
+.bm-deploy-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.bm-deploy-title{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.42)}
+.bm-deploy-count{font-size:11px;font-weight:800;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums}
+.bm-deploy-pbar{height:3px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:16px;overflow:hidden}
+.bm-deploy-pfill{height:100%;width:0%;background:rgba(255,255,255,.72);border-radius:2px;transition:width .35s ease}
+.bm-deploy-list{display:flex;flex-direction:column;gap:8px}
+.bm-deploy-row{display:flex;align-items:center;gap:9px;opacity:0;transform:translateX(-8px);transition:opacity .3s ease,transform .3s ease}
+.bm-deploy-row.in{opacity:1;transform:translateX(0)}
+.bm-deploy-dot{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(255,255,255,.04);transition:background .3s ease,border-color .3s ease}
+.bm-deploy-row.in .bm-deploy-dot{background:rgba(255,255,255,.88);border-color:rgba(255,255,255,.88)}
+.bm-deploy-dot svg{width:7px;height:7px;stroke:#c2410c;stroke-width:2.5;fill:none;opacity:0;transition:opacity .2s .15s ease}
+.bm-deploy-row.in .bm-deploy-dot svg{opacity:1}
+.bm-deploy-name{flex:1;font-size:12px;font-weight:600;color:rgba(255,255,255,.32);transition:color .3s ease}
+.bm-deploy-row.in .bm-deploy-name{color:rgba(255,255,255,.88)}
+.bm-deploy-tag{font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.75);opacity:0;transition:opacity .3s .2s ease;white-space:nowrap}
+.bm-deploy-row.in .bm-deploy-tag{opacity:1}
+.bm-metrics{width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px}
+.bm-metric-card{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.13);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;opacity:0;transform:translateX(12px);transition:opacity .4s ease,transform .4s ease;box-shadow:0 2px 16px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.1)}
+.bm-metric-card.in{opacity:1;transform:translateX(0)}
+.bm-metric-info{display:flex;flex-direction:column;gap:2px;flex:1}
+.bm-metric-name{font-size:12px;font-weight:600;color:rgba(255,255,255,.78)}
+.bm-metric-tgt{font-size:10px;color:rgba(255,255,255,.35);font-weight:500}
+.bm-metric-bar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;width:80px;margin-top:5px;overflow:hidden}
+.bm-metric-bar-fill{height:100%;border-radius:2px;width:0%;transition:width 1.2s cubic-bezier(.16,1,.3,1);background:linear-gradient(90deg,#e040fb,#f472b6)}
+.bm-metric-val{font-size:20px;font-weight:800;letter-spacing:-.03em;color:#f0abfc;font-variant-numeric:tabular-nums;width:68px;text-align:right;flex-shrink:0;margin-right:10px}
+.bm-status-pill{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px 2px 5px;border-radius:20px;background:rgba(224,64,251,.12);color:#f0abfc;border:1px solid rgba(224,64,251,.25);opacity:0;transform:translateY(4px);transition:opacity .3s ease,transform .3s ease;margin-top:6px;white-space:nowrap}
+.bm-status-pill::before{content:'';width:5px;height:5px;border-radius:50%;background:#e040fb;flex-shrink:0}
+.bm-status-pill.in{opacity:1;transform:translateY(0)}
+.bm-scale-v3{width:100%;max-width:340px}
+.bm-sv3-kpi{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.bm-sv3-val{font-size:34px;font-weight:800;letter-spacing:-.04em;color:#fff;font-variant-numeric:tabular-nums;line-height:1}
+.bm-sv3-delta{font-size:13px;font-weight:700;color:#c084fc}
+.bm-sv3-lbl{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.24);margin-bottom:8px}
+.bm-sv3-svg{width:100%;height:52px;overflow:visible;display:block;margin-bottom:14px}
+.bm-sv3-path{fill:none;stroke:url(#scaleGrad);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.bm-sv3-area{fill:url(#scaleAreaGrad);opacity:.18}
+.bm-sv3-dot{fill:#9550ff;filter:drop-shadow(0 0 6px rgba(149,80,255,.9))}
+.bm-sv3-bars{display:flex;flex-direction:column;gap:10px}
+.bm-sv3-row{display:flex;align-items:center;gap:10px;opacity:0;transform:translateX(8px);transition:opacity .4s ease,transform .4s ease}
+.bm-sv3-row.in{opacity:1;transform:translateX(0)}
+.bm-sv3-name{font-size:11px;font-weight:600;color:rgba(255,255,255,.42);width:44px;flex-shrink:0}
+.bm-sv3-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.bm-sv3-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,#9550ff,#c084fc);transition:width 1.2s cubic-bezier(.16,1,.3,1)}
+.bm-sv3-roas{font-size:12px;font-weight:800;color:#c084fc;font-variant-numeric:tabular-nums;width:32px;text-align:right;flex-shrink:0}
+.blas3-cols-wrap{max-width:1200px;margin:0 auto;padding:0 56px}
+.blas3-grid{display:grid;grid-template-columns:repeat(4,1fr);padding-top:48px;gap:0}
+.blas3-col{padding:24px clamp(20px,2.5vw,40px) 40px;display:flex;flex-direction:column;cursor:pointer;position:relative;border-top:1px solid rgba(255,255,255,.08);transition:background .25s ease}
+.blas3-col::before{content:'';position:absolute;top:-1px;left:0;width:0;height:2px;background:var(--cc);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.blas3-col.active::before{width:100%}
+.blas3-col:hover{background:rgba(255,255,255,.025)}
+.blas3-col-num{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.22);margin-bottom:14px;transition:color .25s ease}
+.blas3-col.active .blas3-col-num{color:var(--cc)}
+.blas3-col-word{font-family:var(--serif);font-style:italic;font-size:clamp(26px,3vw,42px);font-weight:400;letter-spacing:-.02em;line-height:1;color:var(--t0);margin-bottom:16px}
+.blas3-col[data-col="build"]{--cc:#4776e6;--cg:linear-gradient(135deg,#4776e6,#8e54e9)}
+.blas3-col[data-col="launch"]{--cc:#ff3a4a;--cg:linear-gradient(135deg,#ff2032,#ff3a4a)}
+.blas3-col[data-col="adapt"]{--cc:#e040fb;--cg:linear-gradient(135deg,#ff6b35,#e040fb)}
+.blas3-col[data-col="scale"]{--cc:#9550ff;--cg:linear-gradient(135deg,#9550ff,#6214d9)}
+.blas3-mobile-tabs{display:none;gap:6px;padding:12px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.blas3-mobile-tabs::-webkit-scrollbar{display:none}
+.bmt{flex:1;min-width:0;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:8px 6px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(10,10,10,.55);color:rgba(255,255,255,.78);cursor:pointer;transition:background .22s ease,border-color .22s ease,color .22s ease;white-space:nowrap;text-align:center}
+.bmt.active{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.32);color:#fff}
+.bm-live-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.9);flex-shrink:0;animation:bmLivePulse 1.4s ease-in-out infinite}
+@keyframes bmLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.78)}}
+@media(max-width:1024px){
+  .blas3-section{padding:50px 0 50px}
+  .blas3-header{grid-template-columns:1fr;gap:20px;padding:0 32px;margin-bottom:32px}
+  .blas3-showcase-wrap{padding:0 20px}
+  .blas3-showcase{height:390px}
+  .blas3-sc-panel{flex-direction:column;padding:40px 20px 22px;gap:8px;justify-content:flex-start;align-items:flex-start}
+  .blas3-sc-left{flex:none;width:100%}
+  .blas3-sc-name{font-size:20px;line-height:1.15;margin-bottom:8px}
+  .blas3-sc-desc{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.78)}
+  .blas3-sc-num{margin-bottom:4px}
+  .blas3-sc-right{display:flex;width:100%;justify-content:flex-start}
+  .blas3-sc-dots{display:none}
+  .blas3-mobile-tabs{display:flex}
+  .bm-card,.bm-deploy-wrap,.bm-metrics,.bm-scale-v3{max-width:100%;width:100%}
+  .bm-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .bm-metric-card{flex-direction:column;align-items:flex-start;gap:3px;padding:10px 11px}
+  .bm-metric-val{font-size:18px}
+  .bm-metric-bar{width:100%;margin-top:4px}
+  .bm-status-pill{display:none}
+  .bm-svc-grid{gap:7px 10px}
+  .bm-svc span{font-size:11px}
+  .bm-sv3-svg{height:44px}
+  .blas3-cols-wrap{display:none}
+  .blas3-header{padding:0 20px}
+}
+
+/* ── CASE STUDY (cs-card template ported from case-studies index) ── */
+.case-section{padding:80px 0 96px;border-top:1px solid rgba(255,255,255,.05)}
+.cs-card{
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.cs-card-top{display:block;margin-bottom:24px}
+.cs-client{
+  font-size:clamp(34px,4vw,52px);font-weight:700;
+  letter-spacing:-.03em;line-height:1.05;margin-bottom:16px;
+}
+.cs-tagline{font-size:16px;color:var(--t1);line-height:1.75;margin-bottom:32px;max-width:440px}
+.cs-link{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:600;color:var(--t1);
+  padding:11px 22px;border-radius:100px;
+  border:1px solid rgba(255,255,255,.12);
+  text-decoration:none;
+  transition:all .2s;white-space:nowrap;
+  margin-top:8px;width:fit-content;
+}
+.cs-link:hover{border-color:rgba(255,255,255,.28);color:var(--t0);transform:translateY(-2px);gap:12px}
+.cs-link svg{width:15px;height:15px;flex-shrink:0}
+.cs-tile-card{display:flex;flex-direction:column;background:var(--bg1);border:1px solid rgba(255,255,255,.07);border-radius:24px;overflow:hidden;text-decoration:none;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;box-shadow:0 16px 40px rgba(0,0,0,.2),0 4px 10px rgba(0,0,0,.14)}
+.cs-tile-card:hover{transform:translateY(-4px);border-color:rgba(149,80,255,.32);box-shadow:0 20px 50px rgba(149,80,255,.16),0 6px 14px rgba(0,0,0,.18)}
+.cs-tile-canvas{position:relative;aspect-ratio:5/3;background:#000;overflow:hidden}
+.cs-tile-bg{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+.cs-tile-stats{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(255,255,255,.07)}
+.cs-tile-stat{padding:32px 28px;display:flex;flex-direction:column;gap:10px}
+.cs-tile-stat:first-child{border-right:1px solid rgba(255,255,255,.07)}
+.cs-tile-stat-fig{font-size:clamp(20px,2.2vw,28px);font-weight:700;letter-spacing:-.03em;line-height:1.1;white-space:nowrap;background:linear-gradient(135deg,#fff 0%,rgba(149,80,255,.9) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cs-tile-stat-desc{font-size:14px;color:var(--t1);line-height:1.5}
+@media(max-width:900px){
+  .cs-card{grid-template-columns:1fr;gap:24px}
+  .cs-card-left,.cs-card-right{display:contents}
+  .cs-card-top{order:1;margin-bottom:0}
+  .cs-client{order:1;margin-bottom:0}
+  .cs-card-left blockquote{order:2;margin:0!important}
+  .cs-tile-card{order:3}
+  .cs-tagline{order:4;margin-bottom:0;max-width:none}
+  .cs-link{order:5;margin-top:0;align-self:flex-start}
+  .cs-tile-stats{grid-template-columns:1fr}
+  .cs-tile-stat{padding:24px 22px}
+  .cs-tile-stat:first-child{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
+  .cs-tile-stat-fig{font-size:24px}
+}
+
+/* ── TESTIMONIALS ── */
+.testimonials{padding:96px 0;border-top:1px solid rgba(255,255,255,.05)}
+.testi-header{text-align:center;margin-bottom:56px}
+.testi-header .lbl{display:block;margin-bottom:16px}
+.testi-h2{font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.03em;line-height:1.06}
+.testi-h2 em{font-size:1.06em}
+.testi-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:rgba(255,255,255,.05);
+  border-radius:20px;overflow:hidden;
+}
+.tquote{
+  padding:56px 52px;background:var(--bg);
+  position:relative;display:flex;flex-direction:column;justify-content:space-between;
+}
+.tquote-stars{display:flex;gap:3px;margin-bottom:24px}
+.tquote-stars svg{width:13px;height:13px;fill:#f5c518;stroke:none}
+.tquote-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(22px,2.4vw,32px);font-weight:400;
+  line-height:1.3;color:var(--t0);letter-spacing:-.02em;
+  margin-bottom:36px;flex:1;
+}
+.tquote-author{display:flex;align-items:center;gap:14px}
+.tquote-photo{
+  width:44px;height:44px;border-radius:50%;overflow:hidden;
+  border:1px solid rgba(255,255,255,.1);flex-shrink:0;background:var(--bg2);
+}
+.tquote-photo.init{
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-style:italic;font-size:18px;color:var(--pu3);
+}
+.tquote-photo img{width:100%;height:100%;object-fit:cover;object-position:top}
+.tquote-name{font-size:14px;font-weight:600;color:var(--t0);line-height:1.3}
+.tquote-role{font-size:14px;color:var(--t2);margin-top:2px}
+
+/* ── FOCUS + GUARANTEE ── */
+.focus-section{padding:96px 0;border-top:1px solid rgba(255,255,255,.05)}
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.focus-card{
+  padding:52px 52px;border-radius:24px;
+  border:1px solid rgba(255,255,255,.07);
+  background:var(--bg1);
+}
+.focus-icon{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;
+}
+.focus-icon svg{width:22px;height:22px}
+.focus-card.focus-a .focus-icon{background:rgba(149,80,255,.12);border:1px solid rgba(149,80,255,.2)}
+.focus-card.focus-a .focus-icon svg{stroke:var(--pu3)}
+.focus-card.focus-b .focus-icon{background:rgba(15,242,200,.1);border:1px solid rgba(15,242,200,.18)}
+.focus-card.focus-b .focus-icon svg{stroke:var(--teal)}
+.focus-h3{font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:14px}
+.focus-body{font-size:16px;color:var(--t1);line-height:1.75}
+.guarantee-highlight{
+  margin-top:20px;padding:16px 20px;border-radius:12px;
+  background:rgba(15,242,200,.06);border:1px solid rgba(15,242,200,.15);
+  font-size:14px;font-weight:600;color:var(--teal);line-height:1.5;
+}
+
+/* ── WHAT WE'LL COVER ── */
+.cover-section{padding:96px 0;border-top:1px solid rgba(255,255,255,.05)}
+.cover-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.cover-text .lbl{display:block;margin-bottom:16px}
+.cover-h2{font-size:clamp(24px,3vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.06;margin-bottom:16px}
+.cover-h2 em{font-size:1.04em}
+.cover-sub{font-size:16px;color:var(--t1);line-height:1.75}
+.cover-list{display:flex;flex-direction:column;gap:16px}
+.cover-item{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:20px 24px;border-radius:14px;
+  background:var(--bg1);border:1px solid rgba(255,255,255,.05);
+  transition:border-color .2s;
+}
+.cover-item:hover{border-color:rgba(149,80,255,.2)}
+.cover-check{
+  width:24px;height:24px;border-radius:50%;
+  background:rgba(149,80,255,.12);border:1px solid rgba(149,80,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.cover-check svg{width:11px;height:11px;stroke:var(--pu3);stroke-width:2.5;fill:none}
+.cover-item-text{font-size:16px;color:rgba(240,237,231,.75);line-height:1.55}
+
+/* ── PORTFOLIO ── */
+.portfolio{padding:96px 0;border-top:1px solid rgba(255,255,255,.05)}
+.portfolio-header{text-align:center;margin-bottom:64px}
+.portfolio-header .lbl{display:block;margin-bottom:16px}
+.port-h2{font-size:clamp(24px,3vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.06}
+.port-h2 em{font-size:1.06em}
+.port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.05);border-radius:20px;overflow:hidden}
+.port-item{
+  background:var(--bg);padding:36px 36px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.port-item:hover{background:var(--bg1)}
+.port-num{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(240,237,231,.2)}
+.port-name{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--t0)}
+.port-domain{font-size:11px;color:var(--pu3);opacity:.7;margin-bottom:4px}
+.port-desc{font-size:16px;color:var(--t1);line-height:1.65;flex:1}
+.port-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:600;color:rgba(240,237,231,.45);
+  margin-top:8px;transition:color .18s;
+}
+.port-link:hover{color:var(--t0)}
+.port-link svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none;transition:transform .18s}
+.port-link:hover svg{transform:translate(2px,-2px)}
+.port-item.rev{opacity:1;transform:none;transition:none}
+.port-item.rev>*{opacity:0;transform:translateY(14px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+.port-item.rev.in>*{opacity:1;transform:translateY(0)}
+
+/* ── HERO LAYOUT ── */
+.vid-confirm{padding-bottom:80px!important}
+.confirm-flat{max-width:680px;margin:48px auto 0;padding:0 24px}
+@media(max-width:760px){.vid-confirm{padding-bottom:50px!important}}
+
+/* ── FLAT BOOKING CONFIRMATION ── */
+.booking-card{
+  position:relative;margin:0;width:100%;
+  background:none;border:none;border-radius:0;box-shadow:none;
+  padding:0;text-align:center;
+}
+
+.booking-time-row{
+  display:flex;justify-content:center;align-items:stretch;
+  padding-bottom:32px;
+}
+.booking-time-block{
+  display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;
+  padding:0 24px;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.booking-time-date{
+  font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pu3);
+}
+.booking-time-time{
+  font-size:clamp(28px,3.4vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  color:var(--t0);
+  white-space:nowrap;
+}
+
+.booking-countdown-block{
+  display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;
+  padding:0 24px;
+}
+.booking-countdown-lbl{
+  font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pu3);
+}
+.booking-countdown-val{
+  font-size:clamp(28px,3.4vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  color:var(--t0);
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+
+.booking-fallback{
+  padding-bottom:28px;
+  font-size:16px;color:rgba(240,237,231,.6);text-align:center;line-height:1.5;
+}
+
+.booking-cal{padding-top:28px}
+.booking-cal-lbl{
+  display:block;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(240,237,231,.45);margin-bottom:16px;
+}
+.booking-cal-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+.cal-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:12px 22px;border-radius:10px;
+  font-size:16px;font-weight:600;text-decoration:none;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.12);
+  color:var(--t0);
+  transition:background .15s,border-color .15s;
+}
+.cal-btn:hover{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.25);
+}
+.cal-btn svg{width:16px;height:16px;flex-shrink:0;opacity:.7}
+
+@media(max-width:760px){
+  .confirm-flat{margin-top:32px}
+  .booking-time-row{flex-direction:column;gap:24px}
+  .booking-time-block{align-items:center;text-align:center;padding:0 0 24px;border-right:none;border-bottom:1px solid rgba(255,255,255,.08)}
+  .booking-countdown-block{align-items:center;text-align:center;padding:0}
+  .cal-btn{flex:1 1 100%;min-width:0}
+}
+
+/* ── FOOTER ── */
+@media(max-width:760px){
+  .portfolio,.testimonials,.focus-section,.cover-section{padding:50px 0}
+  .case-section{padding:50px 0 50px!important}
+  .port-grid{grid-template-columns:1fr}
+  .case-inner,.testi-grid,.focus-grid,.cover-inner{grid-template-columns:1fr}
+  .case-content,.case-stats{padding:32px 24px}
+  .case-stats{order:-1;border-bottom:1px solid rgba(255,255,255,.06);gap:18px}
+  .case-stat{display:flex;align-items:center;gap:18px}
+  .case-stat-num{flex-shrink:0;width:170px;font-size:32px;line-height:1;margin-bottom:0;white-space:nowrap}
+  .case-stat-label{font-size:14px;line-height:1.4}
+  .case-content{border-right:none}
+  .cover-inner{gap:40px}
+  .guide-hero-bottom{padding:40px 28px 44px;margin-top:72px}
+  .cta-sub{font-size:16px}
+  .focus-card{padding:36px 28px}
+  .tquote{padding:36px 28px}
+  .rev{opacity:1;transform:none;transition:none}
+  .port-item.rev>*,.tquote.rev>*{opacity:1;transform:none;transition:none}
+}
+</style>
+
+<!-- ══ VIDEO CONFIRM ══════════════════════════════════════════════════ -->
+<section class="vid-confirm">
+  <div class="vid-confirm-inner">
+    <p class="vid-disc-label">IMPORTANT: Please Confirm Your Call</p>
+    <h1 class="vid-confirm-h1">Hey<span id="js-vid-name"></span>, your call is booked. Please confirm via text or email.</h1>
+    <p class="vid-confirm-sub">Reply to the text or email we sent to lock in your call. An AI agent from our team may call you to confirm the date and time.</p>
+
+    <div class="confirm-flat">
+    <div class="booking-card">
+      <div class="booking-time-row" id="call-time-wrap" style="display:none">
+        <div class="booking-time-block">
+          <span class="booking-time-date" id="js-call-date">,</span>
+          <span class="booking-time-time" id="js-call-time">,</span>
+        </div>
+        <div class="booking-countdown-block">
+          <span class="booking-countdown-lbl">Starts in</span>
+          <span class="booking-countdown-val" id="js-countdown">,</span>
+        </div>
+      </div>
+      <div class="booking-fallback" id="call-time-fallback">
+        Your call time is in the text and email we just sent.
+      </div>
+      <div class="booking-cal" id="cal-buttons" style="display:none">
+        <span class="booking-cal-lbl">Add to calendar</span>
+        <div class="booking-cal-btns">
+          <a href="#" id="gcal-link" target="_blank" rel="noopener" class="cal-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Google
+          </a>
+          <a href="#" id="ical-link" download="WRKS-Discovery-Call.ics" class="cal-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
+            Apple
+          </a>
+          <a href="#" id="outlook-link" target="_blank" rel="noopener" class="cal-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><polyline points="3 8 12 14 21 8"/></svg>
+            Outlook
+          </a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CLAXTON LAW CASE STUDY ════════════════════════════════════════ -->
+<section class="case-section">
+  <div class="container">
+    <div class="cs-card">
+      <div class="cs-card-left rev">
+        <div class="cs-card-top">
+          <span class="lbl">Case Study</span>
+        </div>
+        <h2 class="cs-client">Claxton Law Group</h2>
+        <blockquote style="margin:32px 0 28px;padding:18px 22px;background:rgba(255,255,255,.04);border-left:2px solid rgba(149,80,255,.4);border-radius:0 10px 10px 0;font-size:16px;color:var(--t1);line-height:1.65;font-style:italic">"The WRKS Online team built a system that puts cases on my calendar every day. My team just shows up and closes them."<br><span style="font-style:normal;display:flex;align-items:center;gap:10px;margin-top:14px"><img src="/img/diane-claxton.avif" alt="Diane Claxton" width="36" height="36" loading="lazy" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0"><span style="font-weight:600;color:var(--t0);font-size:14px">Diane Claxton<span style="font-weight:400;color:var(--t1)"> · CEO, Claxton Law Group</span></span></span></blockquote>
+        <p class="cs-tagline">We use a team of AI Case Acquisition Agents to run Claxton Law Group's entire growth operation. Brand positioning, conversion funnels, multi-platform ads, social content, lead response and qualification on WhatsApp and ManyChat, and automated follow-up. All of it. 24/7. 9,000+ cases closed. The agents consistently add $100K+/mo in revenue to her firm.</p>
+        <a href="/case-studies/claxton-law-group/" class="cs-link">
+          Read the case study
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="cs-card-right rev" data-d="100">
+        <a href="/case-studies/claxton-law-group/" class="cs-tile-card" aria-label="Read the Claxton Law Group case study">
+          <div class="cs-tile-canvas">
+            <picture><source srcset="/img/claxton-website.avif" type="image/avif"><img src="/img/claxton-website.webp" class="cs-tile-bg" alt="Claxton Law Group website" loading="lazy" width="1930" height="1059"></picture>
+          </div>
+          <div class="cs-tile-stats">
+            <div class="cs-tile-stat">
+              <span class="cs-tile-stat-fig">{data.caseStudyStatFig}</span>
+              <span class="cs-tile-stat-desc">{data.caseStudyStatDesc}</span>
+            </div>
+            <div class="cs-tile-stat">
+              <span class="cs-tile-stat-fig">$100K+/mo</span>
+              <span class="cs-tile-stat-desc">Added revenue from the AI agent</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHAT WE'LL COVER ══════════════════════════════════════════════ -->
+<section class="cover-section">
+  <div class="container">
+    <div class="cover-inner">
+      <div class="cover-text">
+        <span class="lbl rev">The Discovery Call</span>
+        <h2 class="cover-h2 rev" data-d="80">What we'll <em>cover</em> on the call</h2>
+        <p class="cover-sub rev" data-d="140">Come ready to talk about {data.coverAudienceNoun}. The more context you share, the more specific we can make your growth plan.</p>
+      </div>
+      <div class="cover-list">
+        <div class="cover-item rev">
+          <div class="cover-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="cover-item-text">{data.coverItems[0]}</div>
+        </div>
+        <div class="cover-item rev" data-d="60">
+          <div class="cover-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="cover-item-text">{data.coverItems[1]}</div>
+        </div>
+        <div class="cover-item rev" data-d="100">
+          <div class="cover-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="cover-item-text">{data.coverItems[2]}</div>
+        </div>
+        <div class="cover-item rev" data-d="140">
+          <div class="cover-check"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></div>
+          <div class="cover-item-text">{data.coverItems[3]}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BLAS V3 SLIDER ════════════════════════════════════════════════ -->
+<section class="blas3-section" id="process">
+  <div class="blas3-header">
+    <div class="blas3-hl rev">
+      <span class="lbl">Our methodology</span>
+      <h2 class="blas3-h2">Build. Launch. Adapt. <em>Scale.</em></h2>
+    </div>
+    <div class="blas3-right rev">
+      <p class="blas3-sub">One methodology. Four phases. A team of AI Growth Agents built specifically for {data.blasAudience}.</p>
+    </div>
+  </div>
+  <div class="blas3-showcase-wrap">
+    <div class="blas3-showcase">
+      <!-- DarkVeil background inside the showcase, behind the per-step
+           hue overlays. Each step's gradient tints the veil via
+           mix-blend-mode:hue. -->
+      <div class="blas3-veil" aria-hidden="true">
+        <DarkVeil
+          client:load
+          hueShift={245}
+          noiseIntensity={0.04}
+          scanlineIntensity={0}
+          speed={0.6}
+          scanlineFrequency={0}
+          warpAmount={2.5}
+        />
+      </div>
+      <div class="blas3-sc-bg active" data-scbg="build"></div>
+      <div class="blas3-sc-bg" data-scbg="launch"></div>
+      <div class="blas3-sc-bg" data-scbg="adapt"></div>
+      <div class="blas3-sc-bg" data-scbg="scale"></div>
+      <div class="blas3-sc-grain"></div>
+      <div class="blas3-sc-vig"></div>
+      <div class="blas3-sc-panel active">
+        <div class="blas3-sc-left">
+          <div class="blas3-sc-num">Build <span class="sc-n">· 01</span></div>
+          <h3 class="blas3-sc-name" set:html={data.blasBuildH3Html}></h3>
+        </div>
+        <div class="blas3-sc-right">
+          <div class="bm-card" id="bm-build">
+            <div class="bm-svc-grid">
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#f7c948,#ff6b35,#d94040)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 9h6M9 12h4"/></svg></span><span>Websites &amp; Funnels</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#0ff2c8,#f59e0b)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span><span>Copywriting</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#0ff2c8,#818cf8,#6d28d9)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span><span>Creatives</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#10b981,#6366f1,#a855f7)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span><span>Paid Media</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#0ff2c8,#00b4d8,#0056b3)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,6 12,13 22,6"/></svg></span><span>Email &amp; Automation</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#be123c,#e11d48,#fb923c)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span><span>SEO</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#f472b6,#c026d3,#7c3aed)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></span><span>Social Media</span></div>
+              <div class="bm-svc"><span class="bm-svc-icon" style="background:linear-gradient(135deg,#f7971e,#e8445e,#c11d6e)"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span><span>Sales &amp; Outreach</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="blas3-sc-panel">
+        <div class="blas3-sc-left">
+          <div class="blas3-sc-num">Launch <span class="sc-n">· 02</span></div>
+          <h3 class="blas3-sc-name" set:html={data.blasLaunchH3Html}></h3>
+        </div>
+        <div class="blas3-sc-right">
+          <div class="bm-deploy-wrap" id="bm-launch">
+            <div class="bm-deploy-header"><span class="bm-deploy-title">Deploying channels</span><span class="bm-deploy-count" id="bm-deploy-cnt">0 / 6</span></div>
+            <div class="bm-deploy-pbar"><div class="bm-deploy-pfill" id="bm-deploy-fill"></div></div>
+            <div class="bm-deploy-list">
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">Meta Ads</span><span class="bm-deploy-tag">Live</span></div>
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">Google Ads</span><span class="bm-deploy-tag">Live</span></div>
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">Email &amp; Automation</span><span class="bm-deploy-tag">Live</span></div>
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">SEO &amp; Content</span><span class="bm-deploy-tag">Live</span></div>
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">Social Media</span><span class="bm-deploy-tag">Live</span></div>
+              <div class="bm-deploy-row"><div class="bm-deploy-dot"><svg viewBox="0 0 10 10"><polyline points="1.5,5.5 4,8 8.5,2"/></svg></div><span class="bm-deploy-name">Outreach</span><span class="bm-deploy-tag">Live</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="blas3-sc-panel">
+        <div class="blas3-sc-left">
+          <div class="blas3-sc-num">Adapt <span class="sc-n">· 03</span></div>
+          <h3 class="blas3-sc-name" set:html={data.blasAdaptH3Html}></h3>
+        </div>
+        <div class="blas3-sc-right">
+          <div class="bm-metrics" id="bm-adapt">
+            <div class="bm-metric-card"><div class="bm-metric-info"><div class="bm-metric-name">Cost Per Lead</div><div class="bm-metric-tgt">Target: under $5</div><div class="bm-metric-bar"><div class="bm-metric-bar-fill" data-width="69"></div></div></div><div class="bm-metric-val" data-target="3.47" data-prefix="$" data-suffix="" data-dec="2">$0</div><div class="bm-status-pill">On target</div></div>
+            <div class="bm-metric-card"><div class="bm-metric-info"><div class="bm-metric-name">SLO Conversion Rate</div><div class="bm-metric-tgt">Target: 2–5%</div><div class="bm-metric-bar"><div class="bm-metric-bar-fill" data-width="64"></div></div></div><div class="bm-metric-val" data-target="3.2" data-prefix="" data-suffix="%" data-dec="1">0%</div><div class="bm-status-pill">On target</div></div>
+            <div class="bm-metric-card"><div class="bm-metric-info"><div class="bm-metric-name">Email Open Rate</div><div class="bm-metric-tgt">Target: 30%+</div><div class="bm-metric-bar"><div class="bm-metric-bar-fill" data-width="80"></div></div></div><div class="bm-metric-val" data-target="34" data-prefix="" data-suffix="%" data-dec="0">0%</div><div class="bm-status-pill">On target</div></div>
+            <div class="bm-metric-card"><div class="bm-metric-info"><div class="bm-metric-name">SLO vs Ad Spend</div><div class="bm-metric-tgt">Target: revenue ≥ spend</div><div class="bm-metric-bar"><div class="bm-metric-bar-fill" data-width="70"></div></div></div><div class="bm-metric-val" data-target="1.4" data-prefix="" data-suffix="x" data-dec="1">0x</div><div class="bm-status-pill">On target</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="blas3-sc-panel">
+        <div class="blas3-sc-left">
+          <div class="blas3-sc-num">Scale <span class="sc-n">· 04</span></div>
+          <h3 class="blas3-sc-name" set:html={data.blasScaleH3Html}></h3>
+        </div>
+        <div class="blas3-sc-right">
+          <div class="bm-scale-v3" id="bm-scale">
+            <div class="bm-sv3-kpi"><span class="bm-sv3-val">$0</span><span class="bm-sv3-delta">+0%</span></div>
+            <div class="bm-sv3-lbl">Monthly ad spend · example</div>
+            <svg class="bm-sv3-svg" viewBox="0 0 340 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="scaleGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#9550ff"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+                <linearGradient id="scaleAreaGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#9550ff" stop-opacity="0.35"/><stop offset="100%" stop-color="#9550ff" stop-opacity="0"/></linearGradient>
+              </defs>
+              <path class="bm-sv3-area" d="M10,95 C50,92 90,84 130,70 C170,55 200,35 240,20 C270,9 305,5 330,4 L330,95 Z"/>
+              <path class="bm-sv3-path" id="bm-sv3-line" d="M10,95 C50,92 90,84 130,70 C170,55 200,35 240,20 C270,9 305,5 330,4"/>
+              <circle class="bm-sv3-dot" cx="330" cy="4" r="5"/>
+            </svg>
+            <div class="bm-sv3-bars">
+              <div class="bm-sv3-row"><span class="bm-sv3-name">Meta</span><div class="bm-sv3-track"><div class="bm-sv3-fill" data-width="88"></div></div><span class="bm-sv3-roas">4.2×</span></div>
+              <div class="bm-sv3-row"><span class="bm-sv3-name">Google</span><div class="bm-sv3-track"><div class="bm-sv3-fill" data-width="55"></div></div><span class="bm-sv3-roas">2.8×</span></div>
+              <div class="bm-sv3-row"><span class="bm-sv3-name">Email</span><div class="bm-sv3-track"><div class="bm-sv3-fill" data-width="36"></div></div><span class="bm-sv3-roas">1.9×</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="blas3-sc-dots">
+        <button class="blas3-sc-dot active" data-si="0" type="button" aria-label="Phase 1: Build"></button>
+        <button class="blas3-sc-dot" data-si="1" type="button" aria-label="Phase 2: Launch"></button>
+        <button class="blas3-sc-dot" data-si="2" type="button" aria-label="Phase 3: Adapt"></button>
+        <button class="blas3-sc-dot" data-si="3" type="button" aria-label="Phase 4: Scale"></button>
+      </div>
+      <div class="blas3-sc-pbar" id="blas3Pbar"></div>
+    </div>
+    <div class="blas3-mobile-tabs">
+      <button class="bmt active" data-si="0">Build</button>
+      <button class="bmt" data-si="1">Launch</button>
+      <button class="bmt" data-si="2">Adapt</button>
+      <button class="bmt" data-si="3">Scale</button>
+    </div>
+  </div>
+  <div class="blas3-cols-wrap">
+    <div class="blas3-grid">
+      <div class="blas3-col rev" data-col="build" data-ci="0"><div class="blas3-col-num">01</div><div class="blas3-col-word">Build</div></div>
+      <div class="blas3-col rev" data-col="launch" data-ci="1"><div class="blas3-col-num">02</div><div class="blas3-col-word">Launch</div></div>
+      <div class="blas3-col rev" data-col="adapt" data-ci="2"><div class="blas3-col-num">03</div><div class="blas3-col-word">Adapt</div></div>
+      <div class="blas3-col rev" data-col="scale" data-ci="3"><div class="blas3-col-num">04</div><div class="blas3-col-word">Scale</div></div>
+    </div>
+  </div>
+</section>
+
+
+<script is:inline>
+(function(){
+  var bgs=document.querySelectorAll('.blas3-sc-bg'),panels=document.querySelectorAll('.blas3-sc-panel'),dots=document.querySelectorAll('.blas3-sc-dot');
+  if(!bgs.length)return;
+  var cur=0,n=bgs.length,INTERVAL=4800,buildT=[],launchT=[],adaptT=[],scaleTs=[],scaleR,scaleT;
+  function startBuild(){document.querySelectorAll('#bm-build .bm-svc').forEach(function(el,i){buildT.push(setTimeout(function(){el.classList.add('in');},i*160+150));});}
+  function resetBuild(){buildT.forEach(clearTimeout);buildT=[];document.querySelectorAll('#bm-build .bm-svc').forEach(function(el){el.classList.remove('in');});}
+  function startLaunch(){var rows=document.querySelectorAll('#bm-launch .bm-deploy-row'),countEl=document.getElementById('bm-deploy-cnt'),fillEl=document.getElementById('bm-deploy-fill'),total=rows.length;rows.forEach(function(row,i){launchT.push(setTimeout(function(){row.classList.add('in');if(countEl)countEl.textContent=(i+1)+' / '+total;if(fillEl)fillEl.style.width=((i+1)/total*100)+'%';},i*370+180));});}
+  function resetLaunch(){launchT.forEach(clearTimeout);launchT=[];document.querySelectorAll('#bm-launch .bm-deploy-row').forEach(function(r){r.classList.remove('in');});var c=document.getElementById('bm-deploy-cnt'),f=document.getElementById('bm-deploy-fill');if(c)c.textContent='0 / 6';if(f)f.style.width='0%';}
+  function startAdapt(){document.querySelectorAll('#bm-adapt .bm-metric-card').forEach(function(card,i){var d=i*250+150;adaptT.push(setTimeout(function(){card.classList.add('in');var bf=card.querySelector('.bm-metric-bar-fill');if(bf)bf.style.width=bf.dataset.width+'%';var ve=card.querySelector('.bm-metric-val');if(ve){var tgt=+ve.dataset.target,prefix=ve.dataset.prefix||'',suffix=ve.dataset.suffix||'',dec=+(ve.dataset.dec||0),s=performance.now(),dur=1200;function tick(now){var t=Math.min((now-s)/dur,1),ease=1-Math.pow(1-t,3);ve.textContent=prefix+(ease*tgt).toFixed(dec)+suffix;if(t<1)requestAnimationFrame(tick);}requestAnimationFrame(tick);}},d));adaptT.push(setTimeout(function(){var p=card.querySelector('.bm-status-pill');if(p)p.classList.add('in');},d+1350));});}
+  function resetAdapt(){adaptT.forEach(clearTimeout);adaptT=[];document.querySelectorAll('#bm-adapt .bm-metric-card').forEach(function(c){c.classList.remove('in');});document.querySelectorAll('#bm-adapt .bm-metric-bar-fill').forEach(function(f){f.style.width='0%';});document.querySelectorAll('#bm-adapt .bm-metric-val').forEach(function(el){el.textContent=(el.dataset.prefix||'')+(0).toFixed(+(el.dataset.dec||0))+(el.dataset.suffix||'');});document.querySelectorAll('#bm-adapt .bm-status-pill').forEach(function(p){p.classList.remove('in');});}
+  function startScale(){var path=document.getElementById('bm-sv3-line');if(path){var len=path.getTotalLength();path.style.strokeDasharray=len;path.style.strokeDashoffset=len;path.style.transition='none';scaleT=setTimeout(function(){path.style.transition='stroke-dashoffset 2.2s cubic-bezier(.16,1,.3,1)';path.style.strokeDashoffset='0';},80);}var valEl=document.querySelector('#bm-scale .bm-sv3-val'),dltEl=document.querySelector('#bm-scale .bm-sv3-delta'),s=performance.now(),dur=2400,tgt=284700;function tick(now){var t=Math.min((now-s)/dur,1),ease=1-Math.pow(1-t,3);if(valEl)valEl.textContent='$'+Math.round(ease*tgt).toLocaleString();if(dltEl)dltEl.textContent='+'+Math.round(ease*312)+'%';if(t<1)scaleR=requestAnimationFrame(tick);}scaleR=requestAnimationFrame(tick);document.querySelectorAll('#bm-scale .bm-sv3-row').forEach(function(row,i){scaleTs.push(setTimeout(function(){row.classList.add('in');var fill=row.querySelector('.bm-sv3-fill');if(fill)fill.style.width=fill.dataset.width+'%';},i*240+750));});}
+  function resetScale(){cancelAnimationFrame(scaleR);clearTimeout(scaleT);scaleTs.forEach(clearTimeout);scaleTs=[];var path=document.getElementById('bm-sv3-line');if(path){var len=path.getTotalLength();path.style.transition='none';path.style.strokeDasharray=len;path.style.strokeDashoffset=len;}var v=document.querySelector('#bm-scale .bm-sv3-val'),d=document.querySelector('#bm-scale .bm-sv3-delta');if(v)v.textContent='$0';if(d)d.textContent='+0%';document.querySelectorAll('#bm-scale .bm-sv3-row').forEach(function(row){row.classList.remove('in');var fill=row.querySelector('.bm-sv3-fill');if(fill)fill.style.width='0%';});}
+  var animStart=[startBuild,startLaunch,startAdapt,startScale],animReset=[resetBuild,resetLaunch,resetAdapt,resetScale];
+  var mtabs=document.querySelectorAll('.bmt'),bcols=document.querySelectorAll('.blas3-col');
+  function goTo(i){animReset[cur]();bgs[cur].classList.remove('active');panels[cur].classList.remove('active');dots[cur].classList.remove('active');if(mtabs[cur])mtabs[cur].classList.remove('active');if(bcols[cur])bcols[cur].classList.remove('active');cur=i;bgs[cur].classList.add('active');panels[cur].classList.add('active');dots[cur].classList.add('active');if(mtabs[cur])mtabs[cur].classList.add('active');if(bcols[cur])bcols[cur].classList.add('active');animStart[cur]();}
+  function restartTimer(){clearInterval(timer);timer=setInterval(function(){goTo((cur+1)%n);},INTERVAL);}
+  var timer=setInterval(function(){goTo((cur+1)%n);},INTERVAL);
+  dots.forEach(function(d,i){d.addEventListener('click',function(){restartTimer();goTo(i);});});
+  mtabs.forEach(function(btn,i){btn.addEventListener('click',function(){restartTimer();goTo(i);});});
+  bcols.forEach(function(col,i){col.addEventListener('mouseenter',function(){restartTimer();goTo(i);});});
+  if(bcols[0])bcols[0].classList.add('active');
+  var showcase=document.querySelector('.blas3-showcase'),txStart=0;
+  if(showcase){showcase.addEventListener('touchstart',function(e){txStart=e.touches[0].clientX;},{passive:true});showcase.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-txStart;if(Math.abs(dx)>40){restartTimer();goTo(dx<0?(cur+1)%n:(cur-1+n)%n);}},{passive:true});}
+  startBuild();
+})();
+</script>
+
+<script is:inline define:vars={{ calendarAudience: data.calendarAudience }}>
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  var name     = p.get('name')  || '';
+  var startISO = p.get('start') || '';
+  var endISO   = p.get('end')   || '';
+  var loc      = p.get('loc')   || 'Zoom';
+  var tz       = p.get('tz')    || '';
+
+  if (name) {
+    var firstName = name.split(' ')[0];
+    var nameEl = document.getElementById('js-vid-name');
+    if (nameEl) nameEl.textContent = ' ' + firstName;
+  }
+
+  if (startISO) {
+    var startDate = new Date(startISO);
+    var endDate   = endISO ? new Date(endISO) : new Date(startDate.getTime() + 45 * 60 * 1000);
+
+    var dateOpts = { weekday:'long', month:'long', day:'numeric' };
+    var timeOpts = { hour:'numeric', minute:'2-digit' };
+    var tzOpts   = { timeZoneName:'short' };
+    if (tz) { dateOpts.timeZone = tz; timeOpts.timeZone = tz; tzOpts.timeZone = tz; }
+
+    var dateStr = startDate.toLocaleDateString('en-US', dateOpts);
+    var timeStr = startDate.toLocaleTimeString('en-US', timeOpts);
+    var tzStr   = startDate.toLocaleTimeString('en-US', tzOpts).split(' ').pop();
+
+    var dateEl = document.getElementById('js-call-date');
+    var timeEl = document.getElementById('js-call-time');
+    if (dateEl) dateEl.textContent = dateStr;
+    if (timeEl) timeEl.textContent = timeStr + ' ' + tzStr;
+
+    var wrap = document.getElementById('call-time-wrap');
+    var fallback = document.getElementById('call-time-fallback');
+    if (wrap) wrap.style.display = '';
+    if (fallback) fallback.style.display = 'none';
+
+    // Countdown
+    var cdEl = document.getElementById('js-countdown');
+    function tick(){
+      var diff = startDate.getTime() - Date.now();
+      if (!cdEl) return;
+      if (diff <= 0) { cdEl.textContent = 'Live now'; return; }
+      var d = Math.floor(diff/86400000);
+      var h = Math.floor((diff%86400000)/3600000);
+      var m = Math.floor((diff%3600000)/60000);
+      var s = Math.floor((diff%60000)/1000);
+      var parts = [];
+      if (d) parts.push(d + 'd');
+      if (h || d) parts.push(h + 'h');
+      parts.push(m + 'm');
+      parts.push(s + 's');
+      cdEl.textContent = parts.join(' ');
+    }
+    tick(); setInterval(tick, 1000);
+
+    function toCalDate(d) {
+      return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+    }
+    var s = toCalDate(startDate), e = toCalDate(endDate);
+    var title   = 'Discovery Call with WRKS Online';
+    var details = 'Come prepared with ' + calendarAudience + ' goals and questions.' + (loc ? ' Join here: ' + loc : '');
+
+    var gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text='     + encodeURIComponent(title)
+      + '&dates='    + s + '/' + e
+      + '&details='  + encodeURIComponent(details)
+      + '&location=' + encodeURIComponent(loc);
+    var gcalLink = document.getElementById('gcal-link');
+    if (gcalLink) gcalLink.href = gcalUrl;
+
+    var outlookUrl = 'https://outlook.live.com/calendar/0/deeplink/compose'
+      + '?path=/calendar/action/compose&rru=addevent'
+      + '&subject='  + encodeURIComponent(title)
+      + '&startdt='  + encodeURIComponent(startDate.toISOString())
+      + '&enddt='    + encodeURIComponent(endDate.toISOString())
+      + '&body='     + encodeURIComponent(details)
+      + '&location=' + encodeURIComponent(loc);
+    var outlookLink = document.getElementById('outlook-link');
+    if (outlookLink) outlookLink.href = outlookUrl;
+
+    var ics = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//WRKS Online//EN',
+      'BEGIN:VEVENT',
+      'DTSTART:'     + s,
+      'DTEND:'       + e,
+      'SUMMARY:'     + title,
+      'DESCRIPTION:' + details.replace(/,/g,'\\,'),
+      'LOCATION:'    + loc,
+      'END:VEVENT', 'END:VCALENDAR'
+    ].join('\r\n');
+    var icalLink = document.getElementById('ical-link');
+    if (icalLink) icalLink.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+
+    var calButtons = document.getElementById('cal-buttons');
+    if (calButtons) calButtons.style.display = '';
+  }
+})();
+</script>
+
+</BaseLayout>

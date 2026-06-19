@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CalWidget from '../components/CalWidget.astro';
+// Ported from wrksonline.com /booking/law-firms (Cal.com booking step).
+// CalWidget still points at the WRKS calendar id — swap it for Bill's. After
+// booking it redirects to /guide.
+---
+
+<BaseLayout
+  title="Book a call | Bill Fanter"
+  description="Book your call."
+  wfPageId="funnel-booking"
+  extraHeadHtml='<meta name="robots" content="noindex, nofollow">'
+>
+
+<style is:global>
+/* WRKS funnel design tokens (ported — reconfigure for Bill). */
+:root{
+  --bg:#000;--bg1:#111111;--t0:#F0EDE7;--t1:#bdbdbd;--t2:#8a8a8a;
+  --pu:#6214d9;--pu3:#9550ff;
+  --sans:'DM Sans',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
+}
+body{background:var(--bg);color:var(--t0)}
+@media(min-width:1025px){
+  .page-wrap{padding-top:68px;min-height:100vh;display:flex;flex-direction:column}
+  .dc-layout{flex:1;display:grid;grid-template-columns:360px 1fr;gap:48px;max-width:1200px;width:100%;margin:0 auto;padding:0 48px}
+  .dc-copy{position:relative}
+  .dc-copy-inner{padding:120px 0 40px;display:flex;flex-direction:column;position:sticky;top:68px;align-self:start}
+  .dc-cal{display:flex;flex-direction:column;padding:120px 0 60px 40px}
+  .dc-cal-frame{display:block;width:100%}
+}
+@media(max-width:1024px){
+  html{scroll-behavior:smooth}
+  .page-wrap{padding-top:68px;flex:1;display:flex;flex-direction:column}
+  .dc-layout{display:flex;flex-direction:column}
+  .dc-copy-inner{padding:50px 32px 12px;display:flex;flex-direction:column}
+  .dc-cal{padding:0 32px 50px;margin-top:-2px}
+}
+@media(max-width:600px){
+  .dc-copy-inner{padding:50px 20px 32px}
+  .dc-cal{padding:0 20px 50px}
+}
+.dc-lbl{font-size:14px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--pu3);display:flex;align-items:center;gap:8px;margin-bottom:22px}
+.dc-lbl::before{content:'';width:20px;height:1px;background:var(--pu3);opacity:.5}
+.dc-h1{font-size:clamp(28px,3.2vw,44px);font-weight:700;line-height:1.06;letter-spacing:-.038em;margin-bottom:18px;color:var(--t0)}
+.dc-h1 em{font-size:1.04em;color:var(--t0)}
+.dc-sub{font-size:18px;color:var(--t1);line-height:1.8;margin-bottom:20px}
+.dc-disclaimer{font-size:12px;color:rgba(255,255,255,.45);line-height:1.7;margin-top:20px;padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:8px;background:rgba(255,255,255,.04)}
+
+/* ── Pre-approved progress bar ── */
+.progress-wrap{margin:0 0 22px}
+.progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.progress-meta-lbl{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#bdbdbd}
+.progress-meta-pct{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
+.progress-track{width:100%;height:9px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden}
+.progress-fill{width:70%;height:100%;border-radius:100px;background:linear-gradient(90deg,#6a11ff 0%,#9550ff 55%,#bf82ff 100%);position:relative;overflow:hidden}
+.progress-fill::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18) 0%,transparent 60%);border-radius:100px}
+.progress-fill::after{content:'';position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.38) 50%,transparent 100%);animation:liquid-shine 2.2s ease-in-out infinite}
+@keyframes liquid-shine{0%{transform:translateX(-120%)}100%{transform:translateX(260%)}}
+
+.pg-foot{padding:16px 0;border-top:1px solid rgba(255,255,255,.05);background:var(--bg)}
+.pg-foot-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1200px;margin:0 auto;padding:0 56px;width:100%}
+.pg-foot-legal{font-size:12px;color:rgba(255,255,255,.45)}
+.pg-foot-links{display:flex;align-items:center;gap:20px}
+.pg-foot-links a{font-size:12px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .15s}
+.pg-foot-links a:hover{color:var(--t0)}
+@media(max-width:1024px){.pg-foot-inner{padding:0 32px}}
+@media(max-width:760px){.pg-foot-inner{padding:0 24px}}
+</style>
+
+<div class="page-wrap">
+
+  <div class="dc-layout">
+
+    <div class="dc-copy">
+      <div class="dc-copy-inner">
+        <div class="progress-wrap rev">
+          <div class="progress-meta">
+            <span class="progress-meta-lbl">Your Application Has Been Pre-Approved!</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        <h1 class="dc-h1 rev" data-d="40">Final step: <em>book a call</em></h1>
+        <p class="dc-sub rev" data-d="80"><strong style="color:#ffffff">DISCLAIMER:</strong> Catalyst is built for established law firms already running marketing. If you're early-stage or unsure of fit, the call may be cancelled or redirected.</p>
+      </div>
+    </div>
+
+    <div class="dc-cal" id="book">
+      <div class="dc-cal-frame">
+        <CalWidget
+          calendarId="eMLQCwCB1YdQoBnxWFu8"
+          slotDuration={45}
+          redirectUrl="/guide"
+          passName={true}
+        />
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="pg-foot">
+    <div class="pg-foot-inner">
+      <p class="pg-foot-legal">&copy; 2026 WRKS Online. All Rights Reserved.</p>
+      <div class="pg-foot-links">
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/terms-conditions">Terms</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</BaseLayout>
