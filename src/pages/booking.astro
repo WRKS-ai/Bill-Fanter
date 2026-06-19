@@ -20,6 +20,9 @@ import CalWidget from '../components/CalWidget.astro';
   --pu:#1754d8;--pu3:#3b82f6;
   --sans:'Geist',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
 }
+/* Restore border-box: BaseLayout's scoped `*` reset doesn't reach this page's
+   own elements, so without this their padding overflows the viewport on mobile. */
+*,*::before,*::after{box-sizing:border-box}
 /* !important overrides BaseLayout's scoped body reset (#fff), which otherwise wins
    on specificity and turns this dark page white (hiding the white copy). */
 body{background:var(--bg) !important;color:var(--t0)}

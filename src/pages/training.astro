@@ -28,6 +28,10 @@ import Reviews from '../components/sections/Reviews.astro';
   /* Define here too so the Reviews .bf-container constrains on this non-.bf-page page. */
   --bf-container:1440px;
 }
+/* Restore border-box: BaseLayout's scoped `*` reset doesn't reach this page's
+   own elements, so without this their padding overflows the viewport (horizontal
+   scroll) on mobile. */
+*,*::before,*::after{box-sizing:border-box}
 /* !important overrides BaseLayout's scoped body reset (#fff), which otherwise wins
    on specificity and turns this dark VSL page white (hiding all the white text). */
 body{background:var(--bg) !important;color:var(--t0)}
@@ -178,8 +182,12 @@ body.vsl-locked{overflow:hidden}
 </section>
 </div><!-- /.vsl-page (hero fills the first screen) -->
 
-<!-- Primary social-proof review section, shown below the VSL + CTA. -->
-<div class="vsl-reviews">
+<!-- Primary social-proof review section, shown below the VSL + CTA. Wrapped in
+     .bf-page so the Reviews component gets the design-system tokens it needs
+     (--bf-bg-2 light background, --bf-container width, text colors) — without it,
+     this non-.bf-page funnel page left the section transparent (dark headline
+     invisible on black) and the container unconstrained (mobile overflow). -->
+<div class="bf-page vsl-reviews">
 <Reviews showCta={false} />
 </div>
 
