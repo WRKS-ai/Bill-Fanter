@@ -274,11 +274,11 @@ const learnCards = [
         <img class="mc-bento-device" src="/assets/664a5b263659c7265be280ad/664c28d718c7d550c67838bb_masterclass%20image-2.webp" alt="" aria-hidden="true" loading="lazy" />
       </div>
       <div class="bf-bento__tile bf-bento__tile--quote">
-        <p class="bf-bento__quote-text">&ldquo;Bill teaches a complex subject and presents it in a way that is easy to process and understand. He has big heart and cares about his students.&rdquo;</p>
+        <p class="bf-bento__quote-text">&ldquo;Thank you Bill for your mentorship! I'm a huge advocate of your patient &amp; disciplined approach to trading. Learning the correct way to identify &amp; trade liquidity while managing risk is a valuable skill that can be lifechanging when executed properly!&rdquo;</p>
         <div class="bf-bento__quote-footer">
           <div class="bf-bento__quote-author">
-            <div class="bf-bento__quote-name">David Lawson</div>
-            Founder Icegreen
+            <div class="bf-bento__quote-name">John Gordy</div>
+            Chief Financial Officer at DroneUp
           </div>
           <a class="bf-bento__quote-link" href="/student-comments">Read more reviews <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
@@ -511,6 +511,11 @@ const learnCards = [
   main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo img { object-position: left top; }
   @media (max-width: 980px) {
     main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo { aspect-ratio: 4 / 3; }
+    /* Mobile: copy + CTA come BEFORE the bento tiles, and the video reel spans
+       the full container width (no centered 320px cap). */
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__copy { order: 1; }
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__bento { order: 2; max-width: none; }
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__video { max-width: none; }
   }
 
   /* Desktop: even 150px visual top/bottom on the dot-grid stage, matching the
@@ -702,6 +707,9 @@ const learnCards = [
   /* WHAT YOU'LL LEARN — 6-point curriculum laid over the blue GridDistortion
      card. The card grows with the grid instead of the fixed spotlight aspect. */
   .bf-page .mc-learn-spotlight .bf-spotlight__distortion { position: absolute; inset: 0; z-index: 0; }
+  /* No own section padding — sit flush like the homepage spotlight; neighbours
+     supply the vertical rhythm. (Keep the 24px side gutter for the full-bleed card.) */
+  .bf-page .mc-learn-spotlight .bf-spotlight { padding-top: 0; padding-bottom: 0; }
   .bf-page .mc-learn-spotlight .bf-spotlight__card {
     aspect-ratio: auto;
     min-height: 0;
@@ -722,16 +730,17 @@ const learnCards = [
     flex-direction: column;
     gap: 32px;
     justify-content: center;
-    text-align: center;
+    /* Left-aligned to match the homepage spotlight. */
+    text-align: left;
   }
-  .bf-page .mc-learn-spotlight__h2 { max-width: 720px; margin: 0 auto; }
+  .bf-page .mc-learn-spotlight__h2 { max-width: 720px; margin: 0; }
   .bf-page .mc-learn-spotlight__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     width: 100%;
     max-width: 920px;
-    margin: 0 auto;
+    margin: 0;
     text-align: left;
   }
   .bf-page .mc-learn-spotlight__item {
