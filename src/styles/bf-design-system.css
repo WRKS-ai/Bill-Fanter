@@ -407,12 +407,16 @@
   .bf-hero__cta .bf-btn { min-width: 180px; padding: 16px 28px; font-size: 16px; }
   .bf-hero__trust {
     display: inline-flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 14px;
+    gap: 6px 14px;
     margin-top: 36px;
     font-size: 14px;
     color: var(--bf-text-muted);
   }
+  /* Keep each unit (label / stars / count) intact so they wrap as whole groups
+     in a narrow column instead of the words breaking mid-phrase. */
+  .bf-hero__trust > * { white-space: nowrap; }
   .bf-hero__trust-stars { display: inline-flex; gap: 2px; color: var(--bf-gold); }
   .bf-hero__trust-stars .bf-star { width: 16px; height: 16px; }
   .bf-hero__trust-source { font-weight: 600; color: var(--bf-text); }

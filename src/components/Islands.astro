@@ -111,6 +111,10 @@
      rows. Content is read from the static .bf-benefit fallback already in the
      markup, so the source of truth stays in HTML (no duplication). */
   const mountBenefits = () => {
+    // On phones AnimatedList isn't loaded (see the gated import) — leave the
+    // static .bf-benefit rows in place rather than clearing them for a list
+    // that will never render.
+    if (!AnimatedList) return;
     // Mount EVERY benefits list on the page (homepage Community + the webinar
     // "Before you place" + the watchlist "What's inside" lists all opt in via
     // [data-benefits-list]), not just the first.
@@ -193,7 +197,10 @@
     const phone = window.matchMedia('(max-width: 767px)').matches;
     const [gr, al, cn, gd] = await Promise.all([
       need('[data-grainient]') ? import('./Grainient/Grainient.jsx') : Promise.resolve(null),
-      need('[data-benefits-list]') ? import('./AnimatedList/AnimatedList.jsx') : Promise.resolve(null),
+      // Phones: skip AnimatedList (~45KB + its render/animation CPU). The static
+      // .bf-benefit rows already in the markup are the fallback, so the list
+      // still renders — it just doesn't animate (imperceptible on mobile anyway).
+      (need('[data-benefits-list]') && !phone) ? import('./AnimatedList/AnimatedList.jsx') : Promise.resolve(null),
       import('./CardNav/CardNav.jsx'),
       (need('[data-griddistortion]') && !phone) ? import('./GridDistortion/GridDistortion.jsx') : Promise.resolve(null),
     ]);
