@@ -1,15 +1,22 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-// Ported from wrksonline.com /catalyst/law-firms (VSL + 2-step form funnel).
-// Not wired to a backend — the form redirects straight to /booking so the funnel
-// is navigable. Reconfigure copy / video / qualification for Bill.
+import Reviews from '../components/sections/Reviews.astro';
+// Bill's VSL ad funnel: training (this page) -> /booking -> /guide.
+// READY FOR ADS once you drop in three things:
+//   1. VIMEO — replace the .vsl-video placeholder below with Bill's <iframe>.
+//   2. PIXEL — add the Meta/GHL pixel <script> into extraHeadHtml below.
+//   3. GHL API — the form currently just redirects to /booking; POST the lead
+//      to your GHL endpoint at the marked TODO in the submit handler.
 ---
 
 <BaseLayout
-  title="Catalyst | Bill Fanter"
-  description="Watch the training, then book a call."
-  wfPageId="funnel-catalyst"
-  extraHeadHtml='<meta name="robots" content="noindex, nofollow">'
+  title="Free Options Training | Bill Fanter"
+  description="Watch the free training, then book a call with Bill."
+  wfPageId="funnel-training"
+  extraHeadHtml={`
+    <meta name="robots" content="noindex, nofollow" />
+    <!-- TODO(ads): paste the Meta / GHL tracking pixel <script> here. -->
+  `}
 >
 
 <style is:global>
@@ -163,6 +170,10 @@ body.vsl-locked{overflow:hidden}
   </button>
   <p class="vsl-cta-hint">Takes less than 30 seconds</p>
 </section>
+</div><!-- /.vsl-page (hero fills the first screen) -->
+
+<!-- Primary social-proof review section, shown below the VSL + CTA. -->
+<Reviews showCta={false} />
 
 <!-- ══ MODAL ═══════════════════════════════════════════════════ -->
 <div class="vsl-modal" id="vsl-modal" role="dialog" aria-modal="true" aria-labelledby="vsl-modal-title">
@@ -242,7 +253,6 @@ body.vsl-locked{overflow:hidden}
     </div>
   </div>
 </footer>
-</div><!-- /.vsl-page -->
 
 <!-- Vimeo player + click-to-unmute logic removed with the embed; re-add when Bill's video is in. -->
 
@@ -338,8 +348,12 @@ body.vsl-locked{overflow:hidden}
     btn.disabled = true;
     btn.textContent = 'Submitting…';
 
-    // Not wired to a backend yet — go straight to /booking with the captured
-    // details as query params. (Re-add lead submission + qualification later.)
+    // TODO(ads/GHL): POST the lead to your GHL endpoint before redirecting, e.g.
+    //   await fetch('<YOUR_GHL_WEBHOOK_OR_API>', {
+    //     method:'POST', headers:{'Content-Type':'application/json'},
+    //     body: JSON.stringify({ name, email, phone, revenue })
+    //   });
+    // For now it just carries the lead to /booking via query params.
     var params = new URLSearchParams();
     if (name)    params.set('name', name);
     if (email)   params.set('email', email);
