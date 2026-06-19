@@ -505,6 +505,13 @@ const learnCards = [
      bottom (masterclass only), and drop the "Read more reviews" link. */
   main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--quote-on-gradient { order: 1; }
   main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile-link { display: none; }
+  /* Bill sits near the top-left of the photo, so the default center cover-crop
+     cut his head (worst on the narrower mobile tile). Anchor the crop top-left
+     and make the mobile tile a bit squarer so more of him stays in frame. */
+  main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo img { object-position: left top; }
+  @media (max-width: 980px) {
+    main.bf-page:not([data-cardnav-variant="split"]) .bf-hero-split__tile--photo { aspect-ratio: 4 / 3; }
+  }
 
   /* Desktop: even 150px visual top/bottom on the dot-grid stage, matching the
      /free-watchlist hero (hero heading 150px below the nav; 150px below the

@@ -131,6 +131,11 @@ const {
     }
     .bf-hero-split__video {
       grid-row: auto;
+      /* Explicit width: the tile's only child (the iframe) is absolutely
+         positioned, so without a definite width `margin: 0 auto` collapses the
+         grid item to 0 (and the aspect-ratio then yields 0 height → video
+         vanished on mobile). */
+      width: 100%;
       max-width: 320px;
       margin: 0 auto;
     }
