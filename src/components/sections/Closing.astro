@@ -221,12 +221,14 @@ const reviews = [
        author sitting above it (no more overlap). */
     .bf-closing__slider-foot { left: 0; right: 0; bottom: 20px; justify-content: center; gap: 16px; }
     .bf-closing__more { font-size: 13px; }
-    /* Truncate over-long quotes so they never collide with the author + foot. */
+    /* Truncate over-long quotes with a trailing ellipsis so they never collide
+       with the author + foot (fewer lines so the "…" stays inside the tile). */
     .bf-closing__slide .bf-closing__tile-quote-text {
       display: -webkit-box;
-      -webkit-line-clamp: 7;
+      -webkit-line-clamp: 5;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      text-overflow: ellipsis;
     }
     /* Pills wrap cleanly, one after another, with no clipping. */
     .bf-closing__cta-pills { padding: 0 4px; }

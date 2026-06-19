@@ -274,7 +274,7 @@ const learnCards = [
         <img class="mc-bento-device" src="/assets/664a5b263659c7265be280ad/664c28d718c7d550c67838bb_masterclass%20image-2.webp" alt="" aria-hidden="true" loading="lazy" />
       </div>
       <div class="bf-bento__tile bf-bento__tile--quote">
-        <p class="bf-bento__quote-text">&ldquo;I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor, I learned things in Bill's class that I never had before &mdash; and now I have the skills to provide a lifetime of return.&rdquo;</p>
+        <p class="bf-bento__quote-text">&ldquo;I can't say enough about Bill Fanter! This masterclass was a true eye-opener. As a former financial advisor, I learned things in Bill's class that I never had before, and now I have the skills to provide a lifetime of return.&rdquo;</p>
         <div class="bf-bento__quote-footer">
           <div class="bf-bento__quote-author">
             <div class="bf-bento__quote-name">Dan Funderburk, MBA</div>
@@ -757,11 +757,16 @@ const learnCards = [
     grid-template-columns: 44px 1fr;
     gap: 16px;
     align-items: start;
-    padding: 20px 22px;
+    /* No left padding so the numbers align to the container's left column. */
+    padding: 20px 22px 20px 0;
     border-radius: 12px;
     /* Tiles removed — text sits directly on the distortion (exploration). */
     background: none;
     border: 0;
+  }
+  @media (max-width: 720px) {
+    /* Tighter number column on mobile so the digits don't eat horizontal space. */
+    .bf-page .mc-learn-spotlight__item { grid-template-columns: 26px 1fr; gap: 12px; }
   }
   .bf-page .mc-learn-spotlight__num {
     font-family: 'Geist Mono', ui-monospace, monospace;

@@ -561,8 +561,9 @@
     justify-content: space-between;
   }
   .bf-bento__quote-text {
-    /* Match the homepage MegaBento review tile (.bf-mega__quote: 20px / 1.45). */
-    font-size: 20px;
+    /* 20px on desktop (matches the homepage MegaBento .bf-mega__quote) down to
+       16px on mobile (matches the footer review) so it doesn't clip in the tile. */
+    font-size: clamp(16px, 2.5vw, 20px);
     line-height: 1.45;
     font-weight: 500;
     letter-spacing: -0.015em;
