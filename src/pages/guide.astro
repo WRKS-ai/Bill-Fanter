@@ -67,6 +67,9 @@ import AboutBill from '../components/sections/AboutBill.astro';
 </BaseLayout>
 
 <style>
+  /* No nav above this page, so drop the .bf-page 72px nav-clearance padding —
+     it was showing as a white band between the dark hero and the reviews. */
+  main.bf-page { padding-top: 0 !important; }
   .guide-confirm {
     background: #0a0a0a;
     color: #fff;
