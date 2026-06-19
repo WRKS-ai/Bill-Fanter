@@ -1,7 +1,184 @@
 ---
-import GuideLayout from '../layouts/GuideLayout.astro';
-import { GUIDES } from '../data/guides';
-// Ported funnel guide page (post-booking confirmation). Uses the 'law-firms'
-// guide data as a placeholder — reconfigure src/data/guides.ts for Bill.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import Reviews from '../components/sections/Reviews.astro';
+import AboutBill from '../components/sections/AboutBill.astro';
+// Post-booking confirmation page (funnel: /training -> /booking -> /guide).
+// Top section = the booking confirmation (kept from the funnel). Everything below
+// uses Bill's canonical site components.
 ---
-<GuideLayout data={GUIDES['law-firms']} />
+
+<BaseLayout
+  title="You're booked | Bill Fanter"
+  description="Your call with Bill is booked — confirm and add it to your calendar."
+  wfPageId="funnel-guide"
+  extraHeadHtml='<meta name="robots" content="noindex, nofollow">'
+>
+
+  {/* ── TOP SECTION: booking confirmation (dark) ── */}
+  <section class="guide-confirm">
+    <div class="guide-confirm-inner">
+      <p class="guide-confirm-label">Important: please confirm your call</p>
+      <h1 class="guide-confirm-h1">Hey<span id="js-vid-name"></span>, your call is booked. Please confirm via text or email.</h1>
+      <p class="guide-confirm-sub">Reply to the text or email we sent to lock in your call. Someone from Bill's team may reach out to confirm the date and time.</p>
+
+      <div class="booking-card">
+        <div class="booking-time-row" id="call-time-wrap" style="display:none">
+          <div class="booking-time-block">
+            <span class="booking-time-date" id="js-call-date"></span>
+            <span class="booking-time-time" id="js-call-time"></span>
+          </div>
+          <div class="booking-countdown-block">
+            <span class="booking-countdown-lbl">Starts in</span>
+            <span class="booking-countdown-val" id="js-countdown"></span>
+          </div>
+        </div>
+        <div class="booking-fallback" id="call-time-fallback">
+          Your call time is in the text and email we just sent.
+        </div>
+        <div class="booking-cal" id="cal-buttons" style="display:none">
+          <span class="booking-cal-lbl">Add to calendar</span>
+          <div class="booking-cal-btns">
+            <a href="#" id="gcal-link" target="_blank" rel="noopener" class="cal-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Google
+            </a>
+            <a href="#" id="ical-link" download="Bill-Fanter-Call.ics" class="cal-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/><polyline points="12 6 12 12 16 14"/></svg>
+              Apple
+            </a>
+            <a href="#" id="outlook-link" target="_blank" rel="noopener" class="cal-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><polyline points="3 8 12 14 21 8"/></svg>
+              Outlook
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Below the top section: Bill's canonical site components ── */}
+  <main class="bf-page">
+    <Reviews showCta={false} />
+    <AboutBill />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .guide-confirm {
+    background: #0a0a0a;
+    color: #fff;
+    text-align: center;
+    padding: clamp(72px, 12vh, 140px) 24px clamp(56px, 10vh, 96px);
+  }
+  .guide-confirm-inner { max-width: 760px; margin: 0 auto; }
+  .guide-confirm-label {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #3b82f6; margin: 0 0 22px;
+  }
+  .guide-confirm-h1 {
+    font-size: clamp(28px, 4vw, 46px); font-weight: 700; line-height: 1.08; letter-spacing: -0.03em;
+    color: #fff; margin: 0 auto 20px; max-width: 720px;
+  }
+  .guide-confirm-sub {
+    font-size: clamp(16px, 1.4vw, 18px); line-height: 1.6; color: rgba(255, 255, 255, 0.7);
+    margin: 0 auto; max-width: 540px;
+  }
+
+  /* ── Flat booking confirmation card ── */
+  .booking-card { max-width: 680px; margin: 48px auto 0; text-align: center; }
+  .booking-time-row { display: flex; justify-content: center; align-items: stretch; padding-bottom: 32px; }
+  .booking-time-block { display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 0 24px; border-right: 1px solid rgba(255, 255, 255, 0.08); }
+  .booking-time-date { font-size: 14px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #3b82f6; }
+  .booking-time-time { font-size: clamp(28px, 3.4vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: #fff; white-space: nowrap; }
+  .booking-countdown-block { display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 0 24px; }
+  .booking-countdown-lbl { font-size: 14px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #3b82f6; }
+  .booking-countdown-val { font-size: clamp(28px, 3.4vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .booking-fallback { font-size: 16px; color: rgba(255, 255, 255, 0.6); line-height: 1.5; }
+  .booking-cal { padding-top: 28px; }
+  .booking-cal-lbl { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.45); margin-bottom: 16px; }
+  .booking-cal-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .cal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 22px; border-radius: 12px; font-size: 16px; font-weight: 600; text-decoration: none; background: transparent; border: 1px solid rgba(255, 255, 255, 0.16); color: #fff; transition: background 0.15s, border-color 0.15s; }
+  .cal-btn:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.3); }
+  .cal-btn svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+  @media (max-width: 760px) {
+    .booking-time-row { flex-direction: column; gap: 24px; }
+    .booking-time-block { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0 0 24px; }
+    .booking-countdown-block { padding: 0; }
+    .cal-btn { flex: 1 1 100%; }
+  }
+</style>
+
+<script is:inline>
+// Booking confirmation: reads ?name=&start=&end=&loc=&tz= from the booking
+// redirect, fills in the name + call time + countdown, and builds add-to-calendar links.
+(function(){
+  var p = new URLSearchParams(window.location.search);
+  var name     = p.get('name')  || '';
+  var startISO = p.get('start') || '';
+  var endISO   = p.get('end')   || '';
+  var loc      = p.get('loc')   || 'Zoom';
+  var tz       = p.get('tz')    || '';
+
+  if (name) {
+    var firstName = name.split(' ')[0];
+    var nameEl = document.getElementById('js-vid-name');
+    if (nameEl) nameEl.textContent = ' ' + firstName;
+  }
+
+  if (!startISO) return;
+
+  var startDate = new Date(startISO);
+  var endDate   = endISO ? new Date(endISO) : new Date(startDate.getTime() + 45 * 60 * 1000);
+
+  var dateOpts = { weekday:'long', month:'long', day:'numeric' };
+  var timeOpts = { hour:'numeric', minute:'2-digit' };
+  var tzOpts   = { timeZoneName:'short' };
+  if (tz) { dateOpts.timeZone = tz; timeOpts.timeZone = tz; tzOpts.timeZone = tz; }
+
+  var dateEl = document.getElementById('js-call-date');
+  var timeEl = document.getElementById('js-call-time');
+  if (dateEl) dateEl.textContent = startDate.toLocaleDateString('en-US', dateOpts);
+  if (timeEl) timeEl.textContent = startDate.toLocaleTimeString('en-US', timeOpts) + ' ' + startDate.toLocaleTimeString('en-US', tzOpts).split(' ').pop();
+
+  var wrap = document.getElementById('call-time-wrap');
+  var fallback = document.getElementById('call-time-fallback');
+  if (wrap) wrap.style.display = '';
+  if (fallback) fallback.style.display = 'none';
+
+  var cdEl = document.getElementById('js-countdown');
+  function tick(){
+    if (!cdEl) return;
+    var diff = startDate.getTime() - Date.now();
+    if (diff <= 0) { cdEl.textContent = 'Live now'; return; }
+    var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000),
+        m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+    var parts = [];
+    if (d) parts.push(d + 'd');
+    if (h || d) parts.push(h + 'h');
+    parts.push(m + 'm'); parts.push(s + 's');
+    cdEl.textContent = parts.join(' ');
+  }
+  tick(); setInterval(tick, 1000);
+
+  function toCalDate(d){ return d.toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''); }
+  var s = toCalDate(startDate), e = toCalDate(endDate);
+  var title   = 'Call with Bill Fanter';
+  var details = 'Come prepared with your trading goals and questions.' + (loc ? ' Join here: ' + loc : '');
+
+  var gcal = document.getElementById('gcal-link');
+  if (gcal) gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + s + '/' + e + '&details=' + encodeURIComponent(details) + '&location=' + encodeURIComponent(loc);
+
+  var outlook = document.getElementById('outlook-link');
+  if (outlook) outlook.href = 'https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=' + encodeURIComponent(title) + '&startdt=' + encodeURIComponent(startDate.toISOString()) + '&enddt=' + encodeURIComponent(endDate.toISOString()) + '&body=' + encodeURIComponent(details) + '&location=' + encodeURIComponent(loc);
+
+  var ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Bill Fanter//EN','BEGIN:VEVENT','DTSTART:' + s,'DTEND:' + e,'SUMMARY:' + title,'DESCRIPTION:' + details.replace(/,/g,'\\,'),'LOCATION:' + loc,'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  var ical = document.getElementById('ical-link');
+  if (ical) ical.href = 'data:text/calendar;charset=utf8,' + encodeURIComponent(ics);
+
+  var calButtons = document.getElementById('cal-buttons');
+  if (calButtons) calButtons.style.display = '';
+})();
+</script>
