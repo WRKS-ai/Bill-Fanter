@@ -16,9 +16,9 @@ import CalWidget from '../components/CalWidget.astro';
 <style is:global>
 /* WRKS funnel design tokens (ported — reconfigure for Bill). */
 :root{
-  --bg:#000;--bg1:#111111;--t0:#F0EDE7;--t1:#bdbdbd;--t2:#8a8a8a;
-  --pu:#6214d9;--pu3:#9550ff;
-  --sans:'DM Sans',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
+  --bg:#0a0a0a;--bg1:#15161a;--t0:#ffffff;--t1:#ffffff;--t2:rgba(255,255,255,.6);
+  --pu:#1754d8;--pu3:#3b82f6;
+  --sans:'Geist',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
 }
 body{background:var(--bg);color:var(--t0)}
 @media(min-width:1025px){
@@ -50,10 +50,10 @@ body{background:var(--bg);color:var(--t0)}
 /* ── Pre-approved progress bar ── */
 .progress-wrap{margin:0 0 22px}
 .progress-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
-.progress-meta-lbl{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#bdbdbd}
+.progress-meta-lbl{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#ffffff}
 .progress-meta-pct{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
 .progress-track{width:100%;height:9px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden}
-.progress-fill{width:70%;height:100%;border-radius:100px;background:linear-gradient(90deg,#6a11ff 0%,#9550ff 55%,#bf82ff 100%);position:relative;overflow:hidden}
+.progress-fill{width:70%;height:100%;border-radius:100px;background:linear-gradient(90deg,#1754d8 0%,#3b82f6 55%,#75b5ff 100%);position:relative;overflow:hidden}
 .progress-fill::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.18) 0%,transparent 60%);border-radius:100px}
 .progress-fill::after{content:'';position:absolute;top:0;left:0;width:60%;height:100%;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.38) 50%,transparent 100%);animation:liquid-shine 2.2s ease-in-out infinite}
 @keyframes liquid-shine{0%{transform:translateX(-120%)}100%{transform:translateX(260%)}}
@@ -83,7 +83,7 @@ body{background:var(--bg);color:var(--t0)}
           </div>
         </div>
         <h1 class="dc-h1 rev" data-d="40">Final step: <em>book a call</em></h1>
-        <p class="dc-sub rev" data-d="80"><strong style="color:#ffffff">DISCLAIMER:</strong> Catalyst is built for established law firms already running marketing. If you're early-stage or unsure of fit, the call may be cancelled or redirected.</p>
+        <p class="dc-sub rev" data-d="80"><strong style="color:#ffffff">DISCLAIMER:</strong> This call is for traders who are serious about learning Bill's options approach. If you're not a fit, the call may be cancelled or redirected.</p>
       </div>
     </div>
 
@@ -102,7 +102,7 @@ body{background:var(--bg);color:var(--t0)}
 
   <footer class="pg-foot">
     <div class="pg-foot-inner">
-      <p class="pg-foot-legal">&copy; 2026 WRKS Online. All Rights Reserved.</p>
+      <p class="pg-foot-legal">&copy; 2026 Bill Fanter. All Rights Reserved.</p>
       <div class="pg-foot-links">
         <a href="/privacy-policy">Privacy</a>
         <a href="/terms-conditions">Terms</a>

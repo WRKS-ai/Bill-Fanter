@@ -9,20 +9,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="Catalyst | Bill Fanter"
   description="Watch the training, then book a call."
   wfPageId="funnel-catalyst"
-  extraHeadHtml={`
-    <link rel="preconnect" href="https://player.vimeo.com" crossorigin />
-    <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin />
-    <link rel="dns-prefetch" href="https://player.vimeo.com" />
-    <meta name="robots" content="noindex, nofollow" />
-  `}
+  extraHeadHtml='<meta name="robots" content="noindex, nofollow">'
 >
 
 <style is:global>
 /* WRKS funnel design tokens (ported — reconfigure for Bill). */
 :root{
-  --bg:#000;--bg1:#111111;--t0:#F0EDE7;--t1:#bdbdbd;--t2:#8a8a8a;
-  --pu:#6214d9;--pu3:#9550ff;
-  --sans:'DM Sans',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
+  --bg:#0a0a0a;--bg1:#15161a;--t0:#ffffff;--t1:#ffffff;--t2:rgba(255,255,255,.6);
+  --pu:#1754d8;--pu3:#3b82f6;
+  --sans:'Geist',system-ui,sans-serif;--ease:cubic-bezier(0.22,1,0.36,1);
 }
 body{background:var(--bg);color:var(--t0)}
 
@@ -34,15 +29,20 @@ body{background:var(--bg);color:var(--t0)}
 
 /* ── Hero typography (matches blas-guide / discover conventions) ── */
 .vsl-eyebrow{display:inline-flex;align-self:center;align-items:center;gap:10px;font-size:22px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--pu3);margin-bottom:20px}
-.vsl-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--pu3);box-shadow:0 0 8px rgba(149,80,255,.8);animation:pulse 2.5s ease-in-out infinite;flex-shrink:0}
+.vsl-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--pu3);box-shadow:0 0 8px rgba(59,130,246,.8);animation:pulse 2.5s ease-in-out infinite;flex-shrink:0}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.55)}}
 .vsl-h1{font-size:clamp(32px,4vw,52px);font-weight:700;line-height:1.06;letter-spacing:-.038em;color:var(--t0);margin:14px 0 50px}
 .vsl-h1 em{font-style:normal;font-size:1.06em;color:var(--pu3)}
 .vsl-sub{font-size:clamp(16px,1.4vw,18px);color:var(--t1);line-height:1.6;max-width:680px;margin:0 auto 44px}
 
 /* ── Video ─────────────────────────────────────────────── */
-.vsl-video{position:relative;width:100%;max-width:1140px;margin:0 auto 50px;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000 url('https://i.vimeocdn.com/video/2144590373-b2a88fa413bd3bf826a4e222a965cc1da9fdb8707085c6410fcbe6b1247d416f-d_1280x720?region=us') center/cover no-repeat;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+.vsl-video{position:relative;width:100%;max-width:1140px;margin:0 auto 50px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#0a0a0a;box-shadow:0 30px 90px rgba(0,0,0,.5)}
 .vsl-video iframe{position:absolute;inset:-4px;width:calc(100% + 8px);height:calc(100% + 8px);border:0;z-index:0}
+/* Empty-state placeholder shown until Bill's video embed is added. */
+.vsl-video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:radial-gradient(120% 120% at 50% 40%,#15161a 0%,#0a0a0a 100%);border:1px dashed rgba(255,255,255,.18)}
+.vsl-ph-play{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--pu),var(--pu3));box-shadow:0 14px 40px rgba(23,84,216,.4)}
+.vsl-ph-play svg{width:30px;height:30px;margin-left:4px;color:#fff}
+.vsl-ph-txt{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
 /* Click-to-pause layer, covers video above Vimeo's control bar so clicking the center toggles play/pause */
 .vsl-click-catch{position:absolute;left:0;right:0;top:0;bottom:140px;z-index:1;cursor:pointer;display:none}
@@ -72,15 +72,15 @@ body{background:var(--bg);color:var(--t0)}
 }
 
 /* ── Big CTA button (matches site gradient convention) ── */
-.vsl-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:26px 64px;min-width:360px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--pu),var(--pu3));color:#fff;font-family:var(--sans);font-size:22px;font-weight:700;letter-spacing:-.005em;cursor:pointer;text-decoration:none;transition:transform .2s var(--ease),box-shadow .2s var(--ease);box-shadow:0 14px 40px rgba(98,20,217,.4)}
-.vsl-cta-btn:hover{transform:translateY(-2px);box-shadow:0 20px 50px rgba(98,20,217,.55)}
+.vsl-cta-btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;padding:26px 64px;min-width:360px;border:0;border-radius:14px;background:linear-gradient(135deg,var(--pu),var(--pu3));color:#fff;font-family:var(--sans);font-size:22px;font-weight:700;letter-spacing:-.005em;cursor:pointer;text-decoration:none;transition:transform .2s var(--ease),box-shadow .2s var(--ease);box-shadow:0 14px 40px rgba(23,84,216,.4)}
+.vsl-cta-btn:hover{transform:translateY(-2px);box-shadow:0 20px 50px rgba(23,84,216,.55)}
 .vsl-cta-btn svg{width:22px;height:22px}
 .vsl-cta-hint{margin-top:16px;font-size:12px;color:var(--t2);letter-spacing:.04em;font-weight:500}
 
 /* ── Modal ─────────────────────────────────────────────── */
 .vsl-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;transition:opacity .2s}
 .vsl-modal.open{display:flex;opacity:1}
-.vsl-modal-card{position:relative;width:100%;max-width:540px;background:var(--bg1);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:38px 36px 32px;text-align:left;box-shadow:0 30px 90px rgba(0,0,0,.7);transform:translateY(12px);transition:transform .25s var(--ease);max-height:calc(100vh - 48px);overflow-y:auto}
+.vsl-modal-card{position:relative;width:100%;max-width:540px;background:var(--bg1);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:38px 36px 32px;text-align:left;box-shadow:0 30px 90px rgba(0,0,0,.7);transform:translateY(12px);transition:transform .25s var(--ease);max-height:calc(100vh - 48px);overflow-y:auto}
 .vsl-modal.open .vsl-modal-card{transform:translateY(0)}
 .vsl-modal-close{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--t0);font-family:var(--sans);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;padding:0;line-height:1}
 .vsl-modal-close:hover{background:rgba(255,255,255,.12);transform:rotate(90deg)}
@@ -109,17 +109,17 @@ body{background:var(--bg);color:var(--t0)}
 
 .vsl-radio-group{display:flex;flex-direction:column;gap:10px;margin-top:4px}
 .vsl-radio{position:relative;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;background:var(--bg);border:1px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer;transition:all .15s;font-size:15px;font-weight:500;color:var(--t0)}
-.vsl-radio:hover{border-color:rgba(149,80,255,.5);background:#0d0d0d}
+.vsl-radio:hover{border-color:rgba(59,130,246,.5);background:#0d0d0d}
 .vsl-radio input{position:absolute;opacity:0;pointer-events:none}
 .vsl-radio .vsl-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.35);position:relative;flex-shrink:0;transition:all .15s}
 .vsl-radio input:checked + .vsl-dot{border-color:var(--pu3)}
 .vsl-radio input:checked + .vsl-dot::after{content:'';position:absolute;inset:3px;border-radius:50%;background:var(--pu3)}
-.vsl-radio:has(input:checked){border-color:var(--pu3);background:rgba(149,80,255,.08)}
+.vsl-radio:has(input:checked){border-color:var(--pu3);background:rgba(59,130,246,.08)}
 
 /* Modal buttons */
 .vsl-step-actions{display:flex;gap:10px;margin-top:10px}
-.vsl-submit{flex:1;padding:16px 22px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--pu),var(--pu3));color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.005em;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease);box-shadow:0 8px 24px rgba(98,20,217,.35)}
-.vsl-submit:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(98,20,217,.5)}
+.vsl-submit{flex:1;padding:16px 22px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--pu),var(--pu3));color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:-.005em;cursor:pointer;transition:transform .2s var(--ease),box-shadow .2s var(--ease);box-shadow:0 8px 24px rgba(23,84,216,.35)}
+.vsl-submit:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(23,84,216,.5)}
 .vsl-submit:disabled{opacity:.6;cursor:wait;transform:none}
 .vsl-back{padding:16px 22px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:transparent;color:var(--t1);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
 .vsl-back:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.28);color:var(--t0)}
@@ -144,29 +144,16 @@ body.vsl-locked{overflow:hidden}
 
 <div class="vsl-page">
 <section class="vsl-wrap">
-  <span class="vsl-eyebrow">Law Firms Above $100k/month:</span>
-  <h1 class="vsl-h1">Our AI agent gets your firm <em>45 new cases</em> in the next 90 days, or you don't pay.</h1>
+  <span class="vsl-eyebrow">Free training:</span>
+  <h1 class="vsl-h1">Watch how everyday people are learning to trade options with a <em>clear, repeatable plan</em>.</h1>
 
+  <!-- Video placeholder — drop Bill's VSL embed in here when ready. -->
   <div class="vsl-video">
-    <iframe
-      id="vsl-vimeo"
-      src="https://player.vimeo.com/video/1182063163?autoplay=1&muted=1&loop=1&controls=1&playsinline=1&dnt=1&badge=0&byline=0&title=0&speed=0&color=9550ff&airplay=0&chromecast=0&pip=0&vimeo_logo=0&share=0&like=0&watchlater=0"
-      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-      allowfullscreen
-      playsinline
-      webkit-playsinline
-      title="WRKS x Law Firms VSL"
-      loading="eager"
-    ></iframe>
-    <div class="vsl-click-catch" id="vsl-click-catch" aria-hidden="true"></div>
-    <div class="vsl-video-overlay" id="vsl-video-overlay" role="button" tabindex="0" aria-label="Play video with sound">
-      <div class="vsl-play-btn">
+    <div class="vsl-video-placeholder">
+      <div class="vsl-ph-play">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
       </div>
-      <span class="vsl-overlay-txt">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-        Click To Play With Sound
-      </span>
+      <span class="vsl-ph-txt">Bill's video goes here</span>
     </div>
   </div>
 
@@ -248,7 +235,7 @@ body.vsl-locked{overflow:hidden}
 
 <footer class="pg-foot">
   <div class="pg-foot-inner">
-    <p class="pg-foot-legal">&copy; 2026 WRKS Online. All Rights Reserved.</p>
+    <p class="pg-foot-legal">&copy; 2026 Bill Fanter. All Rights Reserved.</p>
     <div class="pg-foot-links">
       <a href="/privacy-policy">Privacy</a>
       <a href="/terms-conditions">Terms</a>
@@ -257,79 +244,7 @@ body.vsl-locked{overflow:hidden}
 </footer>
 </div><!-- /.vsl-page -->
 
-<script src="https://player.vimeo.com/api/player.js" is:inline></script>
-<script is:inline>
-// ── Vimeo: muted autoplay loop → click swaps src + enables click-to-pause ───
-(function(){
-  var iframe  = document.getElementById('vsl-vimeo');
-  var overlay = document.getElementById('vsl-video-overlay');
-  var catcher = document.getElementById('vsl-click-catch');
-  if (!iframe || !overlay || !catcher) return;
-
-  var activated = false;
-  var player = null;
-
-  function initPlayer() {
-    if (player) return;
-    if (!window.Vimeo) return;
-    try { player = new Vimeo.Player(iframe); } catch(e){}
-  }
-  initPlayer();
-  if (!player) {
-    iframe.addEventListener('load', initPlayer, { once: true });
-  }
-
-  function activate(){
-    if (activated) return;
-    activated = true;
-    overlay.classList.add('hidden');
-
-    if (player) {
-      player.setVolume(1);
-      player.setCurrentTime(0);
-      player.setLoop(false);
-      player.play();
-    }
-    catcher.classList.add('active');
-  }
-
-  var lastTap = 0;
-  var lastSide = '';
-  var tapTimeout = null;
-
-  catcher.addEventListener('click', function(e){
-    if (!player) return;
-    var rect = catcher.getBoundingClientRect();
-    var x = (e.clientX - rect.left) / rect.width;
-    var side = x < 0.3 ? 'left' : x > 0.7 ? 'right' : 'center';
-    var now = Date.now();
-
-    if (side === 'center') {
-      player.getPaused().then(function(paused){
-        if (paused) player.play(); else player.pause();
-      }).catch(function(){});
-      return;
-    }
-
-    if (now - lastTap < 400 && side === lastSide) {
-      clearTimeout(tapTimeout);
-      player.getCurrentTime().then(function(t){
-        player.setCurrentTime(Math.max(0, t + (side === 'left' ? -10 : 10))).catch(function(){});
-      }).catch(function(){});
-      lastTap = 0;
-    } else {
-      lastTap = now;
-      lastSide = side;
-      tapTimeout = setTimeout(function(){ lastTap = 0; }, 400);
-    }
-  });
-
-  overlay.addEventListener('click', activate);
-  overlay.addEventListener('keydown', function(e){
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
-  });
-})();
-</script>
+<!-- Vimeo player + click-to-unmute logic removed with the embed; re-add when Bill's video is in. -->
 
 <script is:inline>
 (function(){

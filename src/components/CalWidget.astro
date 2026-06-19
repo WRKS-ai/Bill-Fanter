@@ -16,7 +16,7 @@ const {
   calendarId: CALENDAR_ID,
   slotDuration: SLOT_DURATION = 45,
   redirectUrl: REDIRECT_URL = '',
-  meetingName: MEETING_NAME = 'Meeting with WRKS Online',
+  meetingName: MEETING_NAME = 'Meeting with Bill Fanter',
   passName: PASS_NAME = false,
   collectRevenue: COLLECT_REVENUE = false,
   qualifiedRedirect: QUALIFIED_REDIRECT = '',
@@ -36,7 +36,7 @@ const {
   border-radius:12px;
   overflow:hidden;
   width:100%;
-  font-family:var(--sans,'DM Sans',system-ui,sans-serif);
+  font-family:var(--sans,'Geist',system-ui,sans-serif);
 }
 .cal-step{display:none}
 
@@ -47,12 +47,12 @@ const {
 }
 .cal-spinner{
   width:28px;height:28px;
-  border:2px solid rgba(149,80,255,.2);
-  border-top-color:#9550ff;
+  border:2px solid rgba(59,130,246,.2);
+  border-top-color:#3b82f6;
   border-radius:50%;
   animation:cal-spin .7s linear infinite;
 }
-.cal-loading-text{font-size:14px;color:#bdbdbd}
+.cal-loading-text{font-size:14px;color:#ffffff}
 
 /* ── SHARED: CIRCULAR BACK BUTTON ───────────────────────── */
 .back-circle-btn{
@@ -67,7 +67,7 @@ const {
 }
 .back-circle-btn:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.55)}
 .back-circle-btn svg{
-  width:18px;height:18px;fill:none;stroke:#9550ff;
+  width:18px;height:18px;fill:none;stroke:#3b82f6;
   stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;
 }
 
@@ -80,7 +80,7 @@ const {
 }
 .cal-info-row{
   display:flex;align-items:flex-start;gap:10px;
-  font-size:16px;color:#bdbdbd;
+  font-size:16px;color:#ffffff;
   line-height:1.8;
 }
 .cal-info-row svg{
@@ -111,7 +111,7 @@ const {
   margin-bottom:16px;
 }
 .cal-month-label{
-  font-size:16px;font-weight:700;color:#bdbdbd;letter-spacing:-.01em;
+  font-size:16px;font-weight:700;color:#ffffff;letter-spacing:-.01em;
 }
 .cal-nav-btn{
   background:rgba(255,255,255,.06);
@@ -135,7 +135,7 @@ const {
 }
 .cal-weekday{
   text-align:center;font-size:14px;font-weight:600;
-  color:#bdbdbd;padding:4px 0;
+  color:#ffffff;padding:4px 0;
   letter-spacing:.02em;
 }
 @media(max-width:600px){
@@ -161,11 +161,11 @@ const {
 }
 .cal-day.today{color:rgba(255,255,255,.55);font-weight:700}
 .cal-day.available{
-  color:#9550ff;cursor:pointer;font-weight:600;
-  background:rgba(149,80,255,.1);
+  color:#3b82f6;cursor:pointer;font-weight:600;
+  background:rgba(59,130,246,.1);
 }
-.cal-day.available:hover{background:rgba(149,80,255,.38);color:#c49fff}
-.cal-day.selected{background:#9550ff !important;color:#000 !important;font-weight:700;cursor:pointer}
+.cal-day.available:hover{background:rgba(59,130,246,.38);color:#c49fff}
+.cal-day.selected{background:#3b82f6 !important;color:#000 !important;font-weight:700;cursor:pointer}
 .cal-day.selected:hover{background:#a567ff !important}
 
 /* Timezone section on step 1 */
@@ -220,12 +220,12 @@ const {
   stroke-linecap:round;stroke-linejoin:round;
 }
 .tz-trigger-val{
-  font-size:14px;color:#bdbdbd;
+  font-size:14px;color:#ffffff;
   /* no flex:1 — caret sits right after text */
 }
 .tz-caret{
   width:13px;height:13px;flex-shrink:0;fill:none;
-  stroke:#9550ff;stroke-width:2.5;
+  stroke:#3b82f6;stroke-width:2.5;
   stroke-linecap:round;stroke-linejoin:round;
   transition:transform .15s;
   /* no margin-left:auto — caret is snug to text */
@@ -246,20 +246,20 @@ const {
   box-shadow:0 -6px 24px rgba(0,0,0,.5);
 }
 .tz-opt{
-  padding:10px 16px;font-size:14px;color:#bdbdbd;
+  padding:10px 16px;font-size:14px;color:#ffffff;
   cursor:pointer;transition:background .1s;
-  font-family:var(--sans,'DM Sans',system-ui,sans-serif);
+  font-family:var(--sans,'Geist',system-ui,sans-serif);
   white-space:nowrap;
 }
-.tz-opt:hover{background:rgba(149,80,255,.3);color:#fff}
-.tz-opt.active{background:rgba(149,80,255,.45);color:#fff}
+.tz-opt:hover{background:rgba(59,130,246,.3);color:#fff}
+.tz-opt.active{background:rgba(59,130,246,.45);color:#fff}
 
 .slots-heading-section{
   padding:24px 22px 8px;
   text-align:center;
 }
 .slots-main-heading{
-  font-size:16px;font-weight:700;color:#bdbdbd;
+  font-size:16px;font-weight:700;color:#ffffff;
   margin-bottom:4px;
 }
 .slots-duration{
@@ -291,20 +291,20 @@ const {
 .slot-btn{
   width:100%;padding:13px 16px;
   background:transparent;
-  border:1px solid rgba(149,80,255,.75);
+  border:1px solid rgba(59,130,246,.75);
   border-radius:6px;
   color:#a678ff;font-size:16px;font-weight:600;
   cursor:pointer;text-align:center;
   transition:background .18s,border-color .18s,color .18s;
   font-family:inherit;
 }
-.slot-btn:hover{background:rgba(149,80,255,.18);border-color:#9550ff;color:#c49fff}
+.slot-btn:hover{background:rgba(59,130,246,.18);border-color:#3b82f6;color:#c49fff}
 /* selected: same text/bg as inactive — no visual change on the time button itself */
-.slot-item.selected .slot-btn,.slot-item.selected .slot-btn:focus{color:#a678ff;background:rgba(149,80,255,.18);border-color:rgba(149,80,255,.75);cursor:pointer}
-.slot-item.selected .slot-btn:hover{color:#c49fff;background:rgba(149,80,255,.32);border-color:#9550ff}
+.slot-item.selected .slot-btn,.slot-item.selected .slot-btn:focus{color:#a678ff;background:rgba(59,130,246,.18);border-color:rgba(59,130,246,.75);cursor:pointer}
+.slot-item.selected .slot-btn:hover{color:#c49fff;background:rgba(59,130,246,.32);border-color:#3b82f6}
 .slot-confirm-btn{
   overflow:hidden;
-  background:#9550ff;border:none;border-radius:6px;
+  background:#3b82f6;border:none;border-radius:6px;
   color:#fff;font-size:15px;font-weight:700;
   cursor:pointer;white-space:nowrap;font-family:inherit;
   display:flex;align-items:center;justify-content:center;gap:3px;
@@ -343,7 +343,7 @@ const {
 
 .form-details-heading{
   padding:18px 22px 14px;
-  font-size:16px;font-weight:700;color:#bdbdbd;
+  font-size:16px;font-weight:700;color:#ffffff;
   letter-spacing:-.01em;
 }
 
@@ -353,7 +353,7 @@ const {
 
 .cal-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .cal-field label{
-  font-size:16px;font-weight:600;color:#bdbdbd;
+  font-size:16px;font-weight:600;color:#ffffff;
 }
 .cal-field input{
   background:#ffffff;
@@ -363,7 +363,7 @@ const {
   transition:border-color .15s;
   width:100%;box-sizing:border-box;font-family:inherit;
 }
-.cal-field input:focus{border-color:#9550ff}
+.cal-field input:focus{border-color:#3b82f6}
 .cal-field input::placeholder{color:#6b7280}
 
 /* Revenue radio group (only used when collectRevenue=true) */
@@ -375,7 +375,7 @@ const {
   cursor:pointer;transition:all .15s;
   font-size:15px;font-weight:500;color:rgba(255,255,255,.92);font-family:inherit;
 }
-.cal-radio:hover{border-color:rgba(149,80,255,.55);background:rgba(149,80,255,.05)}
+.cal-radio:hover{border-color:rgba(59,130,246,.55);background:rgba(59,130,246,.05)}
 .cal-radio input{position:absolute;opacity:0;pointer-events:none}
 .cal-radio .cal-dot{
   width:20px;height:20px;border-radius:50%;
@@ -383,15 +383,15 @@ const {
   position:relative;flex-shrink:0;transition:all .15s;
   background:transparent;
 }
-.cal-radio input:checked + .cal-dot{border-color:#9550ff}
+.cal-radio input:checked + .cal-dot{border-color:#3b82f6}
 .cal-radio input:checked + .cal-dot::after{
-  content:'';position:absolute;inset:3px;border-radius:50%;background:#9550ff;
+  content:'';position:absolute;inset:3px;border-radius:50%;background:#3b82f6;
 }
-.cal-radio:has(input:checked){border-color:#9550ff;background:rgba(149,80,255,.08)}
+.cal-radio:has(input:checked){border-color:#3b82f6;background:rgba(59,130,246,.08)}
 
 .cal-submit-btn{
   width:100%;padding:14px 24px;
-  background:#9550ff;border:none;border-radius:6px;
+  background:#3b82f6;border:none;border-radius:6px;
   color:#fff;font-size:16px;font-weight:600;
   cursor:pointer;font-family:inherit;letter-spacing:-.01em;
   transition:background .15s,transform .1s;
@@ -417,8 +417,8 @@ const {
 }
 .cal-redirect-spinner{
   width:32px;height:32px;
-  border:2.5px solid rgba(149,80,255,.2);
-  border-top-color:#9550ff;
+  border:2.5px solid rgba(59,130,246,.2);
+  border-top-color:#3b82f6;
   border-radius:50%;
   animation:cal-spin .75s linear infinite;
 }
