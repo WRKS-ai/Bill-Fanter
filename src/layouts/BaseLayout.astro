@@ -108,8 +108,10 @@ const fontHref = 'https://fonts.googleapis.com/css2?family=Geist:wght@300;400;50
          static CSS dot pattern in its place so the dot-grid look is preserved. */
       @media (max-width: 767px) {
         :global([data-dotgrid]) {
-          background-image: radial-gradient(circle, #454545 1.1px, transparent 1.6px);
-          background-size: 12px 12px;
+          /* Smaller, denser dots than the desktop grid so the pattern reads as a
+             subtle fine-grain texture on phones rather than chunky dots. */
+          background-image: radial-gradient(circle, #454545 0.6px, transparent 1px);
+          background-size: 6px 6px;
           background-position: center;
         }
       }

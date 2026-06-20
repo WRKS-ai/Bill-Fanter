@@ -56,6 +56,13 @@ import Footer from '../components/Footer.astro';
     background-size: 12px 12px;
     background-position: center;
   }
+  /* Phones: smaller, denser dots (matches the sitewide mobile dot fallback). */
+  @media (max-width: 767px) {
+    .bf-404-hero__dots {
+      background-image: radial-gradient(circle, #454545 0.6px, transparent 1px);
+      background-size: 6px 6px;
+    }
+  }
   .bf-404-hero .bf-container { position: relative; z-index: 1; }
   .bf-404-hero :global(.bf-h1),
   .bf-404-hero :global(.bf-hero__lead) { color: #fff; }
