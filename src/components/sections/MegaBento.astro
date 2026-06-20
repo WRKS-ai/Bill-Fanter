@@ -390,12 +390,10 @@ const arrow = '<path d="M5 13L13 5M13 5H6M13 5V12" stroke="currentColor" stroke-
   .bf-mega__dot[role="button"]:hover::after { background-color: rgba(255, 255, 255, 0.5); }
   .bf-mega__dot[role="button"].is-active::after { background-color: #fff; transform: scale(1.15); }
 
-  /* On mobile, drop the animated grainients (the CSS gradient fallback shows
-     instead) so phones aren't running extra WebGL canvases — lighter + smoother
-     with no visual change at tile size. The mount script skips 0-size elements. */
-  @media (max-width: 768px) {
-    .bf-mega__grain { display: none; }
-  }
+  /* Grainients render on mobile too (matching every other section). They were
+     previously hidden here to avoid extra phone WebGL, but they now lazy-mount
+     only when scrolled into view (IntersectionObserver), so the cost is paid one
+     tile at a time on scroll rather than all at once. */
   .bf-mega__icon {
     position: absolute;
     top: 28px;

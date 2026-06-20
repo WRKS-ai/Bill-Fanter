@@ -211,7 +211,11 @@ const tickerB = [
           <div class="bf-comm-marquee">
             <div class="bf-comm-marquee__row">
               {[...winningTrades, ...winningTrades].map((src) => (
-                <div class="bf-comm-marquee__shot"><img src={src} alt="" loading="lazy" /></div>
+                /* Not loading="lazy": iOS Safari won't trigger lazy-load for
+                   images inside this animated, absolutely-positioned,
+                   overflow-hidden marquee, so the shots collapsed to empty
+                   bordered cards. Small fixed set of 4 -> load them up front. */
+                <div class="bf-comm-marquee__shot"><img src={src} alt="" /></div>
               ))}
             </div>
           </div>
