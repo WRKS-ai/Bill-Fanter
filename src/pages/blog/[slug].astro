@@ -1,0 +1,177 @@
+---
+// /blog/<slug> — article page. Each post is built around one of Bill's YouTube
+// videos: the video embeds at the top (via the sitewide bf-vreel lightbox, so
+// no player JS loads until click) and the post funnels readers to the channel.
+// Emits BlogPosting + VideoObject schema on top of the sitewide entity graph.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReactReady from '../../components/ReactReady.jsx';
+import Islands from '../../components/Islands.astro';
+import Footer from '../../components/Footer.astro';
+import { blogPostingSchema, videoObjectSchema } from '../../lib/seo';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+
+const CHANNEL_URL = 'https://www.youtube.com/@BillFanter';
+const SUBSCRIBE_URL = 'https://www.youtube.com/@BillFanter?sub_confirmation=1';
+const videoUrl = `https://www.youtube.com/watch?v=${d.videoId}`;
+const thumb = `https://i.ytimg.com/vi/${d.videoId}/maxresdefault.jpg`;
+
+const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' });
+
+const jsonLd = [
+  blogPostingSchema({
+    title: d.title,
+    description: d.description,
+    url: `/blog/${post.id}`,
+    datePublished: d.pubDate,
+    dateModified: d.updatedDate,
+    image: thumb,
+  }),
+  videoObjectSchema({
+    videoId: d.videoId,
+    name: d.videoTitle,
+    description: d.description,
+    uploadDate: d.videoUploadDate,
+  }),
+];
+---
+<BaseLayout
+  title={`${d.title} | Bill Fanter`}
+  description={d.description}
+  ogImage={thumb}
+  ogType="article"
+  wfPageId="664d6658b3efb6a1eb5521e0"
+  jsonLd={jsonLd}
+>
+  <ReactReady client:only="react" />
+  <main class="bf-page" data-cardnav-host>
+    <article class="bf-section bf-article">
+      <div class="bf-container">
+        <header class="bf-article__header">
+          <div class="bf-hero__eyebrow"><span class="bf-eyebrow">{d.tag}</span></div>
+          <h1 class="bf-h1 bf-article__h1">{d.title}</h1>
+          <p class="bf-lead bf-article__lead">{d.description}</p>
+          <p class="bf-article__meta">
+            By <a href="/about">Bill Fanter</a> ·
+            <time datetime={d.pubDate.toISOString()}>{dateFmt.format(d.pubDate)}</time>
+          </p>
+        </header>
+
+        {/* Video facade — real embed only loads in the lightbox on click. */}
+        <button
+          class="bf-article__video"
+          data-bf-youtube={d.videoId}
+          data-bf-wide
+          aria-label={`Play video: ${d.videoTitle}`}
+        >
+          <img
+            src={thumb}
+            alt={`Video: ${d.videoTitle}`}
+            width="1280"
+            height="720"
+            fetchpriority="high"
+          />
+          <span class="bf-article__play" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+          </span>
+        </button>
+        <p class="bf-article__video-caption">
+          Watch: <a href={videoUrl} target="_blank" rel="noopener">{d.videoTitle}</a> —
+          from <a href={CHANNEL_URL} target="_blank" rel="noopener">Bill's YouTube channel</a>.
+        </p>
+
+        <div class="bf-article__body">
+          <Content />
+        </div>
+
+        {/* Closing CTA — the post's job: send readers to the channel. */}
+        <div class="bf-darkcta bf-darkcta--black bf-article__cta">
+          <div class="bf-darkcta__grid">
+            <div>
+              <h2 class="bf-darkcta__h2">Get the next lesson before it hits the blog</h2>
+              <p class="bf-darkcta__lead">Bill posts new options lessons, market breakdowns, and his weekly watchlist on YouTube first. Subscribe and trade the next week with him.</p>
+              <div class="bf-darkcta__buttons">
+                <a class="bf-darkcta__btn" href={SUBSCRIBE_URL} target="_blank" rel="noopener">Subscribe on YouTube</a>
+                <a class="bf-darkcta__btn bf-darkcta__btn--ghost" href="/free-watchlist">Get the free watchlist</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+  <Islands />
+</BaseLayout>
+
+<style is:global>
+  main.bf-page[data-cardnav-host] { position: relative; }
+
+  .bf-article { padding-top: 140px; }
+  .bf-article .bf-container { max-width: 760px; }
+  .bf-article__header { margin-bottom: 34px; }
+  .bf-article__h1 { margin-top: 14px; }
+  .bf-article__lead { margin-top: 16px; }
+  .bf-article__meta { margin-top: 14px; color: var(--bf-text-muted); font-size: 14px; }
+  .bf-article__meta a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  .bf-article__video {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--bf-border);
+    border-radius: var(--bf-radius-lg, 16px);
+    overflow: hidden;
+    cursor: pointer;
+    background: #0a0a0a;
+  }
+  .bf-article__video img { width: 100%; height: auto; display: block; }
+  .bf-article__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 68px;
+    height: 68px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: rgba(10, 10, 10, 0.82);
+    color: #fff;
+    transition: transform 0.18s ease, background 0.18s ease;
+  }
+  .bf-article__video:hover .bf-article__play { transform: scale(1.06); background: #0a0a0a; }
+  .bf-article__video-caption { margin-top: 12px; color: var(--bf-text-muted); font-size: 14px; }
+  .bf-article__video-caption a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
+  .bf-article__body { margin-top: 38px; font-size: 17px; line-height: 1.75; color: var(--bf-text); }
+  .bf-article__body h2 { font-size: 28px; line-height: 1.25; letter-spacing: -0.02em; font-weight: 700; margin: 44px 0 14px; }
+  .bf-article__body h3 { font-size: 21px; line-height: 1.3; letter-spacing: -0.01em; font-weight: 700; margin: 34px 0 10px; }
+  .bf-article__body p { margin: 0 0 18px; }
+  .bf-article__body a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .bf-article__body ul, .bf-article__body ol { margin: 0 0 18px; padding-left: 24px; }
+  .bf-article__body li { margin-bottom: 8px; }
+  .bf-article__body strong { font-weight: 700; }
+  .bf-article__body blockquote {
+    margin: 26px 0;
+    padding: 4px 0 4px 20px;
+    border-left: 3px solid var(--bf-border-strong, var(--bf-border));
+    color: var(--bf-text-muted);
+  }
+
+  .bf-article__cta { margin-top: 54px; }
+
+  @media (max-width: 767px) {
+    .bf-article { padding-top: 110px; }
+    .bf-article__body { font-size: 16px; }
+    .bf-article__body h2 { font-size: 24px; }
+  }
+</style>

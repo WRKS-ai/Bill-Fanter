@@ -1,8 +1,8 @@
 # Bill Fanter
 
-> Bill Fanter teaches options trading. The site offers a 6-session Options Trading Masterclass, a daily trading community, a free weekly stock watchlist, and a free options webinar.
+> Bill Fanter teaches options trading. The site offers a 6-session Options Trading Masterclass, a daily trading community, a free weekly stock watchlist, a free options webinar, and free video lessons on his YouTube channel.
 
-Bill Fanter spent 35 years in banking and the markets. He now trades options around the market open and teaches a proven system: he shows you how to spot setups, size risk, and place trades you understand. Options Action LLC runs the site from Las Vegas, Nevada.
+Bill Fanter spent 35 years in banking and the markets. He now trades options around the market open and teaches a proven system: he shows you how to spot setups, size risk, and place trades you understand. He publishes free options trading videos on YouTube at https://www.youtube.com/@BillFanter. Options Action LLC runs the site from Las Vegas, Nevada.
 
 All content is educational. Trading options carries real risk, results vary, and nothing here is financial advice.
 
@@ -15,10 +15,19 @@ All content is educational. Trading options carries real risk, results vary, and
 
 ## Free resources
 
+- [YouTube channel](https://www.youtube.com/@BillFanter): free options trading videos from Bill — market breakdowns, trade setups, and lessons from the system he teaches.
 - [Free options webinar](https://www.billfanter.com/webinar): learn how Bill trades the opening hour with a rules-based plan.
 - [Free weekly watchlist](https://www.billfanter.com/free-watchlist): stock and ETF setups with price levels, sent every Sunday.
 - [Student reviews](https://www.billfanter.com/student-comments): reviews from Masterclass and community members.
-- [Blog](https://www.billfanter.com/blog): articles and trade breakdowns.
+- [Blog](https://www.billfanter.com/blog): lessons and trade breakdowns, each paired with a video on Bill's YouTube channel.
+
+## Guides
+
+- [Options vs. stocks](https://www.billfanter.com/blog/options-vs-stocks): why Bill trades options instead of stocks — defined risk, capital efficiency, more ways to be right.
+- [What is the VIX?](https://www.billfanter.com/blog/what-is-the-vix): how to read the market's fear gauge and what it means for options prices.
+- [Revenge trading](https://www.billfanter.com/blog/revenge-trading): how one bad loss becomes a devastating one, and the rules that stop the spiral.
+- [Trading options in high volatility](https://www.billfanter.com/blog/trading-options-in-high-volatility): what changes when markets get wild and how to adjust size and strategy.
+- [How to build a stock watchlist](https://www.billfanter.com/blog/how-to-build-a-stock-watchlist): Bill's weekly process for turning thousands of tickers into a short list of real setups.
 
 ## Contact
 

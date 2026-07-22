@@ -20,7 +20,6 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/watchlist-confirmed') &&
         !page.includes('/watch-webinar') &&
-        !page.includes('/blog') &&
         !page.includes('/booking') &&
         !page.includes('/guide') &&
         !page.includes('/training') &&

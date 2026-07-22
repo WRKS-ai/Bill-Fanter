@@ -11,3 +11,5 @@ dist/
 
 # Local agent state
 .claude/
+.vercel
+.env*

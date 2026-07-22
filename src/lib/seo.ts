@@ -160,6 +160,56 @@ export function courseSchema(opts: {
   };
 }
 
+/**
+ * BlogPosting node for a blog article. Author/publisher reference the entity
+ * graph so the post inherits Bill's E-E-A-T signals.
+ */
+export function blogPostingSchema(opts: {
+  title: string;
+  description: string;
+  url: string;
+  datePublished: Date;
+  dateModified?: Date;
+  image?: string;
+}): object {
+  return {
+    '@type': 'BlogPosting',
+    headline: opts.title,
+    description: opts.description,
+    url: abs(opts.url),
+    mainEntityOfPage: abs(opts.url),
+    datePublished: opts.datePublished.toISOString(),
+    dateModified: (opts.dateModified ?? opts.datePublished).toISOString(),
+    author: { '@id': PERSON_ID },
+    publisher: { '@id': ORG_ID },
+    inLanguage: 'en-US',
+    ...(opts.image ? { image: abs(opts.image) } : {}),
+  };
+}
+
+/**
+ * VideoObject node for the YouTube video a blog post is built around. Points
+ * search engines at the video so the post can earn a video rich result and
+ * funnel viewers to the channel.
+ */
+export function videoObjectSchema(opts: {
+  videoId: string;
+  name: string;
+  description: string;
+  uploadDate: Date;
+}): object {
+  return {
+    '@type': 'VideoObject',
+    name: opts.name,
+    description: opts.description,
+    thumbnailUrl: `https://i.ytimg.com/vi/${opts.videoId}/hqdefault.jpg`,
+    uploadDate: opts.uploadDate.toISOString(),
+    contentUrl: `https://www.youtube.com/watch?v=${opts.videoId}`,
+    embedUrl: `https://www.youtube.com/embed/${opts.videoId}`,
+    author: { '@id': PERSON_ID },
+  };
+}
+
 /** FAQPage node from on-page question/answer pairs (text must match the visible page). */
 export function faqSchema(faqs: { q: string; a: string }[]): object {
   return {
